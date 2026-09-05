@@ -199,10 +199,20 @@ Put any credentials in `.env.local`, which is git-ignored.
 
 ### Products page (`/products`)
 
-The full catalogue, at `src/content/site.ts` under `products`. Three
-families, each rendered by `ProductFamily.tsx` as a sticky left rail
-(number, heading, intro, image, spec list) beside a column of type
-cards that scroll past it.
+The full catalogue, at `src/content/site.ts` under `products`.
+
+The page is built so the three product groups register before anyone
+reads any detail. `ProductOverview.tsx` opens with a sunlight-to-power
+flow — three linked cards, each with its number, its name and one plain
+sentence saying what it does.
+
+Each group then gets its own section from `ProductFamily.tsx`, where the
+product name is the largest thing on screen, with `plain` sitting under
+it as a one-line explanation and `intro` as the supporting paragraph.
+The options within the group follow as cards, then a strip of specs.
+
+Keep `plain` to one short sentence — it is the line a first-time visitor
+actually reads.
 
 Panel types carry a `meter` — `{ from, to, max, unit }` — drawn by
 `RangeMeter.tsx` as a band on a shared 0-25% scale, so monocrystalline

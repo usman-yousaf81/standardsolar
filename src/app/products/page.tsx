@@ -3,7 +3,7 @@ import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { PageHeader } from "@/components/sections/PageHeader";
-import { ProductIndex } from "@/components/sections/ProductIndex";
+import { ProductOverview } from "@/components/sections/ProductOverview";
 import { ProductFamily } from "@/components/sections/ProductFamily";
 import { CtaBand } from "@/components/sections/CtaBand";
 
@@ -23,10 +23,15 @@ export default function ProductsPage() {
         intro={products.intro}
       />
 
-      <ProductIndex />
+      <ProductOverview />
 
       {products.families.map((family, i) => (
-        <ProductFamily key={family.id} family={family} alt={i % 2 === 1} />
+        <ProductFamily
+          key={family.id}
+          family={family}
+          position={i}
+          alt={i % 2 === 1}
+        />
       ))}
 
       <Section className="border-t border-hairline pb-0">

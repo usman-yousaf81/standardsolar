@@ -33,13 +33,13 @@ export function Services({
             rows line up across all four columns even when one of them
             wraps onto an extra line. */}
         <ul className={cn(
-            "grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_1fr_auto] lg:gap-x-5",
+            "grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_1fr] lg:gap-x-5",
             showHeading && "mt-14 lg:mt-20",
           )}>
           {site.services.items.map((service, i) => (
             <li
               key={service.title}
-              className="group flex flex-col lg:row-span-5 lg:grid lg:grid-rows-subgrid"
+              className="group flex flex-col lg:row-span-4 lg:grid lg:grid-rows-subgrid"
             >
               <MediaSlot
                 src={service.image}
@@ -61,17 +61,6 @@ export function Services({
               <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
                 {service.description}
               </p>
-
-              <ul className="mt-4 flex flex-wrap content-start gap-1.5 self-start border-t border-hairline pt-4">
-                {service.tags.map((tag) => (
-                  <li
-                    key={tag}
-                    className="rounded-full bg-silver px-2.5 py-1 text-[11px] leading-none text-ink-soft"
-                  >
-                    {tag}
-                  </li>
-                ))}
-              </ul>
             </li>
           ))}
         </ul>

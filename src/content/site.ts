@@ -21,7 +21,6 @@ export type Service = {
   title: string;
   kicker: string;
   description: string;
-  tags: string[];
   image: string;
 };
 export type Step = { title: string; description: string };
@@ -160,14 +159,6 @@ export const site = {
         kicker: "For Businesses & Offices", // from your site
         description:
           "Cut operational electricity costs by 70-90%, with return on investment typically inside two to four years.", // from your site
-        tags: [
-          "Corporate offices",
-          "Retail stores",
-          "Restaurants",
-          "Healthcare",
-          "Educational institutions",
-          "Banks",
-        ], // from your site
         image: "",
       },
       {
@@ -175,13 +166,6 @@ export const site = {
         kicker: "For Manufacturing & Heavy Industry", // from your site
         description:
           "As leaders in textile and manufacturing through Standard Industries, we understand industrial power needs — and design for them.", // from your site
-        tags: [
-          "Textile mills",
-          "Manufacturing plants",
-          "Food processing",
-          "Chemical & pharmaceutical",
-          "Warehousing",
-        ], // from your site
         image: "",
       },
       {
@@ -189,7 +173,6 @@ export const site = {
         kicker: "For Homes & Communities", // from your site
         description:
           "From a 3-5 kW starter system to a 10-20 kW whole-home installation, sized to what your household actually uses.", // from your site
-        tags: ["Small systems 3-5 kW", "Large systems 10-20 kW"], // from your site
         image: "",
       },
       {
@@ -197,7 +180,6 @@ export const site = {
         kicker: "Solar Water Pumping Systems", // from your site
         description:
           "Solar water pumping that takes diesel out of irrigation, with power for the wider farm operation alongside it.", // from your site
-        tags: ["Irrigation", "Farm operations"], // from your site
         image: "",
       },
     ] satisfies Service[],
@@ -320,15 +302,28 @@ export const site = {
     eyebrow: "Products",
     heading: "Our Solar Products & Services",
     intro:
-      "Every system we build comes down to three decisions: what makes the power, what converts it, and what holds it for later. Here is what we supply for each — what separates the options, what each one costs you in space or in budget, and what is covered once it is on the roof.",
+      "We supply three things. Panels, inverters and batteries — that is the whole list. Here is what each one does, what your options are within it, and what is covered once it is installed.",
+    /* The flow strip at the top of the page. Its job is to make the
+       three product groups register before anyone starts reading. */
+    overview: {
+      heading: "Three products. One system.",
+      intro:
+        "Sunlight goes in at one end and usable, round-the-clock power comes out at the other. Three things do the work — and this is all three of them.",
+      start: "Sunlight",
+      end: "Power you can use",
+    },
     families: [
       {
         id: "panels",
         index: "01",
         label: "Solar Panels",
-        heading: "Where the electricity starts.",
+        /* Plain-English line directly under the product name. Keep it to
+           one short sentence — this is the bit a first-time visitor
+           actually reads. */
+        plain: "They make the electricity.",
+        short: "Makes the electricity",
         intro:
-          "The array is the only part of the system that actually generates. Everything downstream moves, converts or stores what the panels make — which is why efficiency, build quality and the length of the warranty matter more here than anywhere else.",
+          "The panels are the only part of the system that actually generates. Everything after them just moves, converts or stores what they make — which is why efficiency and warranty matter more here than anywhere else.",
         types: [
           {
             name: "Monocrystalline Panels",
@@ -361,9 +356,10 @@ export const site = {
         id: "inverters",
         index: "02",
         label: "Solar Inverters",
-        heading: "The part that decides what your system can do.",
+        plain: "They turn it into power your equipment can use.",
+        short: "Converts it for use",
         intro:
-          "Direct current off the array is no use to your equipment until it becomes alternating current at the right voltage and frequency. The inverter does that conversion — and the type you choose is what determines whether anything stays on when the grid drops.",
+          "Panels produce direct current, which almost nothing in your building can run on. The inverter converts it — and the type you pick is what decides whether anything stays on when the grid goes down.",
         types: [
           {
             name: "On-Grid Inverters",
@@ -402,9 +398,10 @@ export const site = {
         id: "batteries",
         index: "03",
         label: "Solar Batteries",
-        heading: "Daylight, kept for later.",
+        plain: "They store it for night, and for outages.",
+        short: "Stores it for later",
         intro:
-          "Storage is what turns a daytime generator into a supply you can rely on around the clock. Which chemistry suits you comes down to two questions: how hard the bank will be cycled, and how many years you need it to last.",
+          "Without storage, a solar system only works while the sun is up. Batteries keep what you do not use during the day, so it is there at night and when the grid drops. Which type suits you depends on how hard the bank gets used, and how long it has to last.",
         types: [
           {
             name: "Lithium-Ion Batteries",
