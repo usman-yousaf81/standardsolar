@@ -12,6 +12,10 @@ npm install     # first time only
 npm run dev     # http://localhost:3000
 ```
 
+> **Stop the dev server before running `npm run build`.** Both write to
+> `.next`, and running them together corrupts it — the dev server then
+> serves 500s until you `rm -rf .next` and restart.
+
 Other scripts:
 
 | Command             | What it does                                  |
@@ -28,17 +32,37 @@ Other scripts:
 
 **All site copy is in one file: [`src/content/site.ts`](src/content/site.ts).**
 
-Nothing is hard-coded into the components. Anything still wrapped in
-`[SQUARE_BRACKETS]` is a placeholder waiting for real copy — replace the
-whole token, brackets included:
+Nothing is hard-coded into the components. The site is fully written —
+three markers are worth knowing about:
 
-```ts
-headline: "[HERO_HEADLINE]",        // before
-headline: "Your real headline",     // after
-```
+**`// from your site`** — wording taken from the existing page at
+mystandardgroup.com/standard-solar. This site links to nothing on that
+domain and loads nothing from it; the wording lives here now.
 
-Each field has a comment above it saying what belongs there and roughly
-how long it should be, so the layout keeps its proportions.
+**`// CONFIRM`** — written copy that makes a claim about how you
+operate (the process steps, the "why us" points, the group
+relationship). Read these and correct anything that isn't accurate.
+There are 13 of them.
+
+**`[SQUARE_BRACKETS]`** — information only you have. Three remain:
+
+| Token                            | Why it's still empty                        |
+| -------------------------------- | ------------------------------------------- |
+| `[EMAIL_ADDRESS]`                | Has to be real or enquiries bounce          |
+| `[HOURS_WEEKDAYS]` / `[HOURS_WEEKEND]` | Guessing sends people to a closed office |
+| `[SITE_URL]`                     | Set when the domain goes live               |
+
+### What is deliberately not written
+
+There are no testimonials. Writing customer reviews nobody actually
+gave you would put fabricated quotes on a live site, so an FAQ sits in
+that slot instead. Send real reviews and the section can go back in —
+it is in the git history at commit `459d0fd`.
+
+The stats strip uses the four figures published on your page (70-90%
+saving, 2-4 year payback, 3-20 kW range, 19-22% efficiency) rather than
+invented project counts or installed capacity. Real numbers would read
+stronger — they just have to be real.
 
 ## Where the pictures live
 
@@ -142,7 +166,7 @@ Put any credentials in `.env.local`, which is git-ignored.
 | 5     | Intro / mission    | `site.intro`                              |
 | 6     | Process            | `site.process`                            |
 | 7     | Why us             | `site.whyUs`                              |
-| 8     | Testimonials       | `site.testimonials`                       |
+| 8     | FAQ                | `site.faq`                                |
 | 9     | Closing CTA        | `site.ctaBand`                            |
 
 ### Build your system
@@ -167,12 +191,11 @@ its natural height and becomes a plain click-through list.
 
 ## Still to do
 
-- [ ] Replace every `[PLACEHOLDER]` token in `src/content/site.ts` —
-      the hero, stats, process, why-us, testimonials and closing CTA are
-      still entirely placeholder
-- [ ] Fill the per-product `spec` and `description` fields under
-      `site.builder` (only the panel efficiency figures were published
-      on your existing page)
+- [ ] Fill the three remaining `[TOKENS]` — email address and opening
+      hours (see the table above)
+- [ ] Read the 13 `// CONFIRM` lines and correct anything inaccurate
+- [ ] Send real project numbers to replace the spec-sheet figures in the
+      stats strip
 - [ ] Add real photography to `public/images/`
 - [ ] Supply a transparent PNG or SVG version of the logo (the current
       `public/logo.jpeg` has a baked-in white background)

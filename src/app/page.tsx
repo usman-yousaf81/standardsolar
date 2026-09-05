@@ -5,7 +5,7 @@ import { BuildYourSystem } from "@/components/sections/BuildYourSystem";
 import { Intro } from "@/components/sections/Intro";
 import { Process } from "@/components/sections/Process";
 import { WhyUs } from "@/components/sections/WhyUs";
-import { Testimonials } from "@/components/sections/Testimonials";
+import { Faq } from "@/components/sections/Faq";
 import { CtaBand } from "@/components/sections/CtaBand";
 
 export default function HomePage() {
@@ -18,7 +18,7 @@ export default function HomePage() {
       <Intro />
       <Process />
       <WhyUs />
-      <Testimonials />
+      <Faq />
       <CtaBand />
     </>
   );
