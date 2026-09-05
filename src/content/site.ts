@@ -10,18 +10,32 @@
    3. Save. The site updates everywhere that string is used.
 
    Anything still wrapped in [SQUARE_BRACKETS] is a placeholder that
-   has NOT been written yet. Nothing here is invented copy.
+   has NOT been written yet.
 
-   The comment above each field says what belongs there and roughly
-   how long it should be so the layout keeps its proportions.
+   Text WITHOUT brackets was taken from your existing page at
+   mystandardgroup.com/standard-solar and is marked "// from your site".
+   Nothing on this site links to or loads anything from that domain —
+   the wording was copied across and now lives here.
 ================================================================== */
 
 export type NavItem = { label: string; href: string };
 export type Stat = { value: string; label: string };
-export type Service = { title: string; description: string; image: string };
+export type Service = {
+  title: string;
+  kicker: string;
+  description: string;
+  tags: string[];
+  image: string;
+};
 export type Step = { title: string; description: string };
 export type Point = { title: string; description: string };
 export type Testimonial = { quote: string; name: string; location: string };
+export type BuilderItem = {
+  name: string;
+  spec: string;
+  description: string;
+  image: string;
+};
 
 export const site = {
   /* ---------------------------------------------------------------
@@ -31,19 +45,15 @@ export const site = {
   --------------------------------------------------------------- */
   company: {
     name: "Standard Solar",
-    /* Short line under the logo in the footer. 6–12 words. */
-    tagline: "[COMPANY_TAGLINE]",
+    tagline: "Powering Pakistan's Sustainable Future", // from your site
     /* Registered/legal name for the footer small print. */
     legalName: "[LEGAL_COMPANY_NAME]",
-    /* Digits only, no spaces — this is what the phone button dials.
-       e.g. "+441234567890" */
-    phone: "[PHONE_NUMBER_DIAL]",
-    /* The same number formatted for humans to read.
-       e.g. "0123 456 7890" */
-    phoneDisplay: "[PHONE_NUMBER_DISPLAY]",
+    /* Digits only — this is what the phone button dials. Built from
+       041-8781130 on your site, in international form. */
+    phone: "+92418781130", // from your site
+    phoneDisplay: "041-8781130", // from your site
     email: "[EMAIL_ADDRESS]",
-    /* Street address, one line per array entry. */
-    address: ["[ADDRESS_LINE_1]", "[ADDRESS_LINE_2]", "[POSTCODE]"],
+    address: ["62-A, 63-C, Ideal Town", "Sargodha Road", "Faisalabad"], // from your site
     /* Opening hours, one line per array entry. */
     hours: ["[HOURS_WEEKDAYS]", "[HOURS_WEEKEND]"],
     /* Company registration / accreditation numbers for the footer. */
@@ -57,8 +67,8 @@ export const site = {
   --------------------------------------------------------------- */
   nav: [
     { label: "Home", href: "/" },
+    { label: "Solutions", href: "/services" },
     { label: "About Us", href: "/about" },
-    { label: "Services", href: "/services" },
     { label: "Contact", href: "/contact" },
   ] satisfies NavItem[],
 
@@ -68,14 +78,13 @@ export const site = {
   /* ---------------------------------------------------------------
      3. STICKY MOBILE BAR
      The bar pinned to the bottom of the screen on phones: one wide
-     action button plus a square call button, per your reference.
+     action button plus a square call button.
   --------------------------------------------------------------- */
   mobileBar: {
-    /* Keep this SHORT — 3 words maximum, it has to fit a phone.
-       e.g. "Check your eligibility" */
+    /* Keep this SHORT — 3 words maximum, it has to fit a phone. */
     ctaLabel: "[MOBILE_CTA_LABEL]",
     ctaHref: "/contact",
-    /* Screen-reader label for the round phone button. */
+    /* Screen-reader label for the square phone button. */
     callLabel: "[CALL_BUTTON_ARIA_LABEL]",
   },
 
@@ -90,7 +99,7 @@ export const site = {
     /* Supporting sentence under the headline. 15–30 words. */
     subhead: "[HERO_SUBHEAD]",
     primaryCta: { label: "[HERO_PRIMARY_CTA]", href: "/contact" },
-    secondaryCta: { label: "[HERO_SECONDARY_CTA]", href: "/services" },
+    secondaryCta: { label: "[HERO_SECONDARY_CTA]", href: "#solutions" },
     /* Drop a photo into /public/images/ and point to it, e.g.
        "/images/hero.jpg". Leave as-is to show the silver placeholder. */
     image: "",
@@ -98,7 +107,165 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     5. STATS STRIP — the four figures under the hero
+     5. SOLUTIONS — the four category cards below the hero
+     All four titles, kickers, descriptions and tags below came from
+     your existing page.
+  --------------------------------------------------------------- */
+  services: {
+    eyebrow: "Our Solutions", // from your site
+    heading: "Standard Solar Energy Solutions", // from your site
+    intro: "Powering Pakistan's Sustainable Future", // from your site
+    items: [
+      {
+        title: "Commercial Solar Systems", // from your site
+        kicker: "For Businesses & Offices", // from your site
+        description:
+          "Reduce operational electricity costs by 70-90%, with ROI typically within 2-4 years.", // from your site
+        tags: [
+          "Corporate offices",
+          "Retail stores",
+          "Restaurants",
+          "Healthcare",
+          "Educational institutions",
+          "Banks",
+        ], // from your site
+        image: "",
+      },
+      {
+        title: "Industrial Solar Systems", // from your site
+        kicker: "For Manufacturing & Heavy Industry", // from your site
+        description:
+          "As leaders in textile and manufacturing through Standard Industries, we understand industrial power needs.", // from your site
+        tags: [
+          "Textile mills",
+          "Manufacturing plants",
+          "Food processing",
+          "Chemical & pharmaceutical",
+          "Warehousing",
+        ], // from your site
+        image: "",
+      },
+      {
+        title: "Residential Solar Systems", // from your site
+        kicker: "For Homes & Communities", // from your site
+        description:
+          "System options from small 3-5 kW installations through to large 10-20 kW systems.", // from your site
+        tags: ["Small systems 3-5 kW", "Large systems 10-20 kW"], // from your site
+        image: "",
+      },
+      {
+        title: "Agricultural Solar Solutions", // from your site
+        kicker: "Solar Water Pumping Systems", // from your site
+        description:
+          "Eliminate diesel costs for irrigation, with support across wider farm operations.", // from your site
+        tags: ["Irrigation", "Farm operations"], // from your site
+        image: "",
+      },
+    ] satisfies Service[],
+  },
+
+  /* ---------------------------------------------------------------
+     6. BUILD YOUR SYSTEM — the scroll-driven product browser
+     Product families and type names came from your site. The `spec`
+     figures that were published there are filled in; the rest are
+     tokens waiting for your numbers.
+
+     Scrolling through the section steps through every item in order.
+     Add or remove items freely — the scroll length, the dots and the
+     progress bar all recalculate themselves.
+  --------------------------------------------------------------- */
+  builder: {
+    /* Small label at the top of the section. 2–4 words. */
+    eyebrow: "Build your system",
+    /* 3–6 words. */
+    heading: "[BUILDER_HEADING]",
+    /* Label on the button that advances to the next item. */
+    nextLabel: "Next",
+    families: [
+      {
+        id: "panels",
+        label: "Panels", // from your site
+        icon: "panel",
+        /* Optional note shown beside the family name. Leave "" to hide. */
+        note: "",
+        items: [
+          {
+            name: "Monocrystalline", // from your site
+            spec: "19-22% efficiency", // from your site
+            description: "[PANEL_MONO_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "Polycrystalline", // from your site
+            spec: "15-17% efficiency", // from your site
+            description: "[PANEL_POLY_DESCRIPTION]",
+            image: "",
+          },
+        ] satisfies BuilderItem[],
+      },
+      {
+        id: "inverters",
+        label: "Inverters", // from your site
+        icon: "inverter",
+        note: "",
+        items: [
+          {
+            name: "On-Grid", // from your site
+            spec: "[INVERTER_ONGRID_SPEC]",
+            description: "[INVERTER_ONGRID_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "Off-Grid", // from your site
+            spec: "[INVERTER_OFFGRID_SPEC]",
+            description: "[INVERTER_OFFGRID_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "Hybrid", // from your site
+            spec: "[INVERTER_HYBRID_SPEC]",
+            description: "[INVERTER_HYBRID_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "Micro", // from your site
+            spec: "[INVERTER_MICRO_SPEC]",
+            description: "[INVERTER_MICRO_DESCRIPTION]",
+            image: "",
+          },
+        ] satisfies BuilderItem[],
+      },
+      {
+        id: "batteries",
+        label: "Batteries", // from your site
+        icon: "battery",
+        note: "100Ah - 1000Ah+", // from your site
+        items: [
+          {
+            name: "Lithium-Ion", // from your site
+            spec: "[BATTERY_LITHIUM_SPEC]",
+            description: "[BATTERY_LITHIUM_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "Tubular", // from your site
+            spec: "[BATTERY_TUBULAR_SPEC]",
+            description: "[BATTERY_TUBULAR_DESCRIPTION]",
+            image: "",
+          },
+          {
+            name: "AGM", // from your site
+            spec: "[BATTERY_AGM_SPEC]",
+            description: "[BATTERY_AGM_DESCRIPTION]",
+            image: "",
+          },
+        ] satisfies BuilderItem[],
+      },
+    ],
+  },
+
+  /* ---------------------------------------------------------------
+     7. STATS STRIP — the four figures under the solutions grid
   --------------------------------------------------------------- */
   stats: [
     { value: "[STAT_1_VALUE]", label: "[STAT_1_LABEL]" },
@@ -108,15 +275,16 @@ export const site = {
   ] satisfies Stat[],
 
   /* ---------------------------------------------------------------
-     6. INTRO BLOCK — the wide statement + tag list
+     8. INTRO BLOCK — the wide statement + tag list
   --------------------------------------------------------------- */
   intro: {
     /* Small marker on the left, e.g. a year or a short label. */
     marker: "[INTRO_MARKER]",
     /* Three short keywords listed under the marker. 1–3 words each. */
-    tags: ["[INTRO_TAG_1]", "[INTRO_TAG_2]", "[INTRO_TAG_3]"],
-    /* The large statement on the right. 25–45 words. */
-    statement: "[INTRO_STATEMENT]",
+    tags: ["Commercial", "Industrial", "Residential"], // from your site
+    /* The large statement on the right — your mission statement. */
+    statement:
+      "To make solar energy accessible, affordable, and reliable for Pakistani businesses and communities, contributing to energy independence and environmental sustainability.", // from your site
     /* Smaller block bottom-left. */
     heading: "[INTRO_SUB_HEADING]",
     body: "[INTRO_SUB_BODY]",
@@ -124,41 +292,7 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     7. SERVICES
-     Add or remove items — the grid reflows automatically.
-  --------------------------------------------------------------- */
-  services: {
-    eyebrow: "[SERVICES_EYEBROW]",
-    /* 3–6 words. */
-    heading: "[SERVICES_HEADING]",
-    /* 20–35 words. */
-    intro: "[SERVICES_INTRO]",
-    items: [
-      {
-        title: "[SERVICE_1_TITLE]",
-        description: "[SERVICE_1_DESCRIPTION]",
-        image: "",
-      },
-      {
-        title: "[SERVICE_2_TITLE]",
-        description: "[SERVICE_2_DESCRIPTION]",
-        image: "",
-      },
-      {
-        title: "[SERVICE_3_TITLE]",
-        description: "[SERVICE_3_DESCRIPTION]",
-        image: "",
-      },
-      {
-        title: "[SERVICE_4_TITLE]",
-        description: "[SERVICE_4_DESCRIPTION]",
-        image: "",
-      },
-    ] satisfies Service[],
-  },
-
-  /* ---------------------------------------------------------------
-     8. PROCESS — numbered steps
+     9. PROCESS — numbered steps
   --------------------------------------------------------------- */
   process: {
     eyebrow: "[PROCESS_EYEBROW]",
@@ -172,7 +306,7 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     9. WHY US
+     10. WHY US
   --------------------------------------------------------------- */
   whyUs: {
     eyebrow: "[WHY_US_EYEBROW]",
@@ -186,7 +320,7 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     10. TESTIMONIALS
+     11. TESTIMONIALS
   --------------------------------------------------------------- */
   testimonials: {
     eyebrow: "[TESTIMONIALS_EYEBROW]",
@@ -211,7 +345,7 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     11. CLOSING CALL TO ACTION — the band above the footer
+     12. CLOSING CALL TO ACTION — the band above the footer
   --------------------------------------------------------------- */
   ctaBand: {
     heading: "[CTA_BAND_HEADING]",
@@ -220,25 +354,25 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     12. FOOTER
+     13. FOOTER
   --------------------------------------------------------------- */
   footer: {
-    /* Column headings and their links. */
     columns: [
       {
-        title: "[FOOTER_COL_1_TITLE]",
+        title: "Company",
         links: [
-          { label: "[FOOTER_LINK_1]", href: "/about" },
-          { label: "[FOOTER_LINK_2]", href: "/services" },
-          { label: "[FOOTER_LINK_3]", href: "/contact" },
+          { label: "About Us", href: "/about" },
+          { label: "Solutions", href: "/services" },
+          { label: "Contact", href: "/contact" },
         ],
       },
       {
-        title: "[FOOTER_COL_2_TITLE]",
+        title: "Solutions",
         links: [
-          { label: "[FOOTER_LINK_4]", href: "/services" },
-          { label: "[FOOTER_LINK_5]", href: "/services" },
-          { label: "[FOOTER_LINK_6]", href: "/services" },
+          { label: "Commercial Solar", href: "/services#solutions" }, // from your site
+          { label: "Industrial Solar", href: "/services#solutions" }, // from your site
+          { label: "Residential Solar", href: "/services#solutions" }, // from your site
+          { label: "Agricultural Solar", href: "/services#solutions" }, // from your site
         ],
       },
     ],
@@ -247,19 +381,22 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     13. INNER PAGES
+     14. INNER PAGES
   --------------------------------------------------------------- */
   pages: {
     about: {
-      eyebrow: "[ABOUT_EYEBROW]",
+      eyebrow: "About Us",
       heading: "[ABOUT_HEADING]",
-      /* One entry per paragraph. Add as many as you need. */
-      body: ["[ABOUT_PARAGRAPH_1]", "[ABOUT_PARAGRAPH_2]"],
+      /* One entry per paragraph — your mission and vision statements. */
+      body: [
+        "To make solar energy accessible, affordable, and reliable for Pakistani businesses and communities, contributing to energy independence and environmental sustainability.", // from your site
+        "A Pakistan powered by clean, renewable energy—reducing dependence on fossil fuels, lowering electricity costs, and protecting our environment for future generations.", // from your site
+      ],
     },
     services: {
-      eyebrow: "[SERVICES_PAGE_EYEBROW]",
-      heading: "[SERVICES_PAGE_HEADING]",
-      intro: "[SERVICES_PAGE_INTRO]",
+      eyebrow: "Our Solutions", // from your site
+      heading: "Standard Solar Energy Solutions", // from your site
+      intro: "Powering Pakistan's Sustainable Future", // from your site
     },
     contact: {
       eyebrow: "[CONTACT_EYEBROW]",
@@ -270,26 +407,23 @@ export const site = {
         name: "[FORM_LABEL_NAME]",
         email: "[FORM_LABEL_EMAIL]",
         phone: "[FORM_LABEL_PHONE]",
-        postcode: "[FORM_LABEL_POSTCODE]",
+        city: "[FORM_LABEL_CITY]",
         message: "[FORM_LABEL_MESSAGE]",
         submit: "[FORM_SUBMIT_LABEL]",
-        /* Shown after a successful submission. */
         success: "[FORM_SUCCESS_MESSAGE]",
       },
     },
   },
 
   /* ---------------------------------------------------------------
-     14. SEO
-     Title and description used per page in the browser tab and in
-     Google results.
+     15. SEO
   --------------------------------------------------------------- */
   seo: {
     /* Appended after every page title, e.g. "About — Standard Solar" */
     titleTemplate: "Standard Solar",
     defaultTitle: "[SEO_HOME_TITLE]",
     defaultDescription: "[SEO_HOME_DESCRIPTION]",
-    /* Set once the domain is live, e.g. "https://standardsolar.co.uk" */
+    /* Set once the domain is live, e.g. "https://standardsolar.com.pk" */
     siteUrl: "[SITE_URL]",
   },
 } as const;

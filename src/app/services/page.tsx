@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { Services } from "@/components/sections/Services";
+import { BuildYourSystem } from "@/components/sections/BuildYourSystem";
 import { Process } from "@/components/sections/Process";
 import { CtaBand } from "@/components/sections/CtaBand";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Solutions",
   description: site.pages.services.intro,
 };
 
@@ -20,7 +21,8 @@ export default function ServicesPage() {
         heading={services.heading}
         intro={services.intro}
       />
-      <Services />
+      <Services showHeading={false} />
+      <BuildYourSystem />
       <Process />
       <CtaBand />
     </>

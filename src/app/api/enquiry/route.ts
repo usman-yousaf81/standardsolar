@@ -4,7 +4,7 @@ type Payload = {
   name?: string;
   email?: string;
   phone?: string;
-  postcode?: string;
+  city?: string;
   message?: string;
   /** Honeypot field — should always be empty for a real person. */
   company?: string;
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     name,
     email,
     phone: data.phone?.trim() || null,
-    postcode: data.postcode?.trim() || null,
+    city: data.city?.trim() || null,
     message: data.message?.trim() || null,
     receivedAt: new Date().toISOString(),
   });

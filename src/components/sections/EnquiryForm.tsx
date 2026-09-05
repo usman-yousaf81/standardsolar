@@ -109,10 +109,10 @@ export function EnquiryForm() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="postcode" className={labelClass}>
-            {labels.postcode}
+          <label htmlFor="city" className={labelClass}>
+            {labels.city}
           </label>
-          <input id="postcode" name="postcode" className={fieldClass} />
+          <input id="city" name="city" className={fieldClass} />
         </div>
       </div>
 

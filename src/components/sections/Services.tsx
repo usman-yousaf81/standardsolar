@@ -1,40 +1,77 @@
 import { site } from "@/content/site";
+import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 
-export function Services() {
+/**
+ * The four solution categories, sitting directly below the hero.
+ * Bare images with the text set beneath them rather than boxed cards —
+ * it keeps the row light and lets the photography carry the section.
+ */
+export function Services({
+  /** The /services page already states this in its page header, so it
+      renders the grid on its own. */
+  showHeading = true,
+}: {
+  showHeading?: boolean;
+} = {}) {
   return (
-    <Section id="services" className="bg-mist">
+    <Section id="solutions" className={showHeading ? undefined : "pt-4 sm:pt-6"}>
       <Container>
-        <SectionHeading
-          eyebrow={site.services.eyebrow}
-          heading={site.services.heading}
-          intro={site.services.intro}
-        />
+        {showHeading ? (
+          <SectionHeading
+            eyebrow={site.services.eyebrow}
+            heading={site.services.heading}
+            intro={site.services.intro}
+            align="center"
+          />
+        ) : null}
 
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
+        {/* `grid-rows-subgrid` makes every card share the parent's row
+            track heights, so the kickers, titles, descriptions and tag
+            rows line up across all four columns even when one of them
+            wraps onto an extra line. */}
+        <ul className={cn(
+            "grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-[auto_auto_auto_1fr_auto] lg:gap-x-5",
+            showHeading && "mt-14 lg:mt-20",
+          )}>
           {site.services.items.map((service, i) => (
             <li
               key={service.title}
-              className="group flex flex-col overflow-hidden rounded-card border border-hairline bg-white transition-shadow duration-300 ease-[var(--ease-out-soft)] hover:shadow-[0_2px_4px_rgba(20,21,26,0.04),0_18px_40px_-24px_rgba(20,21,26,0.28)]"
+              className="group flex flex-col lg:row-span-5 lg:grid lg:grid-rows-subgrid"
             >
               <MediaSlot
                 src={service.image}
                 alt={service.title}
-                label={`SERVICE_${i + 1}_IMAGE`}
-                className="aspect-5/4 w-full"
-                imageClassName="transition-transform duration-500 ease-[var(--ease-out-soft)] group-hover:scale-[1.03]"
+                label={`SOLUTION_${i + 1}_IMAGE`}
+                className="aspect-4/5 w-full rounded-card"
+                imageClassName="transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.04]"
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
               />
-              <div className="flex flex-1 flex-col gap-2 p-5">
-                <h3 className="text-[15px] font-semibold text-ink">
-                  {service.title}
-                </h3>
-                <p className="text-[13.5px] leading-relaxed text-ink-muted">
-                  {service.description}
-                </p>
-              </div>
+
+              <p className="mt-5 text-[11px] font-medium uppercase tracking-[0.14em] text-navy">
+                {service.kicker}
+              </p>
+
+              <h3 className="mt-2 font-display text-[17px] font-semibold leading-snug tracking-[-0.015em] text-ink">
+                {service.title}
+              </h3>
+
+              <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
+                {service.description}
+              </p>
+
+              <ul className="mt-4 flex flex-wrap content-start gap-1.5 self-start border-t border-hairline pt-4">
+                {service.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full bg-silver px-2.5 py-1 text-[11px] leading-none text-ink-soft"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>

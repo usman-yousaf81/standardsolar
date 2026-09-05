@@ -1,7 +1,8 @@
 import { Hero } from "@/components/sections/Hero";
-import { StatsStrip } from "@/components/sections/StatsStrip";
-import { Intro } from "@/components/sections/Intro";
 import { Services } from "@/components/sections/Services";
+import { StatsStrip } from "@/components/sections/StatsStrip";
+import { BuildYourSystem } from "@/components/sections/BuildYourSystem";
+import { Intro } from "@/components/sections/Intro";
 import { Process } from "@/components/sections/Process";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -11,9 +12,10 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <StatsStrip />
-      <Intro />
       <Services />
+      <StatsStrip />
+      <BuildYourSystem />
+      <Intro />
       <Process />
       <WhyUs />
       <Testimonials />

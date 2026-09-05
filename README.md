@@ -131,9 +131,48 @@ Put any credentials in `.env.local`, which is git-ignored.
 
 ---
 
+## Home page sections
+
+| Order | Section            | Source                                    |
+| ----- | ------------------ | ----------------------------------------- |
+| 1     | Hero               | `site.hero`                               |
+| 2     | Solutions (4 cards)| `site.services` — filled from your page   |
+| 3     | Stats strip        | `site.stats`                              |
+| 4     | Build your system  | `site.builder` — scroll-driven            |
+| 5     | Intro / mission    | `site.intro`                              |
+| 6     | Process            | `site.process`                            |
+| 7     | Why us             | `site.whyUs`                              |
+| 8     | Testimonials       | `site.testimonials`                       |
+| 9     | Closing CTA        | `site.ctaBand`                            |
+
+### Build your system
+
+`src/components/sections/BuildYourSystem.tsx` is the scroll-driven
+product browser. Every product across every family is flattened into one
+ordered list; the section is taller than the viewport, its panel sticks
+to the top while you scroll past, and scroll progress selects the active
+product. Scrolling is never hijacked — it just also drives the selection.
+
+The family tabs, the name list, the dots and the Next button all jump the
+page to the matching scroll offset rather than setting state directly, so
+the selection can never drift out of step with the scroll position.
+
+Add or remove products in `site.builder.families` and the scroll length,
+the dots and the progress bar all recalculate. The scroll distance per
+product is set by `.builder-stage` in `globals.css` (42vh on desktop,
+34vh on phones). Under `prefers-reduced-motion` the section collapses to
+its natural height and becomes a plain click-through list.
+
+---
+
 ## Still to do
 
-- [ ] Replace every `[PLACEHOLDER]` token in `src/content/site.ts`
+- [ ] Replace every `[PLACEHOLDER]` token in `src/content/site.ts` —
+      the hero, stats, process, why-us, testimonials and closing CTA are
+      still entirely placeholder
+- [ ] Fill the per-product `spec` and `description` fields under
+      `site.builder` (only the panel efficiency figures were published
+      on your existing page)
 - [ ] Add real photography to `public/images/`
 - [ ] Supply a transparent PNG or SVG version of the logo (the current
       `public/logo.jpeg` has a baked-in white background)

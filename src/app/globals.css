@@ -118,3 +118,76 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ------------------------------------------------------------------
+   "Build your system" — the scroll-driven product browser.
+
+   The section is deliberately taller than the viewport. Its inner
+   panel sticks to the top while you scroll past, and scroll progress
+   picks the active product. Height is derived from the number of
+   products via --builder-steps, set inline by the component, so the
+   scroll length always matches the content.
+------------------------------------------------------------------ */
+@layer utilities {
+  .builder-stage {
+    height: calc(100vh + var(--builder-steps, 1) * 42vh);
+  }
+
+  .builder-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    /* svh keeps the panel inside the visible area on phones, where the
+       URL bar makes 100vh taller than what you can actually see. */
+    height: 100svh;
+  }
+
+  @media (max-width: 640px) {
+    .builder-stage {
+      height: calc(100vh + var(--builder-steps, 1) * 34vh);
+    }
+  }
+
+  .builder-enter {
+    animation: builder-in 0.5s var(--ease-out-soft) both;
+  }
+
+  .builder-media-enter {
+    animation: builder-media-in 0.6s var(--ease-out-soft) both;
+  }
+}
+
+@keyframes builder-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes builder-media-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Without motion the section collapses to its natural height and the
+   product list becomes a plain click-through. */
+@media (prefers-reduced-motion: reduce) {
+  .builder-stage {
+    height: auto;
+  }
+
+  .builder-sticky {
+    position: static;
+    height: auto;
+  }
+}
