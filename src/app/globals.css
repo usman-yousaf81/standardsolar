@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Standard Solar — design tokens
+   Palette direction: bright. White / grey / silver surfaces, with the
+   navy and red lifted straight from the logo used as accents only.
+------------------------------------------------------------------ */
+@theme {
+  /* Surfaces — light to dark */
+  --color-paper: #ffffff;
+  --color-mist: #fafbfc;
+  --color-silver: #f1f2f5;
+  --color-silver-deep: #e7e9ef;
+
+  /* Lines */
+  --color-hairline: #e4e6ec;
+  --color-hairline-strong: #d2d6e0;
+
+  /* Text */
+  --color-ink: #14151a;
+  --color-ink-soft: #3d4152;
+  --color-ink-muted: #6b7185;
+
+  /* Brand — sampled from logo.jpeg */
+  --color-navy: #2a1770;
+  --color-navy-deep: #1e0f55;
+  --color-navy-lift: #3a2196;
+  --color-navy-tint: #f3f1fb;
+  --color-signal: #d8201a;
+
+  /* Type */
+  --font-display: var(--font-display-family);
+  --font-sans: var(--font-body-family);
+
+  /* Radii */
+  --radius-card: 20px;
+  --radius-panel: 28px;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-navy);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  /* Silver placeholder used wherever a real photograph will drop in. */
+  .media-slot {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-silver) 0%,
+      var(--color-silver-deep) 45%,
+      var(--color-silver) 100%
+    );
+  }
+
+  .hairline-grid {
+    background-image: linear-gradient(
+        to right,
+        var(--color-hairline) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, var(--color-hairline) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Reserves room at the end of the page for the fixed mobile bar. */
+  .action-bar-spacer {
+    height: calc(72px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
