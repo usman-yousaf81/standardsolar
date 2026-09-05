@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: `%s — ${site.seo.titleTemplate}`,
   },
   description: site.seo.defaultDescription,
-  icons: { icon: "/logo.jpeg", apple: "/logo.jpeg" },
+  icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
 export default function RootLayout({

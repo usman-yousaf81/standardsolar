@@ -132,6 +132,34 @@ with the navy and red taken directly from the logo used as accents only:
 Typography: **Plus Jakarta Sans** for headings, **Inter** for body, both
 loaded through `next/font` (self-hosted, no layout shift).
 
+### Logo
+
+`public/logo.png` is the mark with its white background removed and the
+surrounding whitespace cropped off. The transparency was made by
+flood-filling inward from the edges rather than deleting every white
+pixel, so the white `S` and the white `STANDARD` lettering inside the
+mark survive. It is used for the header lockup and the favicon, and it
+sits directly on the page with no chip or ring behind it.
+
+The original `logo.jpeg` is in git history at commit `11118b5` if the
+source file is ever needed again.
+
+### Mobile menu
+
+Tapping the menu button opens a full-screen panel: small letterspaced
+group labels with large stacked links under each, and a row of contact
+links pinned to the bottom. Groups live in `site.mobileMenu.groups` and
+the layout takes any number of them.
+
+On phones the header is arranged menu-left, mark-centre, call-right, so
+the menu button doesn't move when it turns into the close button. The
+panel closes on Escape, on route change and on any link tap; it locks
+page scroll while open, takes focus on open and hands it back to the
+menu button on close.
+
+`site.mobileMenu.social` is an empty array ready for Instagram,
+Facebook or LinkedIn links — add them and they join the bottom row.
+
 ### Mobile action bar
 
 `src/components/layout/MobileActionBar.tsx` is the bar pinned to the

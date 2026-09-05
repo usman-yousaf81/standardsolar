@@ -70,6 +70,38 @@ export const site = {
   headerCta: { label: "Get a quote", href: "/contact" },
 
   /* ---------------------------------------------------------------
+     2b. FULL-SCREEN MOBILE MENU
+     What opens when you tap the menu button on a phone. Each group is
+     a small label with a stack of large links underneath. Add, rename
+     or reorder groups freely — the layout takes any number.
+  --------------------------------------------------------------- */
+  mobileMenu: {
+    groups: [
+      {
+        label: "Solutions",
+        links: [
+          { label: "Commercial Solar", href: "/services#solutions" },
+          { label: "Industrial Solar", href: "/services#solutions" },
+          { label: "Residential Solar", href: "/services#solutions" },
+          { label: "Agricultural Solar", href: "/services#solutions" },
+        ],
+      },
+      {
+        label: "Standard Solar",
+        links: [
+          { label: "Build Your System", href: "/services#system" },
+          { label: "About Us", href: "/about" },
+          { label: "Contact", href: "/contact" },
+        ],
+      },
+    ],
+    /* Social profiles for the bottom row, alongside the phone number
+       and email. Add entries when you have the handles, e.g.
+       { label: "Instagram", href: "https://instagram.com/..." } */
+    social: [] as { label: string; href: string }[],
+  },
+
+  /* ---------------------------------------------------------------
      3. STICKY MOBILE BAR
   --------------------------------------------------------------- */
   mobileBar: {
