@@ -27,6 +27,15 @@ export type Service = {
 export type Step = { title: string; description: string };
 export type Point = { title: string; description: string };
 export type FaqItem = { question: string; answer: string };
+export type ProductType = {
+  name: string;
+  summary: string;
+  detail: string;
+  /* Optional bar chart. `from`/`to` are the range, `max` is the end of
+     the scale it's drawn against. */
+  meter?: { from: number; to: number; max: number; unit: string };
+};
+export type ProductSpec = { label: string; value: string };
 export type BuilderItem = {
   name: string;
   spec: string;
@@ -63,6 +72,7 @@ export const site = {
   nav: [
     { label: "Home", href: "/" },
     { label: "Solutions", href: "/services" },
+    { label: "Products", href: "/products" },
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
   ] satisfies NavItem[],
@@ -87,9 +97,16 @@ export const site = {
         ],
       },
       {
+        label: "Products",
+        links: [
+          { label: "Solar Panels", href: "/products#panels" },
+          { label: "Solar Inverters", href: "/products#inverters" },
+          { label: "Solar Batteries", href: "/products#batteries" },
+        ],
+      },
+      {
         label: "Standard Solar",
         links: [
-          { label: "Build Your System", href: "/services#system" },
           { label: "About Us", href: "/about" },
           { label: "Contact", href: "/contact" },
         ],
@@ -199,6 +216,9 @@ export const site = {
   builder: {
     eyebrow: "Build your system",
     nextLabel: "Next",
+    /* Secondary button beside Next, through to the full product page. */
+    moreLabel: "All products",
+    moreHref: "/products",
     families: [
       {
         id: "panels",
@@ -288,6 +308,140 @@ export const site = {
         ] satisfies BuilderItem[],
       },
     ],
+  },
+
+  /* ---------------------------------------------------------------
+     6b. PRODUCTS PAGE — /products
+     The bullets you supplied, mapped in full: every type, every
+     warranty, every certification. `summary` is your own wording;
+     `detail` is the longer explanation written around it.
+  --------------------------------------------------------------- */
+  products: {
+    eyebrow: "Products",
+    heading: "Our Solar Products & Services",
+    intro:
+      "Every system we build comes down to three decisions: what makes the power, what converts it, and what holds it for later. Here is what we supply for each — what separates the options, what each one costs you in space or in budget, and what is covered once it is on the roof.",
+    families: [
+      {
+        id: "panels",
+        index: "01",
+        label: "Solar Panels",
+        heading: "Where the electricity starts.",
+        intro:
+          "The array is the only part of the system that actually generates. Everything downstream moves, converts or stores what the panels make — which is why efficiency, build quality and the length of the warranty matter more here than anywhere else.",
+        types: [
+          {
+            name: "Monocrystalline Panels",
+            summary: "Highest efficiency", // your wording
+            detail:
+              "Cut from a single silicon crystal, so electrons meet the least resistance and each panel returns the most output per square metre we can supply. When the constraint is roof area rather than budget, monocrystalline is what gets you to your target kilowatts.",
+            meter: { from: 19, to: 22, max: 25, unit: "%" }, // your figures
+          },
+          {
+            name: "Polycrystalline Panels",
+            summary: "Cost-effective solution", // your wording
+            detail:
+              "Cast from multiple silicon fragments. Less output per square metre, but meaningfully less cost per watt — so on a wide flat roof or a ground mount where area is not scarce, the same spend reaches payback sooner.",
+            meter: { from: 15, to: 17, max: 25, unit: "%" }, // your figures
+          },
+        ] satisfies ProductType[],
+        specs: [
+          {
+            label: "Brands",
+            value: "Tier-1 — premium quality from trusted manufacturers",
+          },
+          { label: "Warranty", value: "25-year performance warranty on panels" },
+          {
+            label: "Certifications",
+            value: "International quality standards (IEC, CE)",
+          },
+        ] satisfies ProductSpec[],
+      },
+      {
+        id: "inverters",
+        index: "02",
+        label: "Solar Inverters",
+        heading: "The part that decides what your system can do.",
+        intro:
+          "Direct current off the array is no use to your equipment until it becomes alternating current at the right voltage and frequency. The inverter does that conversion — and the type you choose is what determines whether anything stays on when the grid drops.",
+        types: [
+          {
+            name: "On-Grid Inverters",
+            summary: "For net metering systems", // your wording
+            detail:
+              "Synchronises with the utility supply and exports surplus generation back onto the grid under net metering. The simplest and least expensive configuration, and the quickest to pay for itself — though it shuts down alongside the grid, by design.",
+          },
+          {
+            name: "Off-Grid Inverters",
+            summary: "Complete independence from grid", // your wording
+            detail:
+              "Builds a supply of its own from the array and the battery bank, with no utility connection in the picture at all. This is what runs a tube well out in a field, or any site the distribution network never reached.",
+          },
+          {
+            name: "Hybrid Inverters",
+            summary: "Best of both worlds", // your wording
+            detail:
+              "Manages grid, array and battery together and chooses between them minute by minute — exporting when there is surplus, drawing from storage when there is not, and carrying your essential circuits straight through a shutdown.",
+          },
+          {
+            name: "Micro Inverters",
+            summary: "Panel-level optimization", // your wording
+            detail:
+              "One inverter behind each panel instead of one for the whole array. A shaded, soiled or failing module then costs you only that module's output rather than dragging the entire string down with it — which is what makes them worth it on broken roofs, mixed orientations, and anywhere a chimney throws a shadow.",
+          },
+        ] satisfies ProductType[],
+        specs: [
+          {
+            label: "Brands",
+            value: "Reliable international manufacturers",
+          },
+          { label: "Warranty", value: "5-10 years manufacturer warranty" },
+        ] satisfies ProductSpec[],
+      },
+      {
+        id: "batteries",
+        index: "03",
+        label: "Solar Batteries",
+        heading: "Daylight, kept for later.",
+        intro:
+          "Storage is what turns a daytime generator into a supply you can rely on around the clock. Which chemistry suits you comes down to two questions: how hard the bank will be cycled, and how many years you need it to last.",
+        types: [
+          {
+            name: "Lithium-Ion Batteries",
+            summary: "Longer life, better performance", // your wording
+            detail:
+              "The most usable capacity for a given size and weight, thousands of cycles of service life, and nothing to maintain. The highest price at purchase and the lowest cost per stored kilowatt-hour across everything that follows.",
+          },
+          {
+            name: "Tubular Batteries",
+            summary: "Cost-effective backup solution", // your wording
+            detail:
+              "Thick tubular positive plates, built to be discharged deeply and recharged daily without degrading. Heavier, and the electrolyte needs topping up on schedule — but the entry cost is a fraction of lithium and the technology is thoroughly proven in Pakistani conditions.",
+          },
+          {
+            name: "AGM Batteries",
+            summary: "Maintenance-free operation", // your wording
+            detail:
+              "Electrolyte held in an absorbent glass-mat separator and sealed for life: no topping up, no venting, no acid to handle. A practical middle ground for backup duty that is not cycled hard every single day.",
+          },
+        ] satisfies ProductType[],
+        specs: [
+          {
+            label: "Capacity options",
+            value: "100Ah to 1000Ah and beyond",
+          },
+          {
+            label: "Design",
+            value: "Deep cycle — optimized for solar applications",
+          },
+        ] satisfies ProductSpec[],
+      },
+    ],
+    /* Closing line above the call to action on the products page. */
+    closing: {
+      heading: "Not sure which combination you need?",
+      body: "That is what the site survey is for. We look at your load, your roof or land, and your budget, then tell you which of these actually belongs on your site — and which of them you can skip.",
+    },
   },
 
   /* ---------------------------------------------------------------
@@ -450,6 +604,14 @@ export const site = {
           { label: "Industrial Solar", href: "/services#solutions" },
           { label: "Residential Solar", href: "/services#solutions" },
           { label: "Agricultural Solar", href: "/services#solutions" },
+        ],
+      },
+      {
+        title: "Products",
+        links: [
+          { label: "Solar Panels", href: "/products#panels" },
+          { label: "Solar Inverters", href: "/products#inverters" },
+          { label: "Solar Batteries", href: "/products#batteries" },
         ],
       },
     ],

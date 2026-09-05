@@ -10,7 +10,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-hairline bg-mist">
       <Container className="py-16 sm:py-20">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.25fr_repeat(3,0.8fr)_1.05fr]">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Logo />

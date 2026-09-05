@@ -190,11 +190,14 @@ export function SiteHeader() {
             </a>
           </Container>
 
+          {/* `my-auto` rather than `justify-center`: with enough groups
+              to overflow, a centred flex container pushes the first one
+              above the scroll origin where it can't be reached. */}
           <nav
             aria-label="Mobile"
-            className="flex flex-1 flex-col justify-center overflow-y-auto"
+            className="flex flex-1 flex-col overflow-y-auto"
           >
-            <Container className="flex flex-col gap-10 py-10">
+            <Container className="my-auto flex flex-col gap-9 py-10">
               {site.mobileMenu.groups.map((group) => (
                 <div key={group.label}>
                   <p

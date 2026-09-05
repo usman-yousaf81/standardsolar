@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
@@ -278,20 +279,30 @@ export function BuildYourSystem() {
 
           {/* Next + progress */}
           <div className="flex shrink-0 flex-col items-center gap-4 pb-2">
-            <button
-              type="button"
-              onClick={() => goTo(active + 1)}
-              disabled={isLast}
-              className={cn(
-                "inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-[13px] font-medium text-white transition-all duration-200 ease-[var(--ease-out-soft)]",
-                isLast
-                  ? "pointer-events-none opacity-30"
-                  : "hover:bg-ink/85 active:translate-y-px",
-              )}
-            >
-              {site.builder.nextLabel}
-              <ArrowRight className="size-3.5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => goTo(active + 1)}
+                disabled={isLast}
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-[13px] font-medium text-white transition-all duration-200 ease-[var(--ease-out-soft)]",
+                  isLast
+                    ? "pointer-events-none opacity-30"
+                    : "hover:bg-ink/85 active:translate-y-px",
+                )}
+              >
+                {site.builder.nextLabel}
+                <ArrowRight className="size-3.5" />
+              </button>
+
+              <Link
+                href={site.builder.moreHref}
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-hairline-strong bg-white px-5 text-[13px] font-medium text-ink transition-all duration-200 ease-[var(--ease-out-soft)] hover:border-navy/40 active:translate-y-px"
+              >
+                {site.builder.moreLabel}
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </div>
 
             <div
               role="progressbar"

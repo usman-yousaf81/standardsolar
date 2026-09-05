@@ -190,12 +190,28 @@ Put any credentials in `.env.local`, which is git-ignored.
 | 1     | Hero               | `site.hero`                               |
 | 2     | Solutions (4 cards)| `site.services` — filled from your page   |
 | 3     | Stats strip        | `site.stats`                              |
-| 4     | Build your system  | `site.builder` — scroll-driven            |
+| 4     | Build your system  | `site.builder` — scroll-driven, links to `/products` |
 | 5     | Intro / mission    | `site.intro`                              |
 | 6     | Process            | `site.process`                            |
 | 7     | Why us             | `site.whyUs`                              |
 | 8     | FAQ                | `site.faq`                                |
 | 9     | Closing CTA        | `site.ctaBand`                            |
+
+### Products page (`/products`)
+
+The full catalogue, at `src/content/site.ts` under `products`. Three
+families, each rendered by `ProductFamily.tsx` as a sticky left rail
+(number, heading, intro, image, spec list) beside a column of type
+cards that scroll past it.
+
+Panel types carry a `meter` — `{ from, to, max, unit }` — drawn by
+`RangeMeter.tsx` as a band on a shared 0-25% scale, so monocrystalline
+and polycrystalline can be compared by eye. The band grows in the first
+time it is scrolled into view. Add a `meter` to any other type and it
+gets a bar too.
+
+The `specs` list under each family holds the warranties, certifications,
+brands, capacity range and design notes.
 
 ### Build your system
 
