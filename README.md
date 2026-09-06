@@ -132,6 +132,33 @@ with the navy and red taken directly from the logo used as accents only:
 Typography: **Plus Jakarta Sans** for headings, **Inter** for body, both
 loaded through `next/font` (self-hosted, no layout shift).
 
+### Hero
+
+Two treatments of the same markup, one `<h1>`.
+
+Below `lg` the photograph at `site.hero.mobileImage` fills the screen,
+the type sits over it in white, and the four `site.stats` figures are
+laid on top as frosted glass widgets. From `lg` up the photograph is
+dropped and the original light hero returns, with the figures shown by
+the stats strip further down the page — which is why the strip is
+wrapped in `hidden lg:block` on the home page.
+
+Every override for the dark treatment uses a `max-lg:` variant rather
+than a plain utility. Two plain utilities for one property (a passed
+`bg-white` against the button's own `bg-navy`) resolve by stylesheet
+order, not class order; a variant is always emitted later and so wins
+reliably.
+
+The mobile column is budgeted to fit between the 72px header and the
+fixed action bar, so the buttons are compacted below `lg` to keep them
+on one row. If you lengthen the hero copy, re-check that the bottom
+widgets still clear the bar.
+
+**The current photo is 673x1200**, which is under what a modern phone
+wants (a 390pt screen at 3x needs ~1170px wide). It will look slightly
+soft on a real device — a larger version of the same shot would drop
+straight in.
+
 ### Logo
 
 `public/logo.png` is the mark with its white background removed and the
@@ -189,7 +216,7 @@ Put any credentials in `.env.local`, which is git-ignored.
 | ----- | ------------------ | ----------------------------------------- |
 | 1     | Hero               | `site.hero`                               |
 | 2     | Solutions (4 cards)| `site.services` — filled from your page   |
-| 3     | Stats strip        | `site.stats`                              |
+| 3     | Stats strip        | `site.stats` — desktop only, see below    |
 | 4     | Build your system  | `site.builder` — scroll-driven, links to `/products` |
 | 5     | Intro / mission    | `site.intro`                              |
 | 6     | Process            | `site.process`                            |

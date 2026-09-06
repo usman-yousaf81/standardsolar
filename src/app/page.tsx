@@ -13,7 +13,11 @@ export default function HomePage() {
     <>
       <Hero />
       <Services />
-      <StatsStrip />
+      {/* Phones get these four figures as glass widgets in the hero
+          instead, so the strip is desktop-only. */}
+      <div className="hidden lg:block">
+        <StatsStrip />
+      </div>
       <BuildYourSystem />
       <Intro />
       <Process />
