@@ -134,20 +134,16 @@ export const site = {
        page — 70-90% cost reduction and a 2-4 year payback. */
     subhead:
       "Solar systems engineered for Pakistani mills, farms, offices and homes — cutting electricity costs by up to 90%, and paying for themselves in as little as two years.",
-    primaryCta: { label: "Get a quote", href: "/contact" },
-    secondaryCta: { label: "See what we build", href: "#solutions" },
-    /* Background photograph behind the hero on phones and tablets. The
-       stat widgets are laid over it. */
+    /* Background photographs behind the hero. The stat widgets are laid
+       over them. Two files because the crops are different shapes — the
+       portrait one would be badly cropped on a wide screen and the
+       landscape one badly cropped on a phone. */
     mobileImage: "/images/mobile-hero.jpg",
     mobileImageAlt:
       "Aerial view of a solar array set among dense forest canopy",
-    /* The wide image band under the hero on desktop. Drop a landscape
-       photo into /public/images/ and point to it, e.g. "/images/hero.jpg".
-       Leave as "" for the silver placeholder. It needs to be at least
-       2000px wide — the mobile shot above is portrait and would upscale
-       badly here. */
-    image: "",
-    imageAlt: "A Standard Solar array installed on a rooftop in Faisalabad",
+    desktopImage: "/images/laptop-hero.jpg",
+    desktopImageAlt:
+      "Aerial view of a house with a rooftop solar array in a forest clearing",
   },
 
   /* ---------------------------------------------------------------

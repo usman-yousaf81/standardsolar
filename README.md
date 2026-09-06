@@ -134,33 +134,39 @@ loaded through `next/font` (self-hosted, no layout shift).
 
 ### Hero
 
-Two treatments of the same markup, one `<h1>`.
+One treatment at every size: the photograph fills the screen, the type
+sits over it in white, and the four `site.stats` figures are laid on top
+as frosted glass widgets.
 
-Below `lg` the photograph at `site.hero.mobileImage` fills the screen,
-the type sits over it in white, and the four `site.stats` figures are
-laid on top as frosted glass widgets. The section carries `-mt-[72px]`
-so the photo runs up behind the header and shows through its glass; the
-72px is added back as top padding inside. The hero CTAs are desktop-only
-— the sticky action bar already carries the call to action on phones. From `lg` up the photograph is
-dropped and the original light hero returns, with the figures shown by
-the stats strip further down the page — which is why the strip is
-wrapped in `hidden lg:block` on the home page.
+Only two things change between phone and laptop — which photograph
+loads, and whether the widgets stack two-up or run as a row of four:
 
-Every override for the dark treatment uses a `max-lg:` variant rather
-than a plain utility. Two plain utilities for one property (a passed
-`bg-white` against the button's own `bg-navy`) resolve by stylesheet
-order, not class order; a variant is always emitted later and so wins
-reliably.
+| | Phone | Laptop |
+| --- | --- | --- |
+| Photo | `site.hero.mobileImage` | `site.hero.desktopImage` |
+| Widgets | 2 x 2 | row of 4 |
 
-The mobile column is budgeted to fit between the 72px header and the
-fixed action bar, so the buttons are compacted below `lg` to keep them
-on one row. If you lengthen the hero copy, re-check that the bottom
-widgets still clear the bar.
+Two files because the crops are different shapes: the portrait shot
+would be gutted on a wide screen and the landscape one on a phone. The
+laptop image was supplied portrait and rotated 90 degrees to landscape —
+it is a top-down aerial, so turning the whole frame reads naturally.
 
-**The current photo is 673x1200**, which is under what a modern phone
-wants (a 390pt screen at 3x needs ~1170px wide). It will look slightly
-soft on a real device — a larger version of the same shot would drop
-straight in.
+The section carries `-mt-[72px]` so the photo runs up behind the header
+and shows through its glass; the 72px is added back as top padding
+inside. The mobile column is budgeted to fit between that header and the
+fixed action bar, so if you lengthen the hero copy, re-check that the
+bottom widgets still clear the bar.
+
+The hero has no buttons: the sticky action bar carries the call to
+action on phones, the header carries it on desktop. `StatsStrip` is no
+longer on the home page for the same reason — the hero shows those four
+figures now. It is still used on the About page.
+
+**Both photos are under-sized for full-bleed use.** The mobile one is
+673px wide, the laptop one 1142px. A 390pt phone at 3x wants ~1170px and
+a 1440px laptop hero wants ~2400px, so both will look soft on real
+hardware. Larger versions of the same shots drop straight in at the same
+paths, no code change needed.
 
 ### Logo
 

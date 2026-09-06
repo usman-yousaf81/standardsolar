@@ -1,6 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
-import { StatsStrip } from "@/components/sections/StatsStrip";
 import { BuildYourSystem } from "@/components/sections/BuildYourSystem";
 import { Intro } from "@/components/sections/Intro";
 import { Process } from "@/components/sections/Process";
@@ -13,11 +12,6 @@ export default function HomePage() {
     <>
       <Hero />
       <Services />
-      {/* Phones get these four figures as glass widgets in the hero
-          instead, so the strip is desktop-only. */}
-      <div className="hidden lg:block">
-        <StatsStrip />
-      </div>
       <BuildYourSystem />
       <Intro />
       <Process />
