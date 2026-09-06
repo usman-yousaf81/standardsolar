@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { PageHeader } from "@/components/sections/PageHeader";
-import { SectorDetail } from "@/components/sections/SectorDetail";
+import { SectorIndex } from "@/components/sections/SectorIndex";
 import { CtaBand } from "@/components/sections/CtaBand";
 
 export const metadata: Metadata = {
@@ -19,11 +19,7 @@ export default function SectorsPage() {
         heading={sectors.heading}
         intro={sectors.intro}
       />
-
-      {site.sectors.items.map((sector, i) => (
-        <SectorDetail key={sector.id} sector={sector} position={i} />
-      ))}
-
+      <SectorIndex />
       <CtaBand />
     </>
   );

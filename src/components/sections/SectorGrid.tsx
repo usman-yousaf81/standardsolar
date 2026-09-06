@@ -36,7 +36,7 @@ export function SectorGrid({
         >
           {site.sectors.items.map((sector, i) => (
             <li key={sector.title}>
-              <Link href={`/sectors#${sector.id}`} className="group flex flex-col">
+              <Link href={`/sectors/${sector.id}`} className="group flex flex-col">
                 <MediaSlot
                   src={sector.image}
                   alt={sector.title}

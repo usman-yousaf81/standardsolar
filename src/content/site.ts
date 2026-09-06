@@ -18,26 +18,34 @@
 export type NavItem = { label: string; href: string };
 export type Stat = { value: string; label: string };
 export type SectorFigure = { value: string; label: string };
+export type SectorProject = {
+  name: string;
+  location: string;
+  capacity: string;
+  summary: string;
+};
+export type SectorTestimonial = { quote: string; name: string; role: string };
 export type Sector = {
   id: string;
   index: string;
   title: string;
   /** Short line under the name — who the sector is for. */
   kicker: string;
+  /** One or two sentences. Used on the index and the sector's own page. */
   description: string;
+  /** Longer opening paragraph, sector page only. */
+  overview: string;
   /** Where we work inside this sector. */
   applications: string[];
   /** Published figures. Leave the array empty if there are none. */
   figures: SectorFigure[];
   image: string;
-  /** Work delivered in this sector. Real jobs and real quotes only. */
-  work: {
-    quote: string;
-    name: string;
-    role: string;
-    project: string;
-  };
+  /** Jobs delivered here. Empty array hides the block. */
+  projects: SectorProject[];
+  /** What clients said. Empty array hides the block. */
+  testimonials: SectorTestimonial[];
 };
+
 export type Step = { title: string; description: string };
 export type Point = { title: string; description: string };
 export type FaqItem = { question: string; answer: string };
@@ -104,10 +112,10 @@ export const site = {
       {
         label: "Sectors",
         links: [
-          { label: "Commercial Solar", href: "/sectors#sectors" },
-          { label: "Industrial Solar", href: "/sectors#sectors" },
-          { label: "Residential Solar", href: "/sectors#sectors" },
-          { label: "Agricultural Solar", href: "/sectors#sectors" },
+          { label: "Commercial Solar", href: "/sectors/commercial" },
+          { label: "Industrial Solar", href: "/sectors/industrial" },
+          { label: "Residential Solar", href: "/sectors/residential" },
+          { label: "Agricultural Solar", href: "/sectors/agricultural" },
         ],
       },
       {
@@ -179,8 +187,10 @@ export const site = {
     heading: "Four sectors. One standard.",
     intro:
       "From mill roofs to tube wells to family homes — every system is sized, engineered and installed for the load it actually has to carry.",
-    /* Heading above the work block inside each sector. */
-    workLabel: "Work in this sector",
+    /* Headings used on each sector's own page. */
+    coverLabel: "Where we work",
+    projectsLabel: "Work delivered",
+    testimonialsLabel: "What clients say",
     items: [
       {
         id: "commercial",
@@ -189,6 +199,8 @@ export const site = {
         kicker: "For Businesses & Offices", // from your site
         description:
           "Cut operational electricity costs by 70-90%, with return on investment typically inside two to four years.", // from your site
+        overview:
+          "A commercial rooftop is usually the easiest win in the whole portfolio: the load runs through the working day, which is exactly when the array is generating, so most of what you produce is used on site rather than exported. That is what puts the payback inside a few years.",
         applications: [
           "Corporate offices",
           "Retail stores",
@@ -202,12 +214,35 @@ export const site = {
           { value: "2-4 yrs", label: "Typical return on investment" }, // from your site
         ],
         image: "/images/solutions/commercial.jpg",
-        work: {
-          quote: "[COMMERCIAL_QUOTE]",
-          name: "[COMMERCIAL_QUOTE_NAME]",
-          role: "[COMMERCIAL_QUOTE_ROLE]",
-          project: "[COMMERCIAL_PROJECT]",
-        },
+        /* Jobs delivered in this sector. Empty the array and the block
+           disappears from the page. */
+        projects: [
+          {
+            name: "[COMMERCIAL_PROJECT_1_NAME]",
+            location: "[COMMERCIAL_PROJECT_1_LOCATION]",
+            capacity: "[COMMERCIAL_PROJECT_1_CAPACITY]",
+            summary: "[COMMERCIAL_PROJECT_1_SUMMARY]",
+          },
+          {
+            name: "[COMMERCIAL_PROJECT_2_NAME]",
+            location: "[COMMERCIAL_PROJECT_2_LOCATION]",
+            capacity: "[COMMERCIAL_PROJECT_2_CAPACITY]",
+            summary: "[COMMERCIAL_PROJECT_2_SUMMARY]",
+          },
+        ],
+        /* Real quotes from real clients only. Empty array hides these. */
+        testimonials: [
+          {
+            quote: "[COMMERCIAL_QUOTE_1]",
+            name: "[COMMERCIAL_QUOTE_1_NAME]",
+            role: "[COMMERCIAL_QUOTE_1_ROLE]",
+          },
+          {
+            quote: "[COMMERCIAL_QUOTE_2]",
+            name: "[COMMERCIAL_QUOTE_2_NAME]",
+            role: "[COMMERCIAL_QUOTE_2_ROLE]",
+          },
+        ],
       },
       {
         id: "industrial",
@@ -216,6 +251,8 @@ export const site = {
         kicker: "For Manufacturing & Heavy Industry", // from your site
         description:
           "As leaders in textile and manufacturing through Standard Industries, we understand industrial power needs — and design for them.", // from your site
+        overview:
+          "Industrial sites are a different problem from commercial ones. The load is heavier, it runs across shifts, and it does not politely follow daylight. Sizing starts from metered demand and the shift pattern, not from roof area — and the answer often involves storage or a hybrid configuration rather than a plain grid-tied array.",
         applications: [
           "Textile mills",
           "Manufacturing plants",
@@ -225,12 +262,35 @@ export const site = {
         ], // from your site
         figures: [],
         image: "/images/solutions/industrial.png",
-        work: {
-          quote: "[INDUSTRIAL_QUOTE]",
-          name: "[INDUSTRIAL_QUOTE_NAME]",
-          role: "[INDUSTRIAL_QUOTE_ROLE]",
-          project: "[INDUSTRIAL_PROJECT]",
-        },
+        /* Jobs delivered in this sector. Empty the array and the block
+           disappears from the page. */
+        projects: [
+          {
+            name: "[INDUSTRIAL_PROJECT_1_NAME]",
+            location: "[INDUSTRIAL_PROJECT_1_LOCATION]",
+            capacity: "[INDUSTRIAL_PROJECT_1_CAPACITY]",
+            summary: "[INDUSTRIAL_PROJECT_1_SUMMARY]",
+          },
+          {
+            name: "[INDUSTRIAL_PROJECT_2_NAME]",
+            location: "[INDUSTRIAL_PROJECT_2_LOCATION]",
+            capacity: "[INDUSTRIAL_PROJECT_2_CAPACITY]",
+            summary: "[INDUSTRIAL_PROJECT_2_SUMMARY]",
+          },
+        ],
+        /* Real quotes from real clients only. Empty array hides these. */
+        testimonials: [
+          {
+            quote: "[INDUSTRIAL_QUOTE_1]",
+            name: "[INDUSTRIAL_QUOTE_1_NAME]",
+            role: "[INDUSTRIAL_QUOTE_1_ROLE]",
+          },
+          {
+            quote: "[INDUSTRIAL_QUOTE_2]",
+            name: "[INDUSTRIAL_QUOTE_2_NAME]",
+            role: "[INDUSTRIAL_QUOTE_2_ROLE]",
+          },
+        ],
       },
       {
         id: "residential",
@@ -239,6 +299,8 @@ export const site = {
         kicker: "For Homes & Communities", // from your site
         description:
           "From a 3-5 kW starter system to a 10-20 kW whole-home installation, sized to what your household actually uses.", // from your site
+        overview:
+          "A home system is sized from your own bill rather than from the size of the roof. Most households land somewhere between a 3-5 kW starter system and a 10-20 kW installation covering everything, and the decision that matters most is whether you want storage for the hours the grid is down.",
         applications: [
           "Small systems 3-5 kW",
           "Large systems 10-20 kW",
@@ -247,12 +309,35 @@ export const site = {
           { value: "3-20 kW", label: "System range" }, // from your site
         ],
         image: "/images/solutions/residential.jpg",
-        work: {
-          quote: "[RESIDENTIAL_QUOTE]",
-          name: "[RESIDENTIAL_QUOTE_NAME]",
-          role: "[RESIDENTIAL_QUOTE_ROLE]",
-          project: "[RESIDENTIAL_PROJECT]",
-        },
+        /* Jobs delivered in this sector. Empty the array and the block
+           disappears from the page. */
+        projects: [
+          {
+            name: "[RESIDENTIAL_PROJECT_1_NAME]",
+            location: "[RESIDENTIAL_PROJECT_1_LOCATION]",
+            capacity: "[RESIDENTIAL_PROJECT_1_CAPACITY]",
+            summary: "[RESIDENTIAL_PROJECT_1_SUMMARY]",
+          },
+          {
+            name: "[RESIDENTIAL_PROJECT_2_NAME]",
+            location: "[RESIDENTIAL_PROJECT_2_LOCATION]",
+            capacity: "[RESIDENTIAL_PROJECT_2_CAPACITY]",
+            summary: "[RESIDENTIAL_PROJECT_2_SUMMARY]",
+          },
+        ],
+        /* Real quotes from real clients only. Empty array hides these. */
+        testimonials: [
+          {
+            quote: "[RESIDENTIAL_QUOTE_1]",
+            name: "[RESIDENTIAL_QUOTE_1_NAME]",
+            role: "[RESIDENTIAL_QUOTE_1_ROLE]",
+          },
+          {
+            quote: "[RESIDENTIAL_QUOTE_2]",
+            name: "[RESIDENTIAL_QUOTE_2_NAME]",
+            role: "[RESIDENTIAL_QUOTE_2_ROLE]",
+          },
+        ],
       },
       {
         id: "agricultural",
@@ -261,15 +346,40 @@ export const site = {
         kicker: "Solar Water Pumping Systems", // from your site
         description:
           "Solar water pumping that takes diesel out of irrigation, with power for the wider farm operation alongside it.", // from your site
+        overview:
+          "On a farm the arithmetic is usually about diesel rather than about grid tariffs. A pump running on solar has no fuel to buy and no fuel to carry, and it runs hardest in the months when irrigation demand and sunshine both peak.",
         applications: ["Irrigation", "Farm operations"], // from your site
         figures: [],
         image: "/images/solutions/agricultural.jpg",
-        work: {
-          quote: "[AGRICULTURAL_QUOTE]",
-          name: "[AGRICULTURAL_QUOTE_NAME]",
-          role: "[AGRICULTURAL_QUOTE_ROLE]",
-          project: "[AGRICULTURAL_PROJECT]",
-        },
+        /* Jobs delivered in this sector. Empty the array and the block
+           disappears from the page. */
+        projects: [
+          {
+            name: "[AGRICULTURAL_PROJECT_1_NAME]",
+            location: "[AGRICULTURAL_PROJECT_1_LOCATION]",
+            capacity: "[AGRICULTURAL_PROJECT_1_CAPACITY]",
+            summary: "[AGRICULTURAL_PROJECT_1_SUMMARY]",
+          },
+          {
+            name: "[AGRICULTURAL_PROJECT_2_NAME]",
+            location: "[AGRICULTURAL_PROJECT_2_LOCATION]",
+            capacity: "[AGRICULTURAL_PROJECT_2_CAPACITY]",
+            summary: "[AGRICULTURAL_PROJECT_2_SUMMARY]",
+          },
+        ],
+        /* Real quotes from real clients only. Empty array hides these. */
+        testimonials: [
+          {
+            quote: "[AGRICULTURAL_QUOTE_1]",
+            name: "[AGRICULTURAL_QUOTE_1_NAME]",
+            role: "[AGRICULTURAL_QUOTE_1_ROLE]",
+          },
+          {
+            quote: "[AGRICULTURAL_QUOTE_2]",
+            name: "[AGRICULTURAL_QUOTE_2_NAME]",
+            role: "[AGRICULTURAL_QUOTE_2_ROLE]",
+          },
+        ],
       },
     ] satisfies Sector[],
   },
@@ -692,10 +802,10 @@ export const site = {
       {
         title: "Sectors",
         links: [
-          { label: "Commercial Solar", href: "/sectors#sectors" },
-          { label: "Industrial Solar", href: "/sectors#sectors" },
-          { label: "Residential Solar", href: "/sectors#sectors" },
-          { label: "Agricultural Solar", href: "/sectors#sectors" },
+          { label: "Commercial Solar", href: "/sectors/commercial" },
+          { label: "Industrial Solar", href: "/sectors/industrial" },
+          { label: "Residential Solar", href: "/sectors/residential" },
+          { label: "Agricultural Solar", href: "/sectors/agricultural" },
         ],
       },
       {

@@ -255,19 +255,26 @@ Put any credentials in `.env.local`, which is git-ignored.
 | 8     | FAQ                | `site.faq`                                |
 | 9     | Closing CTA        | `site.ctaBand`                            |
 
-### Sectors page (`/sectors`)
+### Sectors (`/sectors` and `/sectors/[slug]`)
 
-One section per sector, built from `site.sectors.items`: number, kicker,
-name, description, published figures, the applications it covers, the
-photograph, and a work block. Sides alternate down the page.
+`/sectors` is an index: four rows, each the way into that sector's own
+page. A list rather than a grid on purpose — the home page already has
+the grid, and a list gives the names room to be the largest thing on
+screen.
 
-The work block is the navy card — a quote, who said it, and the project
-it came from. Those four fields per sector are the only brackets left in
-the file. A quote nobody gave you and a project that was never built
-would be fabricated testimony on a live site, so they wait for real ones.
+`/sectors/[slug]` is one page per sector, statically generated from
+`site.sectors.items` via `generateStaticParams`, so all four are
+prerendered at build time and an unknown slug 404s. Each page runs:
+photo hero, overview with the sector's published figures, what it
+covers, work delivered, what clients said, the other three sectors, CTA.
 
-The page carries nothing but sectors: no products, no process. Products
-live at `/products` and the process is on the home page.
+Both work blocks are data-driven. Empty `projects` or `testimonials` for
+a sector and that block disappears from its page rather than showing an
+empty shell — so a sector with nothing to show yet claims nothing.
+
+Those two arrays are the only brackets left in the content file. A quote
+nobody gave you and a project that was never built would be fabricated
+testimony on a live site, so they wait for real ones.
 
 ### Products page (`/products`)
 
