@@ -19,8 +19,6 @@ export type NavItem = { label: string; href: string };
 export type Stat = { value: string; label: string };
 export type Service = {
   title: string;
-  kicker: string;
-  description: string;
   image: string;
 };
 export type Step = { title: string; description: string };
@@ -156,30 +154,18 @@ export const site = {
     items: [
       {
         title: "Commercial Solar Systems", // from your site
-        kicker: "For Businesses & Offices", // from your site
-        description:
-          "Cut operational electricity costs by 70-90%, with return on investment typically inside two to four years.", // from your site
         image: "",
       },
       {
         title: "Industrial Solar Systems", // from your site
-        kicker: "For Manufacturing & Heavy Industry", // from your site
-        description:
-          "As leaders in textile and manufacturing through Standard Industries, we understand industrial power needs — and design for them.", // from your site
         image: "",
       },
       {
         title: "Residential Solar Systems", // from your site
-        kicker: "For Homes & Communities", // from your site
-        description:
-          "From a 3-5 kW starter system to a 10-20 kW whole-home installation, sized to what your household actually uses.", // from your site
         image: "",
       },
       {
         title: "Agricultural Solar Solutions", // from your site
-        kicker: "Solar Water Pumping Systems", // from your site
-        description:
-          "Solar water pumping that takes diesel out of irrigation, with power for the wider farm operation alongside it.", // from your site
         image: "",
       },
     ] satisfies Service[],
