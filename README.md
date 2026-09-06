@@ -138,7 +138,10 @@ Two treatments of the same markup, one `<h1>`.
 
 Below `lg` the photograph at `site.hero.mobileImage` fills the screen,
 the type sits over it in white, and the four `site.stats` figures are
-laid on top as frosted glass widgets. From `lg` up the photograph is
+laid on top as frosted glass widgets. The section carries `-mt-[72px]`
+so the photo runs up behind the header and shows through its glass; the
+72px is added back as top padding inside. The hero CTAs are desktop-only
+— the sticky action bar already carries the call to action on phones. From `lg` up the photograph is
 dropped and the original light hero returns, with the figures shown by
 the stats strip further down the page — which is why the strip is
 wrapped in `hidden lg:block` on the home page.
@@ -170,6 +173,18 @@ sits directly on the page with no chip or ring behind it.
 
 The original `logo.jpeg` is in git history at commit `11118b5` if the
 source file is ever needed again.
+
+### Header
+
+Glass in both states rather than transparent-then-solid: always
+`backdrop-blur-xl backdrop-saturate-150`, with only the tint changing —
+`bg-white/10` at the top of the page, `bg-white/70` plus a hairline once
+scrolled past 8px.
+
+The header sets its own text colour and the controls inherit it, so over
+the hero photograph on phones they turn white and revert to ink as soon
+as you scroll off it. If you ever put a dark section behind the header
+on another page, that is the switch to extend.
 
 ### Mobile menu
 

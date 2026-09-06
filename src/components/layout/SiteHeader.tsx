@@ -12,7 +12,7 @@ import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 /** Small square icon button used at both ends of the mobile bar. */
 const iconButton =
-  "inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-silver";
+  "inline-flex size-10 items-center justify-center rounded-full transition-colors";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -66,10 +66,10 @@ export function SiteHeader() {
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 transition-colors duration-300",
+          "sticky top-0 z-50 border-b backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300",
           scrolled
-            ? "border-b border-hairline bg-white/85 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent",
+            ? "border-hairline bg-white/70 text-ink"
+            : "border-white/15 bg-white/10 text-ink max-lg:border-white/15 max-lg:text-white",
         )}
       >
         <Container className="flex h-[72px] items-center justify-between gap-4">
@@ -81,7 +81,11 @@ export function SiteHeader() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-label="Open menu"
-            className={cn(iconButton, "-ml-2 lg:hidden")}
+            className={cn(
+              iconButton,
+              "-ml-2 lg:hidden",
+              scrolled ? "hover:bg-silver" : "hover:bg-white/15",
+            )}
           >
             <span className="relative block h-[13px] w-[23px]">
               <span className="absolute left-0 top-0 block h-[1.5px] w-full rounded bg-current" />
@@ -142,7 +146,11 @@ export function SiteHeader() {
           <a
             href={`tel:${site.company.phone}`}
             aria-label={site.mobileBar.callLabel}
-            className={cn(iconButton, "-mr-2 lg:hidden")}
+            className={cn(
+              iconButton,
+              "-mr-2 lg:hidden",
+              scrolled ? "hover:bg-silver" : "hover:bg-white/15",
+            )}
           >
             <PhoneIcon className="size-[18px]" />
           </a>
@@ -161,7 +169,7 @@ export function SiteHeader() {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className={cn(iconButton, "-ml-2")}
+              className={cn(iconButton, "-ml-2 text-ink hover:bg-silver")}
             >
               <svg
                 aria-hidden
@@ -185,7 +193,7 @@ export function SiteHeader() {
             <a
               href={`tel:${site.company.phone}`}
               aria-label={site.mobileBar.callLabel}
-              className={cn(iconButton, "-mr-2")}
+              className={cn(iconButton, "-mr-2 text-ink hover:bg-silver")}
             >
               <PhoneIcon className="size-[18px]" />
             </a>

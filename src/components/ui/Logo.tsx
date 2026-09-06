@@ -31,7 +31,7 @@ export function Logo({
         className={cn("w-auto", size === "lg" ? "h-10" : "h-8")}
       />
       {showWordmark ? (
-        <span className="whitespace-nowrap font-display text-[15px] font-semibold leading-none tracking-[-0.02em] text-ink">
+        <span className="whitespace-nowrap font-display text-[15px] font-semibold leading-none tracking-[-0.02em]">
           {site.company.name}
         </span>
       ) : null}

@@ -34,7 +34,7 @@ function Spark({ className }: { className?: string }) {
  */
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative -mt-[72px] overflow-hidden">
       {/* Phone/tablet: full-bleed photograph */}
       <div className="absolute inset-0 lg:hidden">
         <Image
@@ -55,10 +55,10 @@ export function Hero() {
       {/* Desktop: soft silver wash behind the opening type */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 hidden h-[560px] bg-[radial-gradient(90%_60%_at_50%_0%,var(--color-silver)_0%,transparent_70%)] lg:block"
+        className="pointer-events-none absolute inset-x-0 top-0 hidden h-[640px] bg-[radial-gradient(90%_60%_at_50%_0%,var(--color-silver)_0%,transparent_70%)] lg:block"
       />
 
-      <Container className="relative flex min-h-[calc(100svh-72px)] flex-col justify-end pb-40 pt-8 lg:block lg:min-h-0 lg:pb-16 lg:pt-20">
+      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-40 pt-[104px] lg:block lg:min-h-0 lg:pb-16 lg:pt-[152px]">
         <div className="relative lg:mx-auto lg:max-w-3xl lg:text-center">
           <Spark className="absolute -left-16 top-16 hidden size-5 text-ink/15 lg:block" />
           <Spark className="absolute -right-20 top-6 hidden size-4 text-ink/15 lg:block" />
@@ -81,7 +81,7 @@ export function Hero() {
             {site.hero.subhead}
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3 lg:mt-8 lg:justify-center">
+          <div className="mt-7 hidden flex-wrap items-center gap-3 lg:mt-8 lg:flex lg:justify-center">
             <Button
               href={site.hero.primaryCta.href}
               size="lg"
