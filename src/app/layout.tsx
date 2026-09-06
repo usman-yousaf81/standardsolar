@@ -3,9 +3,6 @@ import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { site } from "@/content/site";
 import { isPlaceholder } from "@/lib/utils";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
 
 const display = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,10 +17,12 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  // metadataBase is only set once a real domain is in src/content/site.ts.
-  ...(isPlaceholder(site.seo.siteUrl)
-    ? {}
-    : { metadataBase: new URL(site.seo.siteUrl) }),
+  // metadataBase is only set once a real domain is in .env.local.
+  ...(process.env.NEXT_PUBLIC_SITE_URL
+    ? { metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL) }
+    : isPlaceholder(site.seo.siteUrl)
+      ? {}
+      : { metadataBase: new URL(site.seo.siteUrl) }),
   title: {
     default: site.seo.defaultTitle,
     template: `%s — ${site.seo.titleTemplate}`,
@@ -32,25 +31,17 @@ export const metadata: Metadata = {
   icons: { icon: "/logo.png", apple: "/logo.png" },
 };
 
+/**
+ * Root layout holds only what every route needs: the document, the
+ * fonts and the stylesheet. The public chrome lives in (site) and the
+ * admin has its own, so the portal does not inherit a marketing header.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
-      <body className="min-h-dvh bg-paper antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-navy focus:px-4 focus:py-2 focus:text-sm focus:text-white"
-        >
-          Skip to content
-        </a>
-        <SiteHeader />
-        <main id="main">{children}</main>
-        <SiteFooter />
-        {/* Spacer so the fixed mobile bar never covers the footer. */}
-        <div aria-hidden className="action-bar-spacer lg:hidden" />
-        <MobileActionBar />
-      </body>
+      <body className="min-h-dvh bg-paper antialiased">{children}</body>
     </html>
   );
 }
