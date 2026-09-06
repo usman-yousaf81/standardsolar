@@ -15,6 +15,8 @@ export function MediaSlot({
   imageClassName,
   priority = false,
   sizes = "100vw",
+  fit = "cover",
+  surface = "silver",
 }: {
   src?: string;
   alt?: string;
@@ -24,17 +26,30 @@ export function MediaSlot({
   imageClassName?: string;
   priority?: boolean;
   sizes?: string;
+  /** `contain` for product shots that must not be cropped. Chosen here
+      rather than passed in as a class: two object-fit utilities on one
+      element resolve by stylesheet order, not by class order. */
+  fit?: "cover" | "contain";
+  /** Background behind a `contain` image. Same reasoning as `fit`. */
+  surface?: "silver" | "white";
 }) {
   if (src) {
     return (
-      <div className={cn("relative overflow-hidden bg-silver", className)}>
+      <div className={cn(
+          "relative overflow-hidden",
+          surface === "white" ? "bg-white" : "bg-silver",
+          className,
+        )}>
         <Image
           src={src}
           alt={alt ?? ""}
           fill
           sizes={sizes}
           priority={priority}
-          className={cn("object-cover", imageClassName)}
+          className={cn(
+            fit === "contain" ? "object-contain" : "object-cover",
+            imageClassName,
+          )}
         />
       </div>
     );

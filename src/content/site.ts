@@ -203,14 +203,14 @@ export const site = {
             spec: "19-22% efficiency", // from your site
             description:
               "Single-crystal cells, and the most output you can get from a square metre. The right call when roof space is tight and every kilowatt has to count.",
-            image: "",
+            image: "/images/products/monocrystalline.jpg",
           },
           {
             name: "Polycrystalline", // from your site
             spec: "15-17% efficiency", // from your site
             description:
               "Multi-crystal cells at a lower cost per watt. Sensible where you have roof or ground area to spare and want the shortest route to payback.",
-            image: "",
+            image: "/images/products/polycrystalline.webp",
           },
         ] satisfies BuilderItem[],
       },
@@ -225,28 +225,28 @@ export const site = {
             spec: "Grid-tied",
             description:
               "Feeds straight into your supply and sends the surplus back out. The standard choice for a site with a reliable connection that wants the fastest return.",
-            image: "",
+            image: "/images/products/on-grid.jpg",
           },
           {
             name: "Off-Grid", // from your site
             spec: "Battery only",
             description:
               "Runs entirely on panels and storage, with no grid connection at all. Built for tube wells, remote sites and anywhere the line simply doesn't reach.",
-            image: "",
+            image: "/images/products/off-grid.jpg",
           },
           {
             name: "Hybrid", // from your site
             spec: "Grid + battery",
             description:
               "Takes grid, panels and batteries together and chooses between them in real time. Keeps the circuits that matter running straight through an outage.",
-            image: "",
+            image: "/images/products/hybrid.jpg",
           },
           {
             name: "Micro", // from your site
             spec: "One per panel",
             description:
               "A small inverter behind each panel, so shade or a fault on one module can't drag the rest of the array down with it. Best on broken or multi-angle roofs.",
-            image: "",
+            image: "/images/products/micro.jpg",
           },
         ] satisfies BuilderItem[],
       },
@@ -261,21 +261,21 @@ export const site = {
             spec: "Longest service life",
             description:
               "The deepest usable capacity and the longest life, in the smallest footprint. The highest price at the start, and the lowest cost per cycle over everything that follows.",
-            image: "",
+            image: "/images/products/lithium-ion.jpg",
           },
           {
             name: "Tubular", // from your site
             spec: "Deep-cycle lead acid",
             description:
               "Thick tubular plates built to be discharged deeply, day after day. Heavier, and it needs topping up — but proven in Pakistani conditions and far kinder on the opening budget.",
-            image: "",
+            image: "/images/products/tubular.jpg",
           },
           {
             name: "AGM", // from your site
             spec: "Sealed, maintenance-free",
             description:
               "Sealed glass-mat construction: no watering, no venting, no upkeep. A solid middle option for backup duty, where the bank isn't cycled hard every single day.",
-            image: "",
+            image: "/images/products/agm.jpg",
           },
         ] satisfies BuilderItem[],
       },
@@ -306,6 +306,8 @@ export const site = {
       {
         id: "panels",
         index: "01",
+        /* Header shot for this family on the products page. */
+        image: "/images/products/monocrystalline.jpg",
         label: "Solar Panels",
         /* Plain-English line directly under the product name. Keep it to
            one short sentence — this is the bit a first-time visitor
@@ -345,6 +347,8 @@ export const site = {
       {
         id: "inverters",
         index: "02",
+        /* Header shot for this family on the products page. */
+        image: "/images/products/hybrid.jpg",
         label: "Solar Inverters",
         plain: "They turn it into power your equipment can use.",
         short: "Converts it for use",
@@ -387,6 +391,8 @@ export const site = {
       {
         id: "batteries",
         index: "03",
+        /* Header shot for this family on the products page. */
+        image: "/images/products/lithium-ion.jpg",
         label: "Solar Batteries",
         plain: "They store it for night, and for outages.",
         short: "Stores it for later",

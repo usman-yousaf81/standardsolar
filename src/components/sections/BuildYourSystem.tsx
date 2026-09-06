@@ -218,7 +218,12 @@ export function BuildYourSystem() {
               label={`${family.id.toUpperCase()}_${current.name
                 .toUpperCase()
                 .replace(/[^A-Z0-9]+/g, "_")}_IMAGE`}
-              className="builder-media-enter aspect-square w-full max-w-full rounded-panel lg:aspect-4/3 lg:flex-1"
+              /* Square at every size and contained rather than cropped:
+                 these are catalogue shots in mixed ratios, and a 4:3
+                 crop would slice the top and bottom off a tall panel. */
+              fit="contain"
+              surface="white"
+              className="builder-media-enter aspect-square w-full max-w-full rounded-panel lg:flex-1"
               sizes="(min-width: 1024px) 50vw, 90vw"
             />
 
