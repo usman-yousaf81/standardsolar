@@ -272,9 +272,10 @@ Both work blocks are data-driven. Empty `projects` or `testimonials` for
 a sector and that block disappears from its page rather than showing an
 empty shell — so a sector with nothing to show yet claims nothing.
 
-Those two arrays are the only brackets left in the content file. A quote
-nobody gave you and a project that was never built would be fabricated
-testimony on a live site, so they wait for real ones.
+**Both arrays currently hold demo content.** The companies, people and
+figures in them are written samples, there so the pages can be seen
+finished while real ones are gathered. Every one is marked `DEMO` in
+`site.ts`, under a banner at the top of the file.
 
 ### Products page (`/products`)
 
@@ -324,6 +325,9 @@ its natural height and becomes a plain click-through list.
 
 ## Still to do
 
+- [ ] **Replace the DEMO testimonials and projects** under `sectors`, or
+      empty the arrays — each block hides itself. Invented testimony must
+      not go live. `grep DEMO src/content/site.ts`
 - [ ] Fill the three remaining `[TOKENS]` — email address and opening
       hours (see the table above)
 - [ ] Read the 13 `// CONFIRM` lines and correct anything inaccurate

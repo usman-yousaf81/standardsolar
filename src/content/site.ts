@@ -1,4 +1,15 @@
 /* ==================================================================
+   !! DEMO CONTENT PRESENT — NOT FOR LAUNCH !!
+   The `projects` and `testimonials` arrays under `sectors` are written
+   samples. The companies, people and figures in them are invented, to
+   show how the sector pages look while real ones are gathered. Search
+   this file for "DEMO" to find every one.
+
+   Replace them, or empty the arrays (each block hides itself), before
+   this site goes anywhere public. Published invented testimony is a
+   problem whatever the intent behind it.
+   ==================================================================
+
    STANDARD SOLAR — SITE CONTENT
    ------------------------------------------------------------------
    Every visible string on the site lives in this one file. Change it
@@ -214,33 +225,38 @@ export const site = {
           { value: "2-4 yrs", label: "Typical return on investment" }, // from your site
         ],
         image: "/images/solutions/commercial.jpg",
-        /* Jobs delivered in this sector. Empty the array and the block
-           disappears from the page. */
+        /* DEMO — replace before launch. Jobs delivered in this sector.
+           Empty the array and the block disappears from the page. */
         projects: [
           {
-            name: "[COMMERCIAL_PROJECT_1_NAME]",
-            location: "[COMMERCIAL_PROJECT_1_LOCATION]",
-            capacity: "[COMMERCIAL_PROJECT_1_CAPACITY]",
-            summary: "[COMMERCIAL_PROJECT_1_SUMMARY]",
+            name: "Meridian Business Centre",
+            location: "Faisalabad",
+            capacity: "180 kW",
+            summary:
+              "Rooftop array across two office blocks, sized to carry the daytime cooling load. Surplus exported under net metering.",
           },
           {
-            name: "[COMMERCIAL_PROJECT_2_NAME]",
-            location: "[COMMERCIAL_PROJECT_2_LOCATION]",
-            capacity: "[COMMERCIAL_PROJECT_2_CAPACITY]",
-            summary: "[COMMERCIAL_PROJECT_2_SUMMARY]",
+            name: "Al-Karam Retail Plaza",
+            location: "Sargodha Road, Faisalabad",
+            capacity: "95 kW",
+            summary:
+              "Grid-tied system covering lighting, cooling and lifts across trading hours, commissioned in a single shutdown window.",
           },
         ],
-        /* Real quotes from real clients only. Empty array hides these. */
+        /* DEMO — replace before launch. These are written samples,
+           not quotes anyone gave. Empty array hides the block. */
         testimonials: [
           {
-            quote: "[COMMERCIAL_QUOTE_1]",
-            name: "[COMMERCIAL_QUOTE_1_NAME]",
-            role: "[COMMERCIAL_QUOTE_1_ROLE]",
+            quote:
+              "Our bill dropped by roughly four-fifths over the first summer. The survey numbers turned out to be conservative, and we reached payback ahead of what we had budgeted for.",
+            name: "Imran Sheikh",
+            role: "Operations Director, Meridian Business Centre",
           },
           {
-            quote: "[COMMERCIAL_QUOTE_2]",
-            name: "[COMMERCIAL_QUOTE_2_NAME]",
-            role: "[COMMERCIAL_QUOTE_2_ROLE]",
+            quote:
+              "What sold it was that they sized the system from twelve months of our actual bills rather than from the roof. Nothing about the quote changed once work started.",
+            name: "Ayesha Tariq",
+            role: "Centre Manager, Al-Karam Retail Plaza",
           },
         ],
       },
@@ -262,33 +278,38 @@ export const site = {
         ], // from your site
         figures: [],
         image: "/images/solutions/industrial.png",
-        /* Jobs delivered in this sector. Empty the array and the block
-           disappears from the page. */
+        /* DEMO — replace before launch. Jobs delivered in this sector.
+           Empty the array and the block disappears from the page. */
         projects: [
           {
-            name: "[INDUSTRIAL_PROJECT_1_NAME]",
-            location: "[INDUSTRIAL_PROJECT_1_LOCATION]",
-            capacity: "[INDUSTRIAL_PROJECT_1_CAPACITY]",
-            summary: "[INDUSTRIAL_PROJECT_1_SUMMARY]",
+            name: "Noor Weaving Mills",
+            location: "Faisalabad",
+            capacity: "850 kW",
+            summary:
+              "Rooftop and shed-mounted array feeding the spinning floor across two shifts, with metering per production hall.",
           },
           {
-            name: "[INDUSTRIAL_PROJECT_2_NAME]",
-            location: "[INDUSTRIAL_PROJECT_2_LOCATION]",
-            capacity: "[INDUSTRIAL_PROJECT_2_CAPACITY]",
-            summary: "[INDUSTRIAL_PROJECT_2_SUMMARY]",
+            name: "Ravi Food Processing",
+            location: "Sheikhupura",
+            capacity: "420 kW",
+            summary:
+              "Hybrid system with storage sized to hold the cold-chain load through grid switchover.",
           },
         ],
-        /* Real quotes from real clients only. Empty array hides these. */
+        /* DEMO — replace before launch. These are written samples,
+           not quotes anyone gave. Empty array hides the block. */
         testimonials: [
           {
-            quote: "[INDUSTRIAL_QUOTE_1]",
-            name: "[INDUSTRIAL_QUOTE_1_NAME]",
-            role: "[INDUSTRIAL_QUOTE_1_ROLE]",
+            quote:
+              "They understood a three-shift load before we finished explaining it. That is not something we found elsewhere — most quotes we received were sized off our floor area.",
+            name: "Rana Abdul Qadir",
+            role: "General Manager, Noor Weaving Mills",
           },
           {
-            quote: "[INDUSTRIAL_QUOTE_2]",
-            name: "[INDUSTRIAL_QUOTE_2_NAME]",
-            role: "[INDUSTRIAL_QUOTE_2_ROLE]",
+            quote:
+              "The storage sizing was the part that mattered to us. Our chillers ride through a switchover now, which used to cost us product every time.",
+            name: "Bilal Ahmed",
+            role: "Plant Engineer, Ravi Food Processing",
           },
         ],
       },
@@ -309,33 +330,38 @@ export const site = {
           { value: "3-20 kW", label: "System range" }, // from your site
         ],
         image: "/images/solutions/residential.jpg",
-        /* Jobs delivered in this sector. Empty the array and the block
-           disappears from the page. */
+        /* DEMO — replace before launch. Jobs delivered in this sector.
+           Empty the array and the block disappears from the page. */
         projects: [
           {
-            name: "[RESIDENTIAL_PROJECT_1_NAME]",
-            location: "[RESIDENTIAL_PROJECT_1_LOCATION]",
-            capacity: "[RESIDENTIAL_PROJECT_1_CAPACITY]",
-            summary: "[RESIDENTIAL_PROJECT_1_SUMMARY]",
+            name: "Gulberg Residence",
+            location: "Faisalabad",
+            capacity: "12 kW",
+            summary:
+              "Whole-home hybrid system with a battery bank covering the evening peak and overnight outages.",
           },
           {
-            name: "[RESIDENTIAL_PROJECT_2_NAME]",
-            location: "[RESIDENTIAL_PROJECT_2_LOCATION]",
-            capacity: "[RESIDENTIAL_PROJECT_2_CAPACITY]",
-            summary: "[RESIDENTIAL_PROJECT_2_SUMMARY]",
+            name: "Canal Road Villas",
+            location: "Faisalabad",
+            capacity: "5 kW x 6 homes",
+            summary:
+              "Matched starter systems across a six-home development, installed together to keep cost per home down.",
           },
         ],
-        /* Real quotes from real clients only. Empty array hides these. */
+        /* DEMO — replace before launch. These are written samples,
+           not quotes anyone gave. Empty array hides the block. */
         testimonials: [
           {
-            quote: "[RESIDENTIAL_QUOTE_1]",
-            name: "[RESIDENTIAL_QUOTE_1_NAME]",
-            role: "[RESIDENTIAL_QUOTE_1_ROLE]",
+            quote:
+              "The house runs through load-shedding now without anyone noticing it happened. That was the whole reason we went ahead.",
+            name: "Dr. Saira Mahmood",
+            role: "Homeowner, Gulberg",
           },
           {
-            quote: "[RESIDENTIAL_QUOTE_2]",
-            name: "[RESIDENTIAL_QUOTE_2_NAME]",
-            role: "[RESIDENTIAL_QUOTE_2_ROLE]",
+            quote:
+              "Six of us went in together and they handled it as one job. Clean work, and they came back twice in the first year to check it over.",
+            name: "Hassan Raza",
+            role: "Resident, Canal Road Villas",
           },
         ],
       },
@@ -351,33 +377,38 @@ export const site = {
         applications: ["Irrigation", "Farm operations"], // from your site
         figures: [],
         image: "/images/solutions/agricultural.jpg",
-        /* Jobs delivered in this sector. Empty the array and the block
-           disappears from the page. */
+        /* DEMO — replace before launch. Jobs delivered in this sector.
+           Empty the array and the block disappears from the page. */
         projects: [
           {
-            name: "[AGRICULTURAL_PROJECT_1_NAME]",
-            location: "[AGRICULTURAL_PROJECT_1_LOCATION]",
-            capacity: "[AGRICULTURAL_PROJECT_1_CAPACITY]",
-            summary: "[AGRICULTURAL_PROJECT_1_SUMMARY]",
+            name: "Chak 204 Tube Well",
+            location: "Jhang Road, Faisalabad",
+            capacity: "15 hp",
+            summary:
+              "Solar pumping set replacing a diesel engine on a forty-acre holding, running through the full irrigation season.",
           },
           {
-            name: "[AGRICULTURAL_PROJECT_2_NAME]",
-            location: "[AGRICULTURAL_PROJECT_2_LOCATION]",
-            capacity: "[AGRICULTURAL_PROJECT_2_CAPACITY]",
-            summary: "[AGRICULTURAL_PROJECT_2_SUMMARY]",
+            name: "Sahiwal Dairy Farm",
+            location: "Sahiwal",
+            capacity: "60 kW",
+            summary:
+              "Ground-mount array carrying pumping, milk chilling and shed lighting on one system.",
           },
         ],
-        /* Real quotes from real clients only. Empty array hides these. */
+        /* DEMO — replace before launch. These are written samples,
+           not quotes anyone gave. Empty array hides the block. */
         testimonials: [
           {
-            quote: "[AGRICULTURAL_QUOTE_1]",
-            name: "[AGRICULTURAL_QUOTE_1_NAME]",
-            role: "[AGRICULTURAL_QUOTE_1_ROLE]",
+            quote:
+              "We have not bought diesel for the tube well since it went in. Through the summer it runs longer than the old engine ever did.",
+            name: "Malik Iqbal Hussain",
+            role: "Grower, Chak 204",
           },
           {
-            quote: "[AGRICULTURAL_QUOTE_2]",
-            name: "[AGRICULTURAL_QUOTE_2_NAME]",
-            role: "[AGRICULTURAL_QUOTE_2_ROLE]",
+            quote:
+              "Chilling and pumping on one system was their suggestion, not ours. It worked out cheaper than doing the two separately.",
+            name: "Ghulam Mustafa",
+            role: "Owner, Sahiwal Dairy Farm",
           },
         ],
       },
