@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { createPublicClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type Payload = {
   name?: string;
@@ -41,23 +43,43 @@ export async function POST(request: Request) {
     );
   }
 
-  // ------------------------------------------------------------------
-  // TODO: deliver the enquiry.
-  // Nothing is sent anywhere yet — the submission is only logged on the
-  // server. Wire up whichever of these you want and add the credentials
-  // to .env.local:
-  //   • Email  — Resend / SendGrid / Postmark
-  //   • CRM    — HubSpot / Pipedrive / Zoho
-  //   • Sheet  — Google Sheets API
-  // ------------------------------------------------------------------
-  console.info("[enquiry]", {
+  const enquiry = {
     name,
     email,
     phone: data.phone?.trim() || null,
     city: data.city?.trim() || null,
     message: data.message?.trim() || null,
+  };
+
+  // Anon inserts are allowed by policy; reads are admin-only, so a
+  // leaked anon key cannot pull the enquiry list back out.
+  const supabase = createPublicClient();
+
+  if (supabase) {
+    const { error } = await supabase.from("enquiries").insert(enquiry);
+
+    if (error) {
+      console.error("[enquiry] insert failed", error);
+      return NextResponse.json(
+        { error: "We couldn't send that just now. Please try again." },
+        { status: 502 },
+      );
+    }
+
+    return NextResponse.json({ ok: true });
+  }
+
+  // No database yet — log it so nothing submitted during setup is lost.
+  console.info("[enquiry] (no database configured)", {
+    ...enquiry,
     receivedAt: new Date().toISOString(),
   });
+
+  if (!isSupabaseConfigured && process.env.NODE_ENV === "production") {
+    console.warn(
+      "[enquiry] Supabase is not configured — this enquiry exists only in the server log.",
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
