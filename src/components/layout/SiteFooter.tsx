@@ -89,6 +89,7 @@ export function SiteFooter() {
           </p>
           <p className="flex flex-wrap gap-x-4 gap-y-1">
             <span>{site.footer.legal}</span>
+            <span>{site.footer.imageCredits}</span>
             {site.company.registration ? (
               <span>{site.company.registration}</span>
             ) : null}

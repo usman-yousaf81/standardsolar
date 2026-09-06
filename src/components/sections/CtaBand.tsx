@@ -4,61 +4,83 @@ import { Button, ArrowRight } from "@/components/ui/Button";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
 const VIEW_W = 1200;
-const VIEW_H = 360;
-const THREADS = 15;
+const VIEW_H = 420;
+const RAYS = 33;
+/* The sun sits below the card, so only the light reaches into it. */
+const ORIGIN_X = VIEW_W / 2;
+const ORIGIN_Y = VIEW_H + 40;
+const SPREAD = 74; // degrees either side of vertical
+const REACH = 1100;
 
 /**
- * A drawn field of threads behind the closing card.
+ * First light behind the closing card.
  *
- * Each thread is one long curve crossing the card. They share a shape
- * but drift in depth and phase, so they lean together and part again
- * instead of sitting parallel. The whole bundle is tilted a few degrees,
- * which is what keeps it from reading as ruled paper, and the curves
- * start and end well outside the frame so the tilt never shows an edge.
+ * A low sun just under the bottom edge, throwing a fan of rays up into
+ * the card. Rays are hairline and masked so they burn out before they
+ * reach the top, which keeps the card feeling open rather than filled.
+ * Angles carry a small drift so the fan reads as light rather than as a
+ * protractor.
  *
  * Everything is derived from the index — no randomness, so the server
- * and the client draw the same field and it never shifts on hydration.
+ * and the browser draw the same sun.
  */
-function ThreadField() {
-  const threads = Array.from({ length: THREADS }, (_, i) => {
-    const t = i / (THREADS - 1);
-    // Runs past the top and bottom of the frame so the tilt has slack.
-    const y = -110 + t * (VIEW_H + 220);
+function FirstLight() {
+  const rays = Array.from({ length: RAYS }, (_, i) => {
+    const t = i / (RAYS - 1);
+    // Even fan, nudged by a slow wave so the spacing is never mechanical.
+    const angle = (t * 2 - 1) * SPREAD + Math.sin(i * 2.3) * 1.6;
+    const radians = (angle * Math.PI) / 180;
 
-    // Depth swells through the middle of the bundle and drifts a little
-    // thread to thread, so neighbours cross rather than track together.
-    const swell = Math.sin(t * Math.PI);
-    const depth = (26 + 34 * swell) * (0.7 + 0.3 * Math.sin(i * 1.9));
-    const phase = Math.sin(i * 0.7) * 110;
+    const x = ORIGIN_X + Math.sin(radians) * REACH;
+    const y = ORIGIN_Y - Math.cos(radians) * REACH;
 
-    const d = [
-      `M -260 ${y}`,
-      `C ${170 + phase} ${y - depth}`,
-      `${430 + phase} ${y + depth}`,
-      `${VIEW_W / 2} ${y}`,
-      `S ${1010 - phase} ${y - depth}`,
-      `${VIEW_W + 260} ${y}`,
-    ].join(" ");
+    // Brightest straight up, thinning towards the horizon.
+    const lean = Math.abs(angle) / SPREAD;
+    const opacity = 0.16 * (1 - lean) + 0.03;
 
-    return { d, opacity: 0.06 + swell * 0.16, key: i };
+    return { x, y, opacity, key: i };
   });
 
   return (
     <svg
       aria-hidden
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMax slice"
       className="pointer-events-none absolute inset-0 h-full w-full text-navy"
     >
-      <g transform={`rotate(-7 ${VIEW_W / 2} ${VIEW_H / 2})`}>
-        {threads.map((thread) => (
-          <path
-            key={thread.key}
-            d={thread.d}
-            fill="none"
+      <defs>
+        {/* The sun's own glow, strongest at the bottom edge. */}
+        <radialGradient id="cta-sun" cx="50%" cy="100%" r="66%">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.20" />
+          <stop offset="45%" stopColor="currentColor" stopOpacity="0.07" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Burns the rays out as they climb. */}
+        <linearGradient id="cta-falloff" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#fff" stopOpacity="1" />
+          <stop offset="45%" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+
+        <mask id="cta-mask">
+          <rect width={VIEW_W} height={VIEW_H} fill="url(#cta-falloff)" />
+        </mask>
+      </defs>
+
+      <rect width={VIEW_W} height={VIEW_H} fill="url(#cta-sun)" />
+
+      <g mask="url(#cta-mask)">
+        {rays.map((ray) => (
+          <line
+            key={ray.key}
+            x1={ORIGIN_X}
+            y1={ORIGIN_Y}
+            x2={ray.x}
+            y2={ray.y}
             stroke="currentColor"
             strokeWidth="1"
-            strokeOpacity={thread.opacity}
+            strokeOpacity={ray.opacity}
             vectorEffect="non-scaling-stroke"
           />
         ))}
@@ -72,13 +94,13 @@ export function CtaBand() {
     <section className="pb-20 sm:pb-28">
       <Container>
         <div className="relative overflow-hidden rounded-panel border border-hairline bg-mist px-6 py-16 text-center sm:px-12 sm:py-20">
-          <ThreadField />
+          <FirstLight />
 
-          {/* Clears the threads from behind the type without cutting
-              them off — the field keeps running to the card's edges. */}
+          {/* Lifts the type off the light without cutting it — the fan
+              keeps running to the card's edges. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_62%_at_50%_50%,var(--color-mist)_28%,transparent_100%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(52%_56%_at_50%_46%,var(--color-mist)_22%,transparent_100%)]"
           />
 
           <div className="relative mx-auto flex max-w-2xl flex-col items-center gap-5">

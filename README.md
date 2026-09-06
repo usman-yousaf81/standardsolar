@@ -168,6 +168,20 @@ a 1440px laptop hero wants ~2400px, so both will look soft on real
 hardware. Larger versions of the same shots drop straight in at the same
 paths, no code change needed.
 
+### Home page photography
+
+`public/images/home/` holds five photographs fetched from Openverse.
+Two are CC0 (no conditions). Three are **CC BY**, which permits
+commercial use only while the author is credited — that credit is
+`site.footer.imageCredits`, rendered in the footer's small print.
+
+**Do not delete that line while those images are in use.** Replace them
+with your own photography and it can go.
+
+Sources were restricted to Wikimedia-hosted files: the larger CC0 pools
+(rawpixel in particular) deliver watermarked previews, which are no use
+on a real site.
+
 ### Logo
 
 `public/logo.png` is the mark with its white background removed and the
@@ -333,7 +347,8 @@ its natural height and becomes a plain click-through list.
 - [ ] Read the 13 `// CONFIRM` lines and correct anything inaccurate
 - [ ] Send real project numbers to replace the spec-sheet figures in the
       stats strip
-- [ ] Add real photography to `public/images/`
+- [ ] Replace the stock home-page photography with your own, and drop
+      `footer.imageCredits` once the CC BY images are gone
 - [ ] Supply a transparent PNG or SVG version of the logo (the current
       `public/logo.jpeg` has a baked-in white background)
 - [ ] Wire the enquiry form to an email service or CRM

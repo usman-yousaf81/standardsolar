@@ -696,12 +696,13 @@ export const site = {
   intro: {
     marker: "Faisalabad, Pakistan",
     tags: ["Commercial", "Industrial", "Residential", "Agricultural"],
-    /* The 2x2 grid beside the sub-heading — one per tag above. */
+    /* The 2x2 grid beside the sub-heading. Freely licensed photographs,
+       credited in footer.imageCredits where the licence requires it. */
     images: [
-      "/images/solutions/commercial.jpg",
-      "/images/solutions/industrial.png",
-      "/images/solutions/residential.jpg",
-      "/images/solutions/agricultural.jpg",
+      "/images/home/intro-commercial.jpg",
+      "/images/home/intro-industrial.jpg",
+      "/images/home/intro-residential.jpg",
+      "/images/home/intro-agricultural.jpg",
     ],
     statement:
       "To make solar energy accessible, affordable, and reliable for Pakistani businesses and communities, contributing to energy independence and environmental sustainability.", // from your site
@@ -748,10 +749,9 @@ export const site = {
   whyUs: {
     eyebrow: "Why Standard Solar",
     heading: "The standard is in the name.",
-    /* DEMO — a crew shot stands in here. It is also used on the
-       commercial sector card, so a photograph of your own team would
-       stop it repeating on the home page. */
-    image: "/images/solutions/commercial.jpg",
+    /* A photograph of your own crew would beat a stock one here, but
+       this is properly licensed until then. */
+    image: "/images/home/why-us.jpg",
     points: [
       {
         title: "An industrial group, not a reseller",
@@ -860,6 +860,12 @@ export const site = {
       },
     ],
     legal: "The energy division of Standard Group.", // CONFIRM
+    /* Required credit for the CC BY photographs on the home page. Do not
+       remove it while those images are in use — the licence only permits
+       them if the author is credited. Swap in your own photography and
+       this line can go. */
+    imageCredits:
+      "Photographs: Eneco Group; Stephen Yang / The Solutions Project (CC BY).",
   },
 
   /* ---------------------------------------------------------------
