@@ -43,28 +43,19 @@ export function Intro() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <MediaSlot
-              label="INTRO_IMAGE_1"
-              className="aspect-4/3 rounded-card"
-              sizes="(min-width: 1024px) 33vw, 50vw"
-            />
-            <MediaSlot
-              label="INTRO_IMAGE_2"
-              className="aspect-4/3 rounded-card"
-              sizes="(min-width: 1024px) 33vw, 50vw"
-            />
-            <MediaSlot
-              label="INTRO_IMAGE_3"
-              className="aspect-4/3 rounded-card"
-              sizes="(min-width: 1024px) 33vw, 50vw"
-            />
-            <MediaSlot
-              label="INTRO_IMAGE_4"
-              className="aspect-4/3 rounded-card"
-              sizes="(min-width: 1024px) 33vw, 50vw"
-            />
-          </div>
+          <ul className="grid grid-cols-2 gap-4">
+            {site.intro.images.map((src, i) => (
+              <li key={src + i}>
+                <MediaSlot
+                  src={src}
+                  alt={site.intro.tags[i] ?? ""}
+                  label={`INTRO_IMAGE_${i + 1}`}
+                  className="aspect-4/3 w-full rounded-card"
+                  sizes="(min-width: 1024px) 33vw, 50vw"
+                />
+              </li>
+            ))}
+          </ul>
         </div>
       </Container>
     </Section>

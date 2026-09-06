@@ -9,6 +9,8 @@ export function WhyUs() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
           <MediaSlot
+            src={site.whyUs.image}
+            alt={site.whyUs.heading}
             label="WHY_US_IMAGE"
             className="aspect-4/5 w-full rounded-panel sm:aspect-4/3 lg:aspect-4/5"
             sizes="(min-width: 1024px) 50vw, 100vw"

@@ -696,6 +696,13 @@ export const site = {
   intro: {
     marker: "Faisalabad, Pakistan",
     tags: ["Commercial", "Industrial", "Residential", "Agricultural"],
+    /* The 2x2 grid beside the sub-heading — one per tag above. */
+    images: [
+      "/images/solutions/commercial.jpg",
+      "/images/solutions/industrial.png",
+      "/images/solutions/residential.jpg",
+      "/images/solutions/agricultural.jpg",
+    ],
     statement:
       "To make solar energy accessible, affordable, and reliable for Pakistani businesses and communities, contributing to energy independence and environmental sustainability.", // from your site
     heading: "Built by people who pay industrial bills.",
@@ -741,6 +748,10 @@ export const site = {
   whyUs: {
     eyebrow: "Why Standard Solar",
     heading: "The standard is in the name.",
+    /* DEMO — a crew shot stands in here. It is also used on the
+       commercial sector card, so a photograph of your own team would
+       stop it repeating on the home page. */
+    image: "/images/solutions/commercial.jpg",
     points: [
       {
         title: "An industrial group, not a reseller",
