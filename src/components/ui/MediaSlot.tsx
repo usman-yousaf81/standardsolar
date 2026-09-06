@@ -30,14 +30,19 @@ export function MediaSlot({
       rather than passed in as a class: two object-fit utilities on one
       element resolve by stylesheet order, not by class order. */
   fit?: "cover" | "contain";
-  /** Background behind a `contain` image. Same reasoning as `fit`. */
-  surface?: "silver" | "white";
+  /** Background behind a `contain` image. Same reasoning as `fit`.
+      `none` lets a cut-out product sit straight on the page. */
+  surface?: "silver" | "white" | "none";
 }) {
   if (src) {
     return (
       <div className={cn(
           "relative overflow-hidden",
-          surface === "white" ? "bg-white" : "bg-silver",
+          surface === "white"
+            ? "bg-white"
+            : surface === "none"
+              ? ""
+              : "bg-silver",
           className,
         )}>
         <Image

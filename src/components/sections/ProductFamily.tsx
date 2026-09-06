@@ -70,7 +70,7 @@ export function ProductFamily({
             alt={family.label}
             label={`${family.id.toUpperCase()}_IMAGE`}
             fit="contain"
-            surface="white"
+            surface="none"
             className="aspect-4/3 w-full rounded-panel"
             sizes="(min-width: 1024px) 40vw, 100vw"
           />

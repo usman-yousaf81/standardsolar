@@ -222,7 +222,7 @@ export function BuildYourSystem() {
                  these are catalogue shots in mixed ratios, and a 4:3
                  crop would slice the top and bottom off a tall panel. */
               fit="contain"
-              surface="white"
+              surface="none"
               className="builder-media-enter aspect-square w-full max-w-full rounded-panel lg:flex-1"
               sizes="(min-width: 1024px) 50vw, 90vw"
             />
@@ -265,7 +265,11 @@ export function BuildYourSystem() {
               role="tabpanel"
               aria-labelledby={`builder-tab-${family.id}`}
               tabIndex={0}
-              className="builder-enter builder-names snap-y snap-mandatory overflow-y-auto overflow-x-hidden"
+              /* w-fit so the scrollable area is only as wide as the longest
+                 name — scrolling just to the right of the text should not
+                 catch the list. The padding covers the wheel's sideways
+                 shift. */
+              className="builder-enter builder-names w-fit max-w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden pr-7"
               style={
                 rowHeight
                   ? { height: rowHeight * visible }
@@ -292,7 +296,7 @@ export function BuildYourSystem() {
                       type="button"
                       onClick={() => goToItem(index)}
                       aria-current={selected ? "true" : undefined}
-                      className="block w-full py-1 text-left will-change-transform lg:py-1.5"
+                      className="block w-max py-1 text-left will-change-transform lg:py-1.5"
                       style={{
                         transform: `translateX(${shift.toFixed(2)}px) rotate(${tilt}deg)`,
                         transformOrigin: "0% 50%",
