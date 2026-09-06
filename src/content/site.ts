@@ -158,19 +158,19 @@ export const site = {
     items: [
       {
         title: "Commercial Solar Systems", // from your site
-        image: "",
+        image: "/images/solutions/commercial.jpg",
       },
       {
         title: "Industrial Solar Systems", // from your site
-        image: "",
+        image: "/images/solutions/industrial.png",
       },
       {
         title: "Residential Solar Systems", // from your site
-        image: "",
+        image: "/images/solutions/residential.jpg",
       },
       {
         title: "Agricultural Solar Solutions", // from your site
-        image: "",
+        image: "/images/solutions/agricultural.jpg",
       },
     ] satisfies Service[],
   },
