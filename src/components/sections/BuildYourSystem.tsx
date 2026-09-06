@@ -223,7 +223,11 @@ export function BuildYourSystem() {
                  crop would slice the top and bottom off a tall panel. */
               fit="contain"
               surface="none"
-              className="builder-media-enter aspect-square w-full max-w-full rounded-panel lg:flex-1"
+              /* A smaller square rather than padding: a `fill` image resolves
+                 100% against the padding box, so padding here would not
+                 inset it. Every product is contained in the same square,
+                 so a tall panel and a wide battery share a longest side. */
+              className="builder-media-enter aspect-square w-[66%] max-w-full rounded-panel"
               sizes="(min-width: 1024px) 50vw, 90vw"
             />
 

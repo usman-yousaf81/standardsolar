@@ -210,7 +210,7 @@ export const site = {
             spec: "15-17% efficiency", // from your site
             description:
               "Multi-crystal cells at a lower cost per watt. Sensible where you have roof or ground area to spare and want the shortest route to payback.",
-            image: "/images/products/polycrystalline.webp",
+            image: "/images/products/polycrystalline.png",
           },
         ] satisfies BuilderItem[],
       },
