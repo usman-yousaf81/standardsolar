@@ -144,7 +144,7 @@ loads, and whether the widgets stack two-up or run as a row of four:
 | | Phone | Laptop |
 | --- | --- | --- |
 | Photo | `site.hero.mobileImage` | `site.hero.desktopImage` |
-| Widgets | 2 x 2 | row of 4 |
+| Widgets | 2 x 2, under the type | 2 x 2, beside the type on the right |
 
 Two files because the crops are different shapes: the portrait shot
 would be gutted on a wide screen and the landscape one on a phone. The
@@ -181,6 +181,16 @@ The original `logo.jpeg` is in git history at commit `11118b5` if the
 source file is ever needed again.
 
 ### Header
+
+The mark stands alone — no wordmark beside it.
+
+`PrimaryNav.tsx` is the desktop navigation. A single pill slides between
+items rather than each item carrying its own background: it follows the
+pointer on hover, follows keyboard focus while tabbing, and settles back
+on the current page when either leaves. Positions are measured from the
+live DOM rather than assumed, so the pill stays correct whatever the
+labels say, and it re-measures on resize and once the webfont has
+loaded — the font swap changes every label's width.
 
 Glass in both states rather than transparent-then-solid: always
 `backdrop-blur-xl backdrop-saturate-150`, with only the tint changing —

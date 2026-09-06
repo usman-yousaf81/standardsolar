@@ -7,6 +7,7 @@ import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";
+import { PrimaryNav } from "@/components/layout/PrimaryNav";
 import { Button, ArrowRight } from "@/components/ui/Button";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
@@ -99,38 +100,10 @@ export function SiteHeader() {
             <Logo showWordmark={false} />
           </div>
           <div className="hidden lg:block">
-            <Logo />
+            <Logo showWordmark={false} size="lg" />
           </div>
 
-          <nav
-            aria-label="Primary"
-            className="absolute left-1/2 hidden -translate-x-1/2 lg:block"
-          >
-            <ul className="flex items-center gap-1 rounded-full border border-hairline bg-white/80 p-1 shadow-[0_1px_2px_rgba(20,21,26,0.04)] backdrop-blur">
-              {site.nav.map((item) => {
-                const active =
-                  item.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(item.href);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "block rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-200",
-                        active
-                          ? "bg-navy text-white"
-                          : "text-ink-soft hover:bg-silver hover:text-ink",
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+          <PrimaryNav scrolled={scrolled} />
 
           {/* Wrapped rather than given `hidden lg:inline-flex` directly:
               the Button already sets `inline-flex`, and two display

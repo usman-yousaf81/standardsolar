@@ -9,7 +9,7 @@ import { Container } from "@/components/ui/Container";
  * frosted glass widgets.
  *
  * Only two things change between phone and laptop — which photograph
- * loads, and whether the widgets stack two-up or run as a row of four.
+ * loads, and whether the widget grid sits under the type or beside it.
  * The two files exist because the crops are different shapes: the
  * portrait shot would be gutted on a wide screen, and the landscape one
  * on a phone.
@@ -49,11 +49,11 @@ export function Hero() {
             over open grass rather than tree cover. */}
         <div
           aria-hidden
-          className="absolute inset-0 hidden bg-[linear-gradient(to_right,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.2)_45%,transparent_70%)] lg:block"
+          className="absolute inset-0 hidden bg-[linear-gradient(to_right,rgba(0,0,0,0.6)_0%,rgba(0,0,0,0.25)_45%,rgba(0,0,0,0.18)_100%)] lg:block"
         />
       </div>
 
-      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-40 pt-[104px] lg:min-h-[100vh] lg:pb-20 lg:pt-[152px]">
+      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-40 pt-[104px] lg:grid lg:min-h-[100vh] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-14 lg:pb-24 lg:pt-[152px]">
         <div className="relative">
           <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-white/80">
             <span aria-hidden className="size-1.5 rounded-full bg-white" />
@@ -69,9 +69,9 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Glass stat widgets — two-up on phones, a row of four on wide
-            screens. Same treatment either way. */}
-        <ul className="mt-7 grid grid-cols-2 gap-2 lg:mt-12 lg:max-w-4xl lg:grid-cols-4 lg:gap-3">
+        {/* Glass stat widgets — a 2 x 2 grid at every size, sitting
+            beside the type rather than under it on wide screens. */}
+        <ul className="mt-7 grid grid-cols-2 gap-2 lg:mt-0 lg:w-[430px] lg:gap-3">
           {site.stats.map((stat, i) => (
             <li
               key={stat.label}
