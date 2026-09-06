@@ -10,71 +10,19 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 import { ArrowRight } from "@/components/ui/Button";
 
-/**
- * Marker beside the active product name. A small raised dial: a light
- * disc with an arc around it showing how far through the family this
- * product sits, so the marker earns its place instead of just pointing.
- *
- * The 3D is only two inset shadows and a soft drop — enough to lift it
- * off the page without turning into a skeuomorphic button.
- */
-function Dial({
-  position,
-  total,
-  active,
-}: {
-  position: number;
-  total: number;
-  active: boolean;
-}) {
-  const radius = 9;
-  const circumference = 2 * Math.PI * radius;
-  const swept = active ? (position / total) * circumference : 0;
+/* The list reads as a wheel: names sit on the rim of a large circle,
+   so each one tilts and pulls back a little further from the centre.
+   DEGREES_PER_ROW is the tilt between neighbours; RADIUS is how far
+   away the imaginary centre is, which sets how quickly they pull back.
+   A big radius keeps the curve gentle. */
+const DEGREES_PER_ROW = 4;
+const RADIUS = 2000;
 
-  return (
-    <span
-      aria-hidden
-      className={cn(
-        "relative flex size-6 shrink-0 items-center justify-center transition-all duration-500 ease-[var(--ease-out-soft)] lg:size-7",
-        active ? "scale-100 opacity-100" : "scale-75 opacity-0",
-      )}
-    >
-      {/* Raised disc */}
-      <span className="absolute inset-0 rounded-full bg-gradient-to-b from-white to-silver-deep shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(20,21,26,0.10),0_1px_2px_rgba(20,21,26,0.14),0_6px_12px_-6px_rgba(20,21,26,0.35)] ring-1 ring-inset ring-ink/5" />
-
-      {/* Position arc */}
-      <svg viewBox="0 0 24 24" className="relative size-full -rotate-90">
-        <circle
-          cx="12"
-          cy="12"
-          r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          className="text-ink/10"
-        />
-        <circle
-          cx="12"
-          cy="12"
-          r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference - swept}
-          className="text-ink transition-[stroke-dashoffset] duration-700 ease-[var(--ease-out-soft)]"
-        />
-      </svg>
-
-      {/* Hub */}
-      <span className="absolute size-[3px] rounded-full bg-ink/70" />
-    </span>
-  );
+/** How far a row sits from the vertical centre line, in pixels. */
+function pullBack(offset: number) {
+  const radians = (offset * DEGREES_PER_ROW * Math.PI) / 180;
+  return RADIUS * (1 - Math.cos(radians));
 }
-
-/** How many product names are visible in the list at once. */
-const VISIBLE_ROWS = 4;
 
 /**
  * Product browser.
@@ -204,7 +152,11 @@ export function BuildYourSystem() {
     tabRefs.current[next]?.focus();
   };
 
-  const visible = Math.min(VISIBLE_ROWS, count);
+  /* Always odd, so one row sits dead centre. Short families get a
+     shallower wheel rather than a lot of empty air. */
+  const visible = Math.min(5, Math.max(3, count * 2 - 1));
+  const half = (visible - 1) / 2;
+  const maxPull = pullBack(half);
 
   return (
     <Section id="system" className="bg-silver">
@@ -308,36 +260,48 @@ export function BuildYourSystem() {
               role="tabpanel"
               aria-labelledby={`builder-tab-${family.id}`}
               tabIndex={0}
-              className="builder-enter builder-names snap-y snap-mandatory overflow-y-auto"
+              className="builder-enter builder-names snap-y snap-mandatory overflow-y-auto overflow-x-hidden"
               style={
                 rowHeight
                   ? { height: rowHeight * visible }
                   : { maxHeight: "42vh" }
               }
             >
+              {/* Lets the first name reach the centre of the wheel. */}
+              <li
+                aria-hidden
+                style={{ height: rowHeight ? rowHeight * half : 0 }}
+              />
+
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
+                const offset = index - itemIndex;
+                const tilt = offset * DEGREES_PER_ROW;
+                /* Measured from the far edge so the centred name sits
+                   furthest right and nothing is pushed off the left. */
+                const shift = maxPull - pullBack(offset);
+
                 return (
-                  <li key={item.name} data-row className="snap-start">
+                  <li key={item.name} data-row className="snap-center">
                     <button
                       type="button"
                       onClick={() => goToItem(index)}
                       aria-current={selected ? "true" : undefined}
-                      className="group flex w-full items-center gap-3 py-1 text-left lg:py-1.5"
+                      className="block w-full py-1 text-left will-change-transform lg:py-1.5"
+                      style={{
+                        transform: `translateX(${shift.toFixed(2)}px) rotate(${tilt}deg)`,
+                        transformOrigin: "0% 50%",
+                        opacity: selected
+                          ? 1
+                          : Math.max(
+                              0.16,
+                              0.5 - (Math.abs(offset) - 1) * 0.15,
+                            ),
+                        transition:
+                          "transform 550ms var(--ease-out-soft), opacity 550ms var(--ease-out-soft)",
+                      }}
                     >
-                      <Dial
-                        position={index + 1}
-                        total={count}
-                        active={selected}
-                      />
-                      <span
-                        className={cn(
-                          "font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] transition-colors duration-300",
-                          selected
-                            ? "text-ink"
-                            : "text-ink/25 group-hover:text-ink/55",
-                        )}
-                      >
+                      <span className="font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] text-ink">
                         {item.name}
                       </span>
                     </button>
@@ -345,10 +309,10 @@ export function BuildYourSystem() {
                 );
               })}
 
-              {/* Lets the last name scroll up to the top of the list. */}
+              {/* And lets the last name reach the centre too. */}
               <li
                 aria-hidden
-                style={{ height: rowHeight ? rowHeight * (visible - 1) : 0 }}
+                style={{ height: rowHeight ? rowHeight * half : 0 }}
               />
             </ul>
 
