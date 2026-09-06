@@ -83,9 +83,10 @@ export function SiteHeader() {
             aria-label="Open menu"
             className={cn(iconButton, "-ml-2 lg:hidden")}
           >
-            <span className="relative block h-3 w-[18px]">
+            <span className="relative block h-[13px] w-[23px]">
               <span className="absolute left-0 top-0 block h-[1.5px] w-full rounded bg-current" />
-              <span className="absolute left-0 top-3 block h-[1.5px] w-full rounded bg-current" />
+              <span className="absolute left-0 top-[5.75px] block h-[1.5px] w-full rounded bg-current" />
+              <span className="absolute left-0 top-[11.5px] block h-[1.5px] w-full rounded bg-current" />
             </span>
           </button>
 
