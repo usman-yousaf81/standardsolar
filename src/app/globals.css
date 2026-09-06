@@ -120,32 +120,34 @@
 }
 
 /* ------------------------------------------------------------------
-   "Build your system" — the scroll-driven product browser.
+   "Build your system" — the product browser.
 
-   The section is deliberately taller than the viewport. Its inner
-   panel sticks to the top while you scroll past, and scroll progress
-   picks the active product. Height is derived from the number of
-   products via --builder-steps, set inline by the component, so the
-   scroll length always matches the content.
+   An ordinary section. The only thing that scrolls inside it is the
+   list of product names, which snaps row by row and fades out towards
+   the bottom so it reads as a list you can move through.
 ------------------------------------------------------------------ */
 @layer utilities {
-  .builder-stage {
-    height: calc(100vh + var(--builder-steps, 1) * 42vh);
+  .builder-names {
+    scrollbar-width: none;
+    overscroll-behavior: contain;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 40%,
+      rgba(0, 0, 0, 0.35) 78%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 40%,
+      rgba(0, 0, 0, 0.35) 78%,
+      transparent 100%
+    );
   }
 
-  .builder-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    /* svh keeps the panel inside the visible area on phones, where the
-       URL bar makes 100vh taller than what you can actually see. */
-    height: 100svh;
-  }
-
-  @media (max-width: 640px) {
-    .builder-stage {
-      height: calc(100vh + var(--builder-steps, 1) * 34vh);
-    }
+  .builder-names::-webkit-scrollbar {
+    display: none;
   }
 
   .builder-enter {
@@ -179,18 +181,6 @@
   }
 }
 
-/* Without motion the section collapses to its natural height and the
-   product list becomes a plain click-through. */
-@media (prefers-reduced-motion: reduce) {
-  .builder-stage {
-    height: auto;
-  }
-
-  .builder-sticky {
-    position: static;
-    height: auto;
-  }
-}
 
 /* ------------------------------------------------------------------
    Full-screen mobile menu.
