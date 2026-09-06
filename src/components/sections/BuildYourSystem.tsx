@@ -10,6 +10,69 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 import { ArrowRight } from "@/components/ui/Button";
 
+/**
+ * Marker beside the active product name. A small raised dial: a light
+ * disc with an arc around it showing how far through the family this
+ * product sits, so the marker earns its place instead of just pointing.
+ *
+ * The 3D is only two inset shadows and a soft drop — enough to lift it
+ * off the page without turning into a skeuomorphic button.
+ */
+function Dial({
+  position,
+  total,
+  active,
+}: {
+  position: number;
+  total: number;
+  active: boolean;
+}) {
+  const radius = 9;
+  const circumference = 2 * Math.PI * radius;
+  const swept = active ? (position / total) * circumference : 0;
+
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "relative flex size-6 shrink-0 items-center justify-center transition-all duration-500 ease-[var(--ease-out-soft)] lg:size-7",
+        active ? "scale-100 opacity-100" : "scale-75 opacity-0",
+      )}
+    >
+      {/* Raised disc */}
+      <span className="absolute inset-0 rounded-full bg-gradient-to-b from-white to-silver-deep shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_2px_rgba(20,21,26,0.10),0_1px_2px_rgba(20,21,26,0.14),0_6px_12px_-6px_rgba(20,21,26,0.35)] ring-1 ring-inset ring-ink/5" />
+
+      {/* Position arc */}
+      <svg viewBox="0 0 24 24" className="relative size-full -rotate-90">
+        <circle
+          cx="12"
+          cy="12"
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          className="text-ink/10"
+        />
+        <circle
+          cx="12"
+          cy="12"
+          r={radius}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference - swept}
+          className="text-ink transition-[stroke-dashoffset] duration-700 ease-[var(--ease-out-soft)]"
+        />
+      </svg>
+
+      {/* Hub */}
+      <span className="absolute size-[3px] rounded-full bg-ink/70" />
+    </span>
+  );
+}
+
 /** How many product names are visible in the list at once. */
 const VISIBLE_ROWS = 4;
 
@@ -262,12 +325,10 @@ export function BuildYourSystem() {
                       aria-current={selected ? "true" : undefined}
                       className="group flex w-full items-center gap-3 py-1 text-left lg:py-1.5"
                     >
-                      <span
-                        aria-hidden
-                        className={cn(
-                          "block size-1.5 shrink-0 rounded-full bg-ink transition-all duration-300",
-                          selected ? "opacity-100" : "opacity-0",
-                        )}
+                      <Dial
+                        position={index + 1}
+                        total={count}
+                        active={selected}
                       />
                       <span
                         className={cn(
