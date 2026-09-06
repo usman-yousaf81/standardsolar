@@ -1,5 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
-import { Services } from "@/components/sections/Services";
+import { SectorGrid } from "@/components/sections/SectorGrid";
 import { BuildYourSystem } from "@/components/sections/BuildYourSystem";
 import { Intro } from "@/components/sections/Intro";
 import { Process } from "@/components/sections/Process";
@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <Services />
+      <SectorGrid />
       <BuildYourSystem />
       <Intro />
       <Process />

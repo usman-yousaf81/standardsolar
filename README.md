@@ -246,7 +246,7 @@ Put any credentials in `.env.local`, which is git-ignored.
 | Order | Section            | Source                                    |
 | ----- | ------------------ | ----------------------------------------- |
 | 1     | Hero               | `site.hero`                               |
-| 2     | Solutions (4 cards)| `site.services` — filled from your page   |
+| 2     | Sectors (4 cards)  | `site.sectors` — links through to /sectors |
 | 3     | Stats strip        | `site.stats` — desktop only, see below    |
 | 4     | Build your system  | `site.builder` — scroll-driven, links to `/products` |
 | 5     | Intro / mission    | `site.intro`                              |
@@ -254,6 +254,20 @@ Put any credentials in `.env.local`, which is git-ignored.
 | 7     | Why us             | `site.whyUs`                              |
 | 8     | FAQ                | `site.faq`                                |
 | 9     | Closing CTA        | `site.ctaBand`                            |
+
+### Sectors page (`/sectors`)
+
+One section per sector, built from `site.sectors.items`: number, kicker,
+name, description, published figures, the applications it covers, the
+photograph, and a work block. Sides alternate down the page.
+
+The work block is the navy card — a quote, who said it, and the project
+it came from. Those four fields per sector are the only brackets left in
+the file. A quote nobody gave you and a project that was never built
+would be fabricated testimony on a live site, so they wait for real ones.
+
+The page carries nothing but sectors: no products, no process. Products
+live at `/products` and the process is on the home page.
 
 ### Products page (`/products`)
 

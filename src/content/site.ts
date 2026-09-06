@@ -17,9 +17,26 @@
 
 export type NavItem = { label: string; href: string };
 export type Stat = { value: string; label: string };
-export type Service = {
+export type SectorFigure = { value: string; label: string };
+export type Sector = {
+  id: string;
+  index: string;
   title: string;
+  /** Short line under the name — who the sector is for. */
+  kicker: string;
+  description: string;
+  /** Where we work inside this sector. */
+  applications: string[];
+  /** Published figures. Leave the array empty if there are none. */
+  figures: SectorFigure[];
   image: string;
+  /** Work delivered in this sector. Real jobs and real quotes only. */
+  work: {
+    quote: string;
+    name: string;
+    role: string;
+    project: string;
+  };
 };
 export type Step = { title: string; description: string };
 export type Point = { title: string; description: string };
@@ -68,7 +85,7 @@ export const site = {
   --------------------------------------------------------------- */
   nav: [
     { label: "Home", href: "/" },
-    { label: "Solutions", href: "/services" },
+    { label: "Sectors", href: "/sectors" },
     { label: "Products", href: "/products" },
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
@@ -85,12 +102,12 @@ export const site = {
   mobileMenu: {
     groups: [
       {
-        label: "Solutions",
+        label: "Sectors",
         links: [
-          { label: "Commercial Solar", href: "/services#solutions" },
-          { label: "Industrial Solar", href: "/services#solutions" },
-          { label: "Residential Solar", href: "/services#solutions" },
-          { label: "Agricultural Solar", href: "/services#solutions" },
+          { label: "Commercial Solar", href: "/sectors#sectors" },
+          { label: "Industrial Solar", href: "/sectors#sectors" },
+          { label: "Residential Solar", href: "/sectors#sectors" },
+          { label: "Agricultural Solar", href: "/sectors#sectors" },
         ],
       },
       {
@@ -147,32 +164,114 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
-     5. SOLUTIONS — the four category cards below the hero
-     Titles, kickers and tags are as published on your page.
+     5. SECTORS — the four the company builds for
+     Titles, kickers, descriptions, applications and figures are all as
+     published on your page.
+
+     `work` is what has actually been delivered in each sector. Those
+     are the only fields still in brackets: a quote nobody gave you and
+     a project that was never built would be fabricated testimony on a
+     live site, so they are left for you. Send real ones and they drop
+     straight in.
   --------------------------------------------------------------- */
-  services: {
-    eyebrow: "What we build",
+  sectors: {
+    eyebrow: "Sectors",
     heading: "Four sectors. One standard.",
     intro:
       "From mill roofs to tube wells to family homes — every system is sized, engineered and installed for the load it actually has to carry.",
+    /* Heading above the work block inside each sector. */
+    workLabel: "Work in this sector",
     items: [
       {
+        id: "commercial",
+        index: "01",
         title: "Commercial Solar Systems", // from your site
+        kicker: "For Businesses & Offices", // from your site
+        description:
+          "Cut operational electricity costs by 70-90%, with return on investment typically inside two to four years.", // from your site
+        applications: [
+          "Corporate offices",
+          "Retail stores",
+          "Restaurants",
+          "Healthcare",
+          "Educational institutions",
+          "Banks",
+        ], // from your site
+        figures: [
+          { value: "70-90%", label: "Cut from electricity costs" }, // from your site
+          { value: "2-4 yrs", label: "Typical return on investment" }, // from your site
+        ],
         image: "/images/solutions/commercial.jpg",
+        work: {
+          quote: "[COMMERCIAL_QUOTE]",
+          name: "[COMMERCIAL_QUOTE_NAME]",
+          role: "[COMMERCIAL_QUOTE_ROLE]",
+          project: "[COMMERCIAL_PROJECT]",
+        },
       },
       {
+        id: "industrial",
+        index: "02",
         title: "Industrial Solar Systems", // from your site
+        kicker: "For Manufacturing & Heavy Industry", // from your site
+        description:
+          "As leaders in textile and manufacturing through Standard Industries, we understand industrial power needs — and design for them.", // from your site
+        applications: [
+          "Textile mills",
+          "Manufacturing plants",
+          "Food processing",
+          "Chemical & pharmaceutical",
+          "Warehousing",
+        ], // from your site
+        figures: [],
         image: "/images/solutions/industrial.png",
+        work: {
+          quote: "[INDUSTRIAL_QUOTE]",
+          name: "[INDUSTRIAL_QUOTE_NAME]",
+          role: "[INDUSTRIAL_QUOTE_ROLE]",
+          project: "[INDUSTRIAL_PROJECT]",
+        },
       },
       {
+        id: "residential",
+        index: "03",
         title: "Residential Solar Systems", // from your site
+        kicker: "For Homes & Communities", // from your site
+        description:
+          "From a 3-5 kW starter system to a 10-20 kW whole-home installation, sized to what your household actually uses.", // from your site
+        applications: [
+          "Small systems 3-5 kW",
+          "Large systems 10-20 kW",
+        ], // from your site
+        figures: [
+          { value: "3-20 kW", label: "System range" }, // from your site
+        ],
         image: "/images/solutions/residential.jpg",
+        work: {
+          quote: "[RESIDENTIAL_QUOTE]",
+          name: "[RESIDENTIAL_QUOTE_NAME]",
+          role: "[RESIDENTIAL_QUOTE_ROLE]",
+          project: "[RESIDENTIAL_PROJECT]",
+        },
       },
       {
+        id: "agricultural",
+        index: "04",
         title: "Agricultural Solar Solutions", // from your site
+        kicker: "Solar Water Pumping Systems", // from your site
+        description:
+          "Solar water pumping that takes diesel out of irrigation, with power for the wider farm operation alongside it.", // from your site
+        applications: ["Irrigation", "Farm operations"], // from your site
+        figures: [],
         image: "/images/solutions/agricultural.jpg",
+        work: {
+          quote: "[AGRICULTURAL_QUOTE]",
+          name: "[AGRICULTURAL_QUOTE_NAME]",
+          role: "[AGRICULTURAL_QUOTE_ROLE]",
+          project: "[AGRICULTURAL_PROJECT]",
+        },
       },
-    ] satisfies Service[],
+    ] satisfies Sector[],
   },
 
   /* ---------------------------------------------------------------
@@ -586,17 +685,17 @@ export const site = {
         title: "Company",
         links: [
           { label: "About Us", href: "/about" },
-          { label: "Solutions", href: "/services" },
+          { label: "Sectors", href: "/sectors" },
           { label: "Contact", href: "/contact" },
         ],
       },
       {
-        title: "Solutions",
+        title: "Sectors",
         links: [
-          { label: "Commercial Solar", href: "/services#solutions" },
-          { label: "Industrial Solar", href: "/services#solutions" },
-          { label: "Residential Solar", href: "/services#solutions" },
-          { label: "Agricultural Solar", href: "/services#solutions" },
+          { label: "Commercial Solar", href: "/sectors#sectors" },
+          { label: "Industrial Solar", href: "/sectors#sectors" },
+          { label: "Residential Solar", href: "/sectors#sectors" },
+          { label: "Agricultural Solar", href: "/sectors#sectors" },
         ],
       },
       {
@@ -624,11 +723,11 @@ export const site = {
         "The vision behind it is a Pakistan powered by clean, renewable energy—reducing dependence on fossil fuels, lowering electricity costs, and protecting our environment for future generations.", // from your site
       ],
     },
-    services: {
-      eyebrow: "What we build",
-      heading: "Four sectors. One standard.",
+    sectors: {
+      eyebrow: "Sectors",
+      heading: "Who we build for.",
       intro:
-        "Commercial, industrial, residential and agricultural systems — each one sized from the load it has to carry, then built from panels, inverters and storage chosen to match.",
+        "Commercial, industrial, residential and agricultural. Four sectors, each with its own load profile, its own economics and its own reasons for going solar — and a system sized from the one in front of us.",
     },
     contact: {
       eyebrow: "Contact",
