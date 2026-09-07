@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { Enquiry } from "@/app/admin_usman6655/enquiries/page";
+import type { Enquiry } from "@/app/admin_usman6655/(portal)/enquiries/page";
 import {
   deleteEnquiry,
   updateEnquiry,
-} from "@/app/admin_usman6655/enquiries/actions";
+} from "@/app/admin_usman6655/(portal)/enquiries/actions";
 import { cn } from "@/lib/utils";
 import { buttonClass, ghostButtonClass, inputClass } from "./ui";
 

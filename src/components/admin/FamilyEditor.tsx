@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { FamilyRow, ProductRow } from "@/app/admin_usman6655/products/page";
+import type { FamilyRow, ProductRow } from "@/app/admin_usman6655/(portal)/products/page";
 import {
   addProduct,
   deleteProduct,
   saveFamily,
   saveProduct,
-} from "@/app/admin_usman6655/products/actions";
+} from "@/app/admin_usman6655/(portal)/products/actions";
 import { cn } from "@/lib/utils";
 import { ImageField } from "./ImageField";
 import { SaveBar } from "./SaveBar";

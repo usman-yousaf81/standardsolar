@@ -6,20 +6,32 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabase/config";
 import { ADMIN_LOGIN_PATH, ADMIN_PATH } from "@/lib/admin/config";
+import { ADMIN_USER_HEADER } from "@/lib/admin/auth";
 
 /**
- * Refreshes the Supabase session cookie on every admin request, so a
- * signed-in admin is not thrown out mid-edit when the access token
- * expires, and turns unauthenticated visitors around at the door.
+ * Runs on admin requests only. Two jobs:
  *
- * This is a convenience layer. The authoritative check is row level
- * security in the database — middleware alone would be a lock on a door
- * with no walls.
+ *  1. Refresh the Supabase session so nobody is signed out mid-edit.
+ *  2. Verify the user once, and pass the id forward on a header.
+ *
+ * The second job is the performance one. getUser() is a network round
+ * trip; the pages used to repeat it, which doubled the cost of every
+ * navigation for an answer middleware already had.
+ *
+ * Any inbound copy of that header is deleted before ours is set, so a
+ * client cannot forge it. And it decides nothing that matters — row
+ * level security still checks the real session on every query.
  */
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.delete(ADMIN_USER_HEADER);
 
-  if (!isSupabaseConfigured) return response;
+  if (!isSupabaseConfigured) {
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
+
+  // Collected during getUser and written onto whichever response wins.
+  const refreshed: { name: string; value: string; options: object }[] = [];
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
@@ -27,42 +39,48 @@ export async function middleware(request: NextRequest) {
         return request.cookies.getAll();
       },
       setAll(toSet) {
-        toSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        toSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
-        );
+        refreshed.push(...toSet);
       },
     },
   });
 
-  // getUser revalidates the token with Supabase; getSession only reads
-  // the cookie and would trust a forged one.
+  // getUser revalidates the token with Supabase. getSession only reads
+  // the cookie, and would trust a forged one.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (user) requestHeaders.set(ADMIN_USER_HEADER, user.id);
+
   const { pathname } = request.nextUrl;
   const isLogin = pathname.startsWith(ADMIN_LOGIN_PATH);
+
+  const withCookies = (response: NextResponse) => {
+    refreshed.forEach(({ name, value, options }) =>
+      response.cookies.set(name, value, options),
+    );
+    return response;
+  };
 
   if (!user && !isLogin) {
     const url = request.nextUrl.clone();
     url.pathname = ADMIN_LOGIN_PATH;
     url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
+    return withCookies(NextResponse.redirect(url));
   }
 
   if (user && isLogin) {
     const url = request.nextUrl.clone();
     url.pathname = ADMIN_PATH;
     url.search = "";
-    return NextResponse.redirect(url);
+    return withCookies(NextResponse.redirect(url));
   }
 
-  return response;
+  return withCookies(
+    NextResponse.next({ request: { headers: requestHeaders } }),
+  );
 }
 
 export const config = {
-  // Only the admin area. Public pages never pay for this.
   matcher: ["/admin_usman6655/:path*"],
 };

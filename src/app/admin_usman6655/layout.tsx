@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AdminNav } from "@/components/admin/AdminNav";
 
 export const metadata: Metadata = {
   title: { default: "Admin", template: "%s — Standard Solar admin" },
@@ -8,20 +7,12 @@ export const metadata: Metadata = {
 };
 
 /**
- * The portal has its own chrome. The login screen renders without the
- * nav because it is the one page reachable while signed out — it opts
- * out by being the only child that ignores this shell's sidebar, which
- * it does simply by not needing it.
+ * Metadata only. The sidebar lives in (portal)/layout.tsx so the
+ * sign-in screen, which sits outside that group, does not inherit it —
+ * there is no nav worth showing to someone who is not signed in.
  */
 export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <div className="min-h-dvh bg-mist">
-      <AdminNav />
-      <main className="mx-auto w-full max-w-[1100px] px-5 py-8 sm:px-8 sm:py-12">
-        {children}
-      </main>
-    </div>
-  );
+  return children;
 }

@@ -27,7 +27,7 @@ async function counts(supabase: NonNullable<Awaited<ReturnType<typeof requireAdm
 }
 
 export default async function AdminOverviewPage() {
-  const { supabase, user } = await requireAdmin();
+  const { supabase } = await requireAdmin();
   const stats = await counts(supabase);
 
   const tiles = [
@@ -55,7 +55,7 @@ export default async function AdminOverviewPage() {
     <div className="flex flex-col gap-8">
       <PageTitle
         title="Overview"
-        description={`Signed in as ${user.email}. Everything the website shows is edited from here — changes go live as soon as they are saved.`}
+        description="Everything the website shows is edited from here. Changes go live the moment they are saved."
       />
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

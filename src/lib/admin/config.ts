@@ -12,14 +12,42 @@ export const ADMIN_LOGIN_PATH = `${ADMIN_PATH}/login`;
 export type AdminNavItem = {
   href: string;
   label: string;
+  icon: "overview" | "enquiries" | "hero" | "sectors" | "products";
+  description: string;
   /** Overview matches only itself; the rest match their subtree. */
   exact?: boolean;
 };
 
 export const ADMIN_NAV: AdminNavItem[] = [
-  { href: ADMIN_PATH, label: "Overview", exact: true },
-  { href: `${ADMIN_PATH}/enquiries`, label: "Enquiries" },
-  { href: `${ADMIN_PATH}/hero`, label: "Hero" },
-  { href: `${ADMIN_PATH}/sectors`, label: "Sectors" },
-  { href: `${ADMIN_PATH}/products`, label: "Products" },
+  {
+    href: ADMIN_PATH,
+    label: "Overview",
+    icon: "overview",
+    description: "What needs attention",
+    exact: true,
+  },
+  {
+    href: `${ADMIN_PATH}/enquiries`,
+    label: "Enquiries",
+    icon: "enquiries",
+    description: "Contact form submissions",
+  },
+  {
+    href: `${ADMIN_PATH}/hero`,
+    label: "Hero",
+    icon: "hero",
+    description: "Home page opening screen",
+  },
+  {
+    href: `${ADMIN_PATH}/sectors`,
+    label: "Sectors",
+    icon: "sectors",
+    description: "The four sectors and their work",
+  },
+  {
+    href: `${ADMIN_PATH}/products`,
+    label: "Products",
+    icon: "products",
+    description: "Panels, inverters, batteries",
+  },
 ];

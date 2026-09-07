@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import type { Testimonial } from "@/app/admin_usman6655/sectors/[id]/page";
+import type { Testimonial } from "@/app/admin_usman6655/(portal)/sectors/[id]/page";
 import {
   addTestimonial,
   deleteTestimonial,
   saveTestimonial,
-} from "@/app/admin_usman6655/sectors/actions";
+} from "@/app/admin_usman6655/(portal)/sectors/actions";
 import { cn } from "@/lib/utils";
 import { SaveBar } from "./SaveBar";
 import { Card, Field, ghostButtonClass, inputClass } from "./ui";
