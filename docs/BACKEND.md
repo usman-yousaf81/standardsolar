@@ -49,14 +49,34 @@ anon key exposes what is already on the website and no more.
    - `supabase/migrations/0001_init.sql` — tables, policies, storage
    - `supabase/migrations/0002_seed.sql` — loads today's content
 
-4. **Create your admin user** in Authentication → Users, then grant it:
-   ```sql
-   insert into public.admins (user_id, email)
-   select id, email from auth.users where email = 'you@example.com';
+4. **Create the user** in Authentication → Users, then grant access
+   from the terminal — no SQL needed:
+   ```bash
+   npm run admin:grant -- someone@example.com
+   npm run admin:list
+   npm run admin:revoke -- someone@example.com
    ```
+   These read the service role key from `.env.local`, so they work
+   against whichever project that file points at. The user must exist in
+   Authentication → Users first; the script grants access, it does not
+   create accounts.
+
+   The same thing can be done by hand in Table Editor → `admins` → Insert
+   row, pasting the user's UID from Authentication → Users.
 
 5. **Check it took**: `curl localhost:3000/api/health` should report
    `"supabaseConfigured": true`.
+
+## Why writes look like they succeed when they don't
+
+PostgREST answers a blocked `UPDATE` or `DELETE` with `204`, the same as
+a successful one — row level security filters the rows out, so the
+statement matches nothing and reports no error. Verified: a signed-in
+non-admin got `204` from both, and nothing changed.
+
+So never read `204` as proof a write landed. The admin screens gate on
+`requireAdmin` before the request is made, and read back what they
+wrote.
 
 ## Regenerating the seed
 

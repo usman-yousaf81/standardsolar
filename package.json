@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "seed:gen": "node scripts/gen-seed.mjs"
+    "seed:gen": "node scripts/gen-seed.mjs",
+    "admin:grant": "node scripts/grant-admin.mjs grant",
+    "admin:revoke": "node scripts/grant-admin.mjs revoke",
+    "admin:list": "node scripts/grant-admin.mjs list",
+    "content:push": "node scripts/push-content.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.6",
