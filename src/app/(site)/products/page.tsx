@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/content/site";
+import { getProductsPage } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { PageHeader } from "@/components/sections/PageHeader";
@@ -12,8 +13,9 @@ export const metadata: Metadata = {
   description: site.products.intro,
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
   const { products } = site;
+  const families = await getProductsPage();
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function ProductsPage() {
 
       <ProductOverview />
 
-      {products.families.map((family, i) => (
+      {families.map((family, i) => (
         <ProductFamily
           key={family.id}
           family={family}

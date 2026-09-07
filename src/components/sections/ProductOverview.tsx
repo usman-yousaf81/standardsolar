@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { site } from "@/content/site";
+import { getProductsPage } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
@@ -37,8 +38,9 @@ function Connector() {
  * the page header so the three categories register before anyone starts
  * reading detail.
  */
-export function ProductOverview() {
-  const { overview, families } = site.products;
+export async function ProductOverview() {
+  const { overview } = site.products;
+  const families = await getProductsPage();
 
   return (
     <Section className="bg-mist py-16 sm:py-20">

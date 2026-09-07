@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { site } from "@/content/site";
+import { getHero, getStats } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 
@@ -18,22 +18,24 @@ import { Container } from "@/components/ui/Container";
  * so the photograph runs to the very top of the screen and shows through
  * the header's glass. That 72px is added back as internal padding.
  */
-export function Hero() {
+export async function Hero() {
+  const [hero, stats] = await Promise.all([getHero(), getStats()]);
+
   return (
     <section className="relative -mt-[72px] overflow-hidden">
       {/* Photograph — portrait crop on phones, landscape from lg up */}
       <div className="absolute inset-0">
         <Image
-          src={site.hero.mobileImage}
-          alt={site.hero.mobileImageAlt}
+          src={hero.mobileImage}
+          alt={hero.mobileImageAlt}
           fill
           priority
           sizes="100vw"
           className="object-cover lg:hidden"
         />
         <Image
-          src={site.hero.desktopImage}
-          alt={site.hero.desktopImageAlt}
+          src={hero.desktopImage}
+          alt={hero.desktopImageAlt}
           fill
           priority
           sizes="100vw"
@@ -57,22 +59,22 @@ export function Hero() {
         <div className="relative">
           <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-white/80">
             <span aria-hidden className="size-1.5 rounded-full bg-white" />
-            {site.hero.eyebrow}
+            {hero.eyebrow}
           </span>
 
           <h1 className="mt-5 max-w-[16ch] text-[clamp(2.4rem,10vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-white lg:mt-6">
-            {site.hero.headline}
+            {hero.headline}
           </h1>
 
           <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-white/75 lg:mt-5 lg:text-base">
-            {site.hero.subhead}
+            {hero.subhead}
           </p>
         </div>
 
         {/* Glass stat widgets — a 2 x 2 grid at every size, sitting
             beside the type rather than under it on wide screens. */}
         <ul className="mt-7 grid grid-cols-2 gap-2 lg:mt-0 lg:w-[430px] lg:gap-3">
-          {site.stats.map((stat, i) => (
+          {stats.map((stat, i) => (
             <li
               key={stat.label}
               className={cn(

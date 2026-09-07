@@ -6,13 +6,16 @@ import { Process } from "@/components/sections/Process";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBand } from "@/components/sections/CtaBand";
+import { getProductFamilies } from "@/lib/content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const families = await getProductFamilies();
+
   return (
     <>
       <Hero />
       <SectorGrid />
-      <BuildYourSystem />
+      <BuildYourSystem families={families} />
       <Intro />
       <Process />
       <WhyUs />

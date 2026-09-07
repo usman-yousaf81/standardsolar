@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site } from "@/content/site";
+import { getSector, getSectors } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
@@ -11,12 +12,11 @@ import { CtaBand } from "@/components/sections/CtaBand";
 
 type Params = { slug: string };
 
-function findSector(slug: string) {
-  return site.sectors.items.find((entry) => entry.id === slug);
-}
-
-export function generateStaticParams(): Params[] {
-  return site.sectors.items.map((entry) => ({ slug: entry.id }));
+/* Prerenders whatever is in the database at build time. A sector added
+   afterwards still works — dynamicParams renders it on demand. */
+export async function generateStaticParams(): Promise<Params[]> {
+  const sectors = await getSectors();
+  return sectors.map((entry) => ({ slug: entry.id }));
 }
 
 export async function generateMetadata({
@@ -25,7 +25,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const sector = findSector(slug);
+  const sector = await getSector(slug);
   if (!sector) return {};
   return { title: sector.title, description: sector.description };
 }
@@ -36,10 +36,10 @@ export default async function SectorPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const sector = findSector(slug);
+  const [sector, sectors] = await Promise.all([getSector(slug), getSectors()]);
   if (!sector) notFound();
 
-  const others = site.sectors.items.filter((entry) => entry.id !== sector.id);
+  const others = sectors.filter((entry) => entry.id !== sector.id);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site } from "@/content/site";
+import { getSectors } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
@@ -10,12 +11,14 @@ import { ArrowRight } from "@/components/ui/Button";
  * The four sectors on the home page — photograph and name only, each
  * one a way through to its section on the sectors page.
  */
-export function SectorGrid({
+export async function SectorGrid({
   /** The sectors page states this in its own header. */
   showHeading = true,
 }: {
   showHeading?: boolean;
 } = {}) {
+  const sectors = await getSectors();
+
   return (
     <Section id="sectors" className={showHeading ? undefined : "pt-4 sm:pt-6"}>
       <Container>
@@ -34,7 +37,7 @@ export function SectorGrid({
             showHeading && "mt-14 lg:mt-20",
           )}
         >
-          {site.sectors.items.map((sector, i) => (
+          {sectors.map((sector, i) => (
             <li key={sector.title}>
               <Link href={`/sectors/${sector.id}`} className="group flex flex-col">
                 <MediaSlot

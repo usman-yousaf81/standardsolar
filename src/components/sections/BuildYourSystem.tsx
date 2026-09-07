@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { site } from "@/content/site";
+import type { ProductFamily } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
@@ -36,8 +37,13 @@ function pullBack(offset: number) {
  * Rows are measured rather than assumed, so the snap positions stay
  * exact whatever the type size resolves to at the current width.
  */
-export function BuildYourSystem() {
-  const families = site.builder.families;
+export function BuildYourSystem({
+  families,
+}: {
+  /* Passed in from the server page: this is a client component, so it
+     cannot read the database itself. */
+  families: readonly ProductFamily[];
+}) {
 
   const totalItems = useMemo(
     () => families.reduce((sum, family) => sum + family.items.length, 0),

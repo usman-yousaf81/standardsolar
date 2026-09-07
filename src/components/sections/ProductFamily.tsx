@@ -1,4 +1,4 @@
-import { site } from "@/content/site";
+import type { ProductsPageFamily } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
@@ -6,7 +6,7 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { RangeMeter } from "@/components/ui/RangeMeter";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 
-type Family = (typeof site.products.families)[number];
+type Family = ProductsPageFamily;
 
 /* Explicit lookups — Tailwind can't see class names built at runtime. */
 const typeColumns: Record<number, string> = {

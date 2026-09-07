@@ -1,8 +1,9 @@
 import { site } from "@/content/site";
+import type { Sector as ResolvedSector } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 
-type Sector = (typeof site.sectors.items)[number];
+type Sector = ResolvedSector;
 
 /** Oversized quote mark sitting behind a testimonial. */
 function QuoteMark() {

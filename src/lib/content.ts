@@ -246,3 +246,80 @@ export function getProductFamilies(): Promise<readonly ProductFamily[]> {
     site.builder.families,
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Products page                                                       */
+/* ------------------------------------------------------------------ */
+
+export type ProductsPageFamily = (typeof site.products.families)[number];
+
+type PageFamilyRow = {
+  id: string;
+  position: number;
+  label: string;
+  note: string;
+  heading: string;
+  intro: string;
+  specs: { label: string; value: string }[] | null;
+  products: Array<{
+    position: number;
+    name: string;
+    spec: string;
+    summary: string;
+    detail: string;
+    meter: { from: number; to: number; max: number; unit: string } | null;
+    image_url: string | null;
+  }> | null;
+};
+
+/**
+ * The /products page needs more per product than the home page browser
+ * does — a kicker, a longer description, sometimes an efficiency meter.
+ * Same rows, richer projection.
+ */
+export function getProductsPage(): Promise<readonly ProductsPageFamily[]> {
+  return cached(
+    "products-page",
+    async () => {
+      const supabase = createPublicClient();
+      if (!supabase) return site.products.families;
+
+      const { data, error } = await supabase
+        .from("product_families")
+        .select(
+          `id, position, label, note, heading, intro, specs,
+           products ( position, name, spec, summary, detail, meter, image_url )`,
+        )
+        .order("position");
+
+      if (error) throw error;
+      const rows = (data ?? []) as PageFamilyRow[];
+      if (!rows.length) return site.products.families;
+
+      return rows.map((row, i) => {
+        const fallback = site.products.families.find((f) => f.id === row.id);
+        const products = (row.products ?? []).slice().sort(byPosition);
+
+        return {
+          id: row.id,
+          index: String(i + 1).padStart(2, "0"),
+          label: row.label,
+          plain: row.heading || fallback?.plain || "",
+          short: fallback?.short ?? "",
+          intro: row.intro || fallback?.intro || "",
+          // No image column on families — the first product stands in,
+          // which is what the static content did by hand anyway.
+          image: products[0]?.image_url ?? fallback?.image ?? "",
+          types: products.map((product) => ({
+            name: product.name,
+            summary: product.summary,
+            detail: product.detail,
+            ...(product.meter ? { meter: product.meter } : {}),
+          })),
+          specs: row.specs?.length ? row.specs : (fallback?.specs ?? []),
+        } as unknown as ProductsPageFamily;
+      });
+    },
+    site.products.families,
+  );
+}

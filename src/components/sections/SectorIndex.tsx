@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/content/site";
+import { getSectors } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
@@ -11,12 +11,14 @@ import { ArrowRight } from "@/components/ui/Button";
  * has the grid, and a list gives the names room to be the largest thing
  * on screen.
  */
-export function SectorIndex() {
+export async function SectorIndex() {
+  const sectors = await getSectors();
+
   return (
     <Section className="pt-10 sm:pt-14">
       <Container>
         <ul className="border-t border-hairline">
-          {site.sectors.items.map((sector) => (
+          {sectors.map((sector) => (
             <li key={sector.id} className="border-b border-hairline">
               <Link
                 href={`/sectors/${sector.id}`}
