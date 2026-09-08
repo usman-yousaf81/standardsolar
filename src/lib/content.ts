@@ -186,140 +186,169 @@ export async function getSector(id: string): Promise<Sector | undefined> {
 /* Products                                                            */
 /* ------------------------------------------------------------------ */
 
-export type ProductFamily = (typeof site.builder.families)[number];
+export type ProductSpec = { label: string; value: string };
 
-type ProductRow = {
-  position: number;
+/** One item the company actually supplies. Photograph first. */
+export type Product = {
+  id: string;
   name: string;
-  spec: string;
-  description: string;
-  image_url: string | null;
+  /** One short line under the name. Not a paragraph. */
+  tagline: string;
+  /** Longer line, shown only by the home-page wheel. */
+  blurb: string;
+  image: string;
+  specs: readonly ProductSpec[];
 };
 
-type FamilyRow = {
+/** A sub-category, e.g. Mono-facial inside Panels. */
+export type ProductGroup = {
   id: string;
-  position: number;
-  label: string;
-  icon: string;
-  note: string;
-  products: ProductRow[] | null;
-};
-
-export function getProductFamilies(): Promise<readonly ProductFamily[]> {
-  return cached(
-    "product-families",
-    async () => {
-      const supabase = createPublicClient();
-      if (!supabase) return site.builder.families;
-
-      const { data, error } = await supabase
-        .from("product_families")
-        .select(
-          `id, position, label, icon, note,
-           products ( position, name, spec, description, image_url )`,
-        )
-        .order("position");
-
-      if (error) throw error;
-      const rows = (data ?? []) as FamilyRow[];
-      if (!rows.length) return site.builder.families;
-
-      return rows.map((row) => {
-        const fallback = site.builder.families.find((f) => f.id === row.id);
-        return {
-          id: row.id,
-          label: row.label,
-          icon: row.icon,
-          note: row.note ?? "",
-          items: (row.products ?? [])
-            .slice()
-            .sort(byPosition)
-            .map((product, i) => ({
-              name: product.name,
-              spec: product.spec,
-              description: product.description,
-              image: product.image_url ?? fallback?.items[i]?.image ?? "",
-            })),
-        } as unknown as ProductFamily;
-      });
-    },
-    site.builder.families,
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Products page                                                       */
-/* ------------------------------------------------------------------ */
-
-export type ProductsPageFamily = (typeof site.products.families)[number];
-
-type PageFamilyRow = {
-  id: string;
-  position: number;
   label: string;
   note: string;
-  heading: string;
-  intro: string;
-  specs: { label: string; value: string }[] | null;
-  products: Array<{
-    position: number;
-    name: string;
-    spec: string;
-    summary: string;
-    detail: string;
-    meter: { from: number; to: number; max: number; unit: string } | null;
-    image_url: string | null;
-  }> | null;
+  products: readonly Product[];
 };
 
 /**
- * The /products page needs more per product than the home page browser
- * does — a kicker, a longer description, sometimes an efficiency meter.
- * Same rows, richer projection.
+ * A top-level category. Either it holds sub-categories, or it holds
+ * products directly — Panels splits, Inverters does not.
  */
-export function getProductsPage(): Promise<readonly ProductsPageFamily[]> {
+export type ProductCategory = {
+  id: string;
+  label: string;
+  note: string;
+  icon: string;
+  specs: readonly ProductSpec[];
+  groups: readonly ProductGroup[];
+  products: readonly Product[];
+};
+
+/** What the home-page wheel takes. Every product of a category, flat. */
+export type ProductFamily = {
+  id: string;
+  label: string;
+  icon: string;
+  note: string;
+  items: readonly {
+    name: string;
+    spec: string;
+    description: string;
+    image: string;
+  }[];
+};
+
+type CatalogRow = {
+  id: string;
+  parent_id: string | null;
+  position: number;
+  label: string;
+  icon: string | null;
+  note: string | null;
+  specs: ProductSpec[] | null;
+  products:
+    | Array<{
+        id: string;
+        position: number;
+        name: string;
+        tagline: string;
+        blurb: string;
+        specs: ProductSpec[] | null;
+        image_url: string | null;
+        is_published: boolean;
+      }>
+    | null;
+};
+
+/**
+ * The whole catalogue as a two-level tree, built from one flat query.
+ * A row with a parent_id is a sub-category; everything else is a
+ * category. Rows are already ordered, so the tree comes out ordered.
+ */
+export function getProductCatalog(): Promise<readonly ProductCategory[]> {
   return cached(
-    "products-page",
+    "product-catalog",
     async () => {
       const supabase = createPublicClient();
-      if (!supabase) return site.products.families;
+      if (!supabase) return site.products.categories;
 
       const { data, error } = await supabase
         .from("product_families")
         .select(
-          `id, position, label, note, heading, intro, specs,
-           products ( position, name, spec, summary, detail, meter, image_url )`,
+          `id, parent_id, position, label, icon, note, specs,
+           products ( id, position, name, tagline, blurb, specs,
+                      image_url, is_published )`,
         )
         .order("position");
 
       if (error) throw error;
-      const rows = (data ?? []) as PageFamilyRow[];
-      if (!rows.length) return site.products.families;
+      const rows = (data ?? []) as CatalogRow[];
+      if (!rows.length) return site.products.categories;
 
-      return rows.map((row, i) => {
-        const fallback = site.products.families.find((f) => f.id === row.id);
-        const products = (row.products ?? []).slice().sort(byPosition);
-
-        return {
-          id: row.id,
-          index: String(i + 1).padStart(2, "0"),
-          label: row.label,
-          plain: row.heading || fallback?.plain || "",
-          short: fallback?.short ?? "",
-          intro: row.intro || fallback?.intro || "",
-          // No image column on families — the first product stands in,
-          // which is what the static content did by hand anyway.
-          image: products[0]?.image_url ?? fallback?.image ?? "",
-          types: products.map((product) => ({
+      const toProducts = (row: CatalogRow): Product[] =>
+        (row.products ?? [])
+          .filter((product) => product.is_published)
+          .slice()
+          .sort(byPosition)
+          .map((product) => ({
+            id: product.id,
             name: product.name,
-            summary: product.summary,
-            detail: product.detail,
-            ...(product.meter ? { meter: product.meter } : {}),
+            tagline: product.tagline ?? "",
+            blurb: product.blurb ?? "",
+            image: product.image_url ?? "",
+            specs: product.specs ?? [],
+          }));
+
+      const children = new Map<string, CatalogRow[]>();
+      for (const row of rows) {
+        if (!row.parent_id) continue;
+        const list = children.get(row.parent_id) ?? [];
+        list.push(row);
+        children.set(row.parent_id, list);
+      }
+
+      return rows
+        .filter((row) => !row.parent_id)
+        .map((row) => ({
+          id: row.id,
+          label: row.label,
+          note: row.note ?? "",
+          icon: row.icon ?? "panel",
+          specs: row.specs ?? [],
+          groups: (children.get(row.id) ?? []).sort(byPosition).map((child) => ({
+            id: child.id,
+            label: child.label,
+            note: child.note ?? "",
+            products: toProducts(child),
           })),
-          specs: row.specs?.length ? row.specs : (fallback?.specs ?? []),
-        } as unknown as ProductsPageFamily;
-      });
+          products: toProducts(row),
+        }));
     },
-    site.products.families,
+    site.products.categories,
   );
+}
+
+/**
+ * The home-page wheel predates the tree and wants one flat list of
+ * items per category, so sub-categories are flattened away here rather
+ * than in the component.
+ */
+export async function getProductFamilies(): Promise<readonly ProductFamily[]> {
+  const catalog = await getProductCatalog();
+
+  return catalog
+    .map((category) => ({
+      id: category.id,
+      label: category.label,
+      icon: category.icon,
+      note: category.note,
+      items: [
+        ...category.products,
+        ...category.groups.flatMap((group) => group.products),
+      ].map((product) => ({
+        name: product.name,
+        spec: product.tagline,
+        description: product.blurb,
+        image: product.image,
+      })),
+    }))
+    .filter((family) => family.items.length > 0);
 }

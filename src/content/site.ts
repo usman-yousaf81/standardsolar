@@ -60,15 +60,34 @@ export type Sector = {
 export type Step = { title: string; description: string };
 export type Point = { title: string; description: string };
 export type FaqItem = { question: string; answer: string };
-export type ProductType = {
-  name: string;
-  summary: string;
-  detail: string;
-  /* Optional bar chart. `from`/`to` are the range, `max` is the end of
-     the scale it's drawn against. */
-  meter?: { from: number; to: number; max: number; unit: string };
-};
 export type ProductSpec = { label: string; value: string };
+export type Product = {
+  id: string;
+  name: string;
+  /* One short line under the name. Not a paragraph. */
+  tagline: string;
+  /* Longer line, shown only by the home-page wheel. */
+  blurb: string;
+  image: string;
+  specs: ProductSpec[];
+};
+/* A sub-category, e.g. Bi-facial inside Panels. Created from the admin
+   when a category grows enough to need splitting. */
+export type ProductGroup = {
+  id: string;
+  label: string;
+  note: string;
+  products: Product[];
+};
+export type ProductCategory = {
+  id: string;
+  label: string;
+  note: string;
+  icon: string;
+  specs: ProductSpec[];
+  groups: ProductGroup[];
+  products: Product[];
+};
 export type BuilderItem = {
   name: string;
   spec: string;
@@ -532,46 +551,17 @@ export const site = {
     eyebrow: "Products",
     heading: "Our Solar Products & Services",
     intro:
-      "We supply three things. Panels, inverters and batteries — that is the whole list. Here is what each one does, what your options are within it, and what is covered once it is installed.",
-    /* The flow strip at the top of the page. Its job is to make the
-       three product groups register before anyone starts reading. */
-    overview: {
-      heading: "Three products. One system.",
-      intro:
-        "Sunlight goes in at one end and usable, round-the-clock power comes out at the other. Three things do the work — and this is all three of them.",
-      start: "Sunlight",
-      end: "Power you can use",
-    },
-    families: [
+      "Every panel, inverter and battery bank we install, grouped the way we quote them.",
+    /* Static floor only. The live catalogue comes from the database and
+       is edited from the admin — categories, sub-categories, products,
+       photographs and specs. `groups` is empty where a category holds
+       its products directly. */
+    categories: [
       {
         id: "panels",
-        index: "01",
-        /* Header shot for this family on the products page. */
-        image: "/images/products/monocrystalline.png",
-        label: "Solar Panels",
-        /* Plain-English line directly under the product name. Keep it to
-           one short sentence — this is the bit a first-time visitor
-           actually reads. */
-        plain: "They make the electricity.",
-        short: "Makes the electricity",
-        intro:
-          "The panels are the only part of the system that actually generates. Everything after them just moves, converts or stores what they make — which is why efficiency and warranty matter more here than anywhere else.",
-        types: [
-          {
-            name: "Monocrystalline Panels",
-            summary: "Highest efficiency", // your wording
-            detail:
-              "Cut from a single silicon crystal, so electrons meet the least resistance and each panel returns the most output per square metre we can supply. When the constraint is roof area rather than budget, monocrystalline is what gets you to your target kilowatts.",
-            meter: { from: 19, to: 22, max: 25, unit: "%" }, // your figures
-          },
-          {
-            name: "Polycrystalline Panels",
-            summary: "Cost-effective solution", // your wording
-            detail:
-              "Cast from multiple silicon fragments. Less output per square metre, but meaningfully less cost per watt — so on a wide flat roof or a ground mount where area is not scarce, the same spend reaches payback sooner.",
-            meter: { from: 15, to: 17, max: 25, unit: "%" }, // your figures
-          },
-        ] satisfies ProductType[],
+        label: "Panels",
+        note: "They make the electricity.",
+        icon: "panel",
         specs: [
           {
             label: "Brands",
@@ -583,98 +573,97 @@ export const site = {
             value: "International quality standards (IEC, CE)",
           },
         ] satisfies ProductSpec[],
+        groups: [] satisfies ProductGroup[],
+        products: [
+          {
+            id: "mono-facial",
+            name: "Mono-Facial",
+            tagline: "19-22% efficiency", // from your site
+            blurb:
+              "Single-crystal cells, and the most output you can get from a square metre. The right call when roof space is tight and every kilowatt has to count.",
+            image: "/images/products/monocrystalline.png",
+            specs: [] satisfies ProductSpec[],
+          },
+          {
+            id: "poly-facial",
+            name: "Poly-Facial",
+            tagline: "15-17% efficiency", // from your site
+            blurb:
+              "Multi-crystal cells at a lower cost per watt. Sensible where you have roof or ground area to spare and want the shortest route to payback.",
+            image: "/images/products/polycrystalline.png",
+            specs: [] satisfies ProductSpec[],
+          },
+        ] satisfies Product[],
       },
       {
         id: "inverters",
-        index: "02",
-        /* Header shot for this family on the products page. */
-        image: "/images/products/hybrid.png",
-        label: "Solar Inverters",
-        plain: "They turn it into power your equipment can use.",
-        short: "Converts it for use",
-        intro:
-          "Panels produce direct current, which almost nothing in your building can run on. The inverter converts it — and the type you pick is what decides whether anything stays on when the grid goes down.",
-        types: [
-          {
-            name: "On-Grid Inverters",
-            summary: "For net metering systems", // your wording
-            detail:
-              "Synchronises with the utility supply and exports surplus generation back onto the grid under net metering. The simplest and least expensive configuration, and the quickest to pay for itself — though it shuts down alongside the grid, by design.",
-          },
-          {
-            name: "Off-Grid Inverters",
-            summary: "Complete independence from grid", // your wording
-            detail:
-              "Builds a supply of its own from the array and the battery bank, with no utility connection in the picture at all. This is what runs a tube well out in a field, or any site the distribution network never reached.",
-          },
-          {
-            name: "Hybrid Inverters",
-            summary: "Best of both worlds", // your wording
-            detail:
-              "Manages grid, array and battery together and chooses between them minute by minute — exporting when there is surplus, drawing from storage when there is not, and carrying your essential circuits straight through a shutdown.",
-          },
-          {
-            name: "Micro Inverters",
-            summary: "Panel-level optimization", // your wording
-            detail:
-              "One inverter behind each panel instead of one for the whole array. A shaded, soiled or failing module then costs you only that module's output rather than dragging the entire string down with it — which is what makes them worth it on broken roofs, mixed orientations, and anywhere a chimney throws a shadow.",
-          },
-        ] satisfies ProductType[],
+        label: "Inverters",
+        note: "They turn it into power your equipment can use.",
+        icon: "inverter",
         specs: [
-          {
-            label: "Brands",
-            value: "Reliable international manufacturers",
-          },
-          { label: "Warranty", value: "5-10 years manufacturer warranty" },
+          { label: "Warranty", value: "Manufacturer warranty on all inverters" },
+          { label: "Monitoring", value: "App-based monitoring where supported" },
         ] satisfies ProductSpec[],
+        groups: [] satisfies ProductGroup[],
+        products: [
+          {
+            id: "on-grid",
+            name: "On-Grid",
+            tagline: "Grid-tied",
+            blurb:
+              "Feeds the building first and exports the surplus to the grid. The cheapest way to cut a bill, and the one that does nothing in a load-shed.",
+            image: "/images/products/on-grid.png",
+            specs: [] satisfies ProductSpec[],
+          },
+          {
+            id: "off-grid",
+            name: "Off-Grid",
+            tagline: "Battery only",
+            blurb:
+              "Runs the site from panels and batteries with no grid connection at all. For tube wells and sites where there is no line to connect to.",
+            image: "/images/products/off-grid.png",
+            specs: [] satisfies ProductSpec[],
+          },
+          {
+            id: "hybrid",
+            name: "Hybrid",
+            tagline: "Grid + battery",
+            blurb:
+              "Uses the grid when it is there and the battery when it is not. The one most of our customers end up on.",
+            image: "/images/products/hybrid.png",
+            specs: [] satisfies ProductSpec[],
+          },
+          {
+            id: "micro",
+            name: "Micro",
+            tagline: "One per panel",
+            blurb:
+              "A small inverter behind each panel, so one shaded module stops dragging the whole string down. Useful on broken or multi-angle roofs.",
+            image: "/images/products/micro.png",
+            specs: [] satisfies ProductSpec[],
+          },
+        ] satisfies Product[],
       },
       {
         id: "batteries",
-        index: "03",
-        /* Header shot for this family on the products page. */
-        image: "/images/products/lithium-ion.png",
-        label: "Solar Batteries",
-        plain: "They store it for night, and for outages.",
-        short: "Stores it for later",
-        intro:
-          "Without storage, a solar system only works while the sun is up. Batteries keep what you do not use during the day, so it is there at night and when the grid drops. Which type suits you depends on how hard the bank gets used, and how long it has to last.",
-        types: [
+        label: "Lithium Bank",
+        note: "It keeps the power for later.",
+        icon: "battery",
+        specs: [] satisfies ProductSpec[],
+        groups: [] satisfies ProductGroup[],
+        products: [
           {
-            name: "Lithium-Ion Batteries",
-            summary: "Longer life, better performance", // your wording
-            detail:
-              "The most usable capacity for a given size and weight, thousands of cycles of service life, and nothing to maintain. The highest price at purchase and the lowest cost per stored kilowatt-hour across everything that follows.",
+            id: "lithium-ion",
+            name: "Lithium-Ion",
+            tagline: "Longest service life",
+            blurb:
+              "More usable capacity per kilogram and thousands of cycles before it degrades. The higher price is spread over a much longer life.",
+            image: "/images/products/lithium-ion.png",
+            specs: [] satisfies ProductSpec[],
           },
-          {
-            name: "Tubular Batteries",
-            summary: "Cost-effective backup solution", // your wording
-            detail:
-              "Thick tubular positive plates, built to be discharged deeply and recharged daily without degrading. Heavier, and the electrolyte needs topping up on schedule — but the entry cost is a fraction of lithium and the technology is thoroughly proven in Pakistani conditions.",
-          },
-          {
-            name: "AGM Batteries",
-            summary: "Maintenance-free operation", // your wording
-            detail:
-              "Electrolyte held in an absorbent glass-mat separator and sealed for life: no topping up, no venting, no acid to handle. A practical middle ground for backup duty that is not cycled hard every single day.",
-          },
-        ] satisfies ProductType[],
-        specs: [
-          {
-            label: "Capacity options",
-            value: "100Ah to 1000Ah and beyond",
-          },
-          {
-            label: "Design",
-            value: "Deep cycle — optimized for solar applications",
-          },
-        ] satisfies ProductSpec[],
+        ] satisfies Product[],
       },
-    ],
-    /* Closing line above the call to action on the products page. */
-    closing: {
-      heading: "Not sure which combination you need?",
-      body: "That is what the site survey is for. We look at your load, your roof or land, and your budget, then tell you which of these actually belongs on your site — and which of them you can skip.",
-    },
+    ] satisfies ProductCategory[],
   },
 
   /* ---------------------------------------------------------------

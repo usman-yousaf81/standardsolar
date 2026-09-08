@@ -80,35 +80,49 @@ if (quotes.length) {
   L.push("");
 }
 
-// --- product families + products -----------------------------------
-L.push("insert into public.product_families (id, position, label, icon, note, heading, intro, specs) values");
+// --- product categories, sub-categories and products ---------------
+// Categories are a tree: a row with parent_id set is a sub-category.
+const categories = site.products.categories;
+const families = categories.flatMap((c, i) => [
+  { id: c.id, parent: null, position: i, label: c.label, icon: c.icon, note: c.note, specs: c.specs },
+  ...c.groups.map((g, gi) => ({
+    id: g.id, parent: c.id, position: gi, label: g.label,
+    icon: c.icon, note: g.note, specs: [],
+  })),
+]);
+
+L.push("insert into public.product_families (id, parent_id, position, label, icon, note, specs) values");
 L.push(
-  site.builder.families
-    .map((f, i) => {
-      const page = site.products.families.find((p) => p.id === f.id);
-      return `  (${q(f.id)}, ${i}, ${q(f.label)}, ${q(f.icon)}, ${q(f.note)}, ${q(page?.plain ?? "")}, ${q(page?.intro ?? "")}, ${json(page?.specs ?? [])})`;
-    })
+  families
+    .map((f) =>
+      `  (${q(f.id)}, ${f.parent ? q(f.parent) : "null"}, ${f.position}, ${q(f.label)}, ` +
+      `${q(f.icon)}, ${q(f.note)}, ${json(f.specs)})`)
     .join(",\n") +
-    "\non conflict (id) do update set position = excluded.position, label = excluded.label," +
-    " icon = excluded.icon, note = excluded.note, heading = excluded.heading," +
-    " intro = excluded.intro, specs = excluded.specs;",
+    "\non conflict (id) do update set parent_id = excluded.parent_id," +
+    " position = excluded.position, label = excluded.label, icon = excluded.icon," +
+    " note = excluded.note, specs = excluded.specs;",
 );
 L.push("");
 
-const products = site.builder.families.flatMap((f) => {
-  const page = site.products.families.find((p) => p.id === f.id);
-  return f.items.map((item, i) => {
-    const type = page?.types.find((t) => t.name.startsWith(item.name));
-    return `  (${q(f.id)}, ${i}, ${q(item.name)}, ${q(item.spec)}, ${q(item.description)}, ${q(type?.summary ?? "")}, ${q(type?.detail ?? "")}, ${type?.meter ? json(type.meter) : "null"}, ${q(item.image)})`;
-  });
-});
+const products = categories.flatMap((c) => [
+  ...c.products.map((p, i) => ({ family: c.id, position: i, ...p })),
+  ...c.groups.flatMap((g) =>
+    g.products.map((p, i) => ({ family: g.id, position: i, ...p }))),
+]);
+
 L.push("delete from public.products;");
-L.push("insert into public.products (family_id, position, name, spec, description, summary, detail, meter, image_url) values");
-L.push(products.join(",\n") + ";");
+L.push("insert into public.products (family_id, position, name, tagline, blurb, specs, image_url) values");
+L.push(
+  products
+    .map((p) =>
+      `  (${q(p.family)}, ${p.position}, ${q(p.name)}, ${q(p.tagline)}, ` +
+      `${q(p.blurb)}, ${json(p.specs)}, ${q(p.image)})`)
+    .join(",\n") + ";",
+);
 L.push("");
 
 writeFileSync("supabase/migrations/0002_seed.sql", L.join("\n"));
 console.log(
   `seed written — ${site.sectors.items.length} sectors, ${projects.length} projects, ` +
-    `${quotes.length} testimonials, ${site.builder.families.length} families, ${products.length} products`,
+    `${quotes.length} testimonials, ${families.length} families, ${products.length} products`,
 );

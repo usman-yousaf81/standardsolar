@@ -5,7 +5,10 @@ export function BuilderIcon({
   name,
   className,
 }: {
-  name: "panel" | "inverter" | "battery";
+  /* Categories are created from the admin, so this is whatever was
+     typed there. Anything unrecognised falls through to the battery
+     glyph rather than rendering nothing. */
+  name: string;
   className?: string;
 }) {
   const common = {

@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/admin/auth";
 import { PageTitle, EmptyState } from "@/components/admin/ui";
-import { FamilyEditor } from "@/components/admin/FamilyEditor";
+import {
+  CategoryEditor,
+  AddCategory,
+} from "@/components/admin/CategoryEditor";
+import type { Spec } from "@/components/admin/SpecRows";
 
 export const metadata: Metadata = { title: "Products" };
 export const dynamic = "force-dynamic";
@@ -11,23 +15,31 @@ export type ProductRow = {
   family_id: string;
   position: number;
   name: string;
-  spec: string;
-  description: string;
-  summary: string;
-  detail: string;
+  tagline: string;
+  blurb: string;
+  specs: Spec[] | null;
   image_url: string | null;
   is_published: boolean;
 };
 
-export type FamilyRow = {
+type FamilyRow = {
   id: string;
+  parent_id: string | null;
   position: number;
   label: string;
-  note: string;
-  heading: string;
-  intro: string;
-  products: ProductRow[];
+  icon: string | null;
+  note: string | null;
+  specs: Spec[] | null;
+  products: ProductRow[] | null;
 };
+
+export type CategoryNode = Omit<FamilyRow, "products"> & {
+  products: ProductRow[];
+  groups: (Omit<FamilyRow, "products"> & { products: ProductRow[] })[];
+};
+
+const byPosition = (a: { position: number }, b: { position: number }) =>
+  a.position - b.position;
 
 export default async function ProductsAdminPage() {
   const { supabase } = await requireAdmin();
@@ -35,40 +47,55 @@ export default async function ProductsAdminPage() {
   const { data, error } = await supabase
     .from("product_families")
     .select(
-      `id, position, label, note, heading, intro,
-       products ( id, family_id, position, name, spec, description,
-                  summary, detail, image_url, is_published )`,
+      `id, parent_id, position, label, icon, note, specs,
+       products ( id, family_id, position, name, tagline, blurb, specs,
+                  image_url, is_published )`,
     )
     .order("position");
 
-  const families = ((data ?? []) as FamilyRow[]).map((family) => ({
-    ...family,
-    products: (family.products ?? [])
-      .slice()
-      .sort((a, b) => a.position - b.position),
-  }));
+  const rows = (data ?? []) as FamilyRow[];
+
+  const shape = (row: FamilyRow) => ({
+    ...row,
+    products: (row.products ?? []).slice().sort(byPosition),
+  });
+
+  // One flat query, assembled into the same tree the site reads.
+  const categories: CategoryNode[] = rows
+    .filter((row) => !row.parent_id)
+    .map((row) => ({
+      ...shape(row),
+      groups: rows
+        .filter((child) => child.parent_id === row.id)
+        .sort(byPosition)
+        .map(shape),
+    }));
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
       <PageTitle
         title="Products"
-        description="Panels, inverters and batteries — what the home page browser and the products page both read from. Photographs are shown uncropped on a white panel, so a cut-out on a plain background works best."
+        description="Everything the products page and the home page wheel show. A category can hold products directly, or be split into sub-categories first. Photographs sit uncropped on a silver panel, so cut-outs on a plain background work best."
       />
 
       {error ? (
         <p role="alert" className="text-[13.5px] text-signal">
           Could not load products: {error.message}
         </p>
-      ) : families.length === 0 ? (
+      ) : null}
+
+      {!error && categories.length === 0 ? (
         <EmptyState
-          title="No product families"
-          body="Run supabase/setup.sql to load the starting content, or add families in the Supabase table editor."
+          title="No categories yet"
+          body="Add one below to start building the catalogue."
         />
       ) : (
-        families.map((family) => (
-          <FamilyEditor key={family.id} family={family} />
+        categories.map((category) => (
+          <CategoryEditor key={category.id} category={category} />
         ))
       )}
+
+      <AddCategory />
     </div>
   );
 }
