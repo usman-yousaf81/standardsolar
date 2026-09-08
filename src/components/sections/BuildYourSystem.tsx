@@ -19,10 +19,30 @@ import { ArrowRight } from "@/components/ui/Button";
 const DEGREES_PER_ROW = 4;
 const RADIUS = 2000;
 
+/* A rotated row sweeps `width * sin(tilt)` vertically, and a transform
+   does not push its neighbours out of the way — so a long name at the
+   outer edge of the wheel rides up out of the scroll container and gets
+   clipped. This is how much of that sweep a row may spend, as a
+   fraction of its own height. */
+const SWEEP_BUDGET = 0.6;
+
 /** How far a row sits from the vertical centre line, in pixels. */
-function pullBack(offset: number) {
-  const radians = (offset * DEGREES_PER_ROW * Math.PI) / 180;
+function pullBack(offset: number, degreesPerRow: number) {
+  const radians = (offset * degreesPerRow * Math.PI) / 180;
   return RADIUS * (1 - Math.cos(radians));
+}
+
+/**
+ * The tilt the widest name in this family can afford. Families of short
+ * names keep the full curve; a family like "Low voltage - 16KWA" flattens
+ * only as far as it has to.
+ */
+function tiltFor(widest: number, rowHeight: number, half: number) {
+  if (!widest || !rowHeight || !half) return DEGREES_PER_ROW;
+  const ratio = (rowHeight * SWEEP_BUDGET) / widest;
+  if (ratio >= 1) return DEGREES_PER_ROW;
+  const degrees = ((Math.asin(ratio) * 180) / Math.PI) / half;
+  return Math.min(DEGREES_PER_ROW, degrees);
 }
 
 /**
@@ -53,6 +73,7 @@ export function BuildYourSystem({
   const [familyIndex, setFamilyIndex] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
   const [rowHeight, setRowHeight] = useState(0);
+  const [widestName, setWidestName] = useState(0);
 
   const listRef = useRef<HTMLUListElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -77,6 +98,15 @@ export function BuildYourSystem({
     const measure = () => {
       const row = el.querySelector<HTMLElement>("[data-row]");
       if (row) setRowHeight(row.offsetHeight);
+
+      /* Unrotated width of the longest name, which is what decides how
+         far this family may tilt. */
+      const names = el.querySelectorAll<HTMLElement>("[data-row] button span");
+      let widest = 0;
+      names.forEach((name) => {
+        widest = Math.max(widest, name.getBoundingClientRect().width);
+      });
+      setWidestName(widest);
     };
 
     measure();
@@ -162,7 +192,8 @@ export function BuildYourSystem({
      shallower wheel rather than a lot of empty air. */
   const visible = Math.min(5, Math.max(3, count * 2 - 1));
   const half = (visible - 1) / 2;
-  const maxPull = pullBack(half);
+  const degreesPerRow = tiltFor(widestName, rowHeight, half);
+  const maxPull = pullBack(half, degreesPerRow);
 
   return (
     <Section id="system" className="bg-silver">
@@ -295,10 +326,10 @@ export function BuildYourSystem({
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
                 const offset = index - itemIndex;
-                const tilt = offset * DEGREES_PER_ROW;
+                const tilt = offset * degreesPerRow;
                 /* Measured from the far edge so the centred name sits
                    furthest right and nothing is pushed off the left. */
-                const shift = maxPull - pullBack(offset);
+                const shift = maxPull - pullBack(offset, degreesPerRow);
 
                 return (
                   <li key={item.name} data-row className="snap-center">
@@ -308,7 +339,7 @@ export function BuildYourSystem({
                       aria-current={selected ? "true" : undefined}
                       className="block w-max py-1 text-left will-change-transform lg:py-1.5"
                       style={{
-                        transform: `translateX(${shift.toFixed(2)}px) rotate(${tilt}deg)`,
+                        transform: `translateX(${shift.toFixed(2)}px) rotate(${tilt.toFixed(2)}deg)`,
                         transformOrigin: "0% 50%",
                         opacity: selected
                           ? 1
