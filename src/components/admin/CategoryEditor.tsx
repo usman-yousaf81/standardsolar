@@ -127,7 +127,7 @@ function ProductItem({
             label="Photograph"
             folder="products"
             defaultValue={product.image_url ?? ""}
-            hint="Shown uncropped on a silver panel, so a cut-out on a plain background works best."
+            hint="Shown large with nothing behind it, so upload a cut-out with a transparent background (PNG). A photo with a white background will show as a white square."
           />
 
           <SpecRows defaultValue={product.specs ?? []} />

@@ -75,7 +75,7 @@ export default async function ProductsAdminPage() {
     <div className="flex flex-col gap-8">
       <PageTitle
         title="Products"
-        description="Everything the products page and the home page wheel show. A category can hold products directly, or be split into sub-categories first. Photographs sit uncropped on a silver panel, so cut-outs on a plain background work best."
+        description="Everything the products page and the home page wheel show. A category can hold products directly, or be split into sub-categories first. Product photographs are shown large with no background behind them, so upload cut-outs saved as transparent PNGs."
       />
 
       {error ? (

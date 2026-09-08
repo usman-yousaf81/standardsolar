@@ -102,16 +102,17 @@ function ProductGrid({
     >
       {products.map((product) => (
         <li key={product.id} className="flex flex-col">
-          {/* The photograph is the point. Cut-outs sit on a silver panel
-              so a white background does not vanish into the page. */}
+          {/* The photograph is the point, so it gets a square box and no
+              panel behind it — product shots are uploaded as cut-outs
+              and sit straight on the page. */}
           <MediaSlot
             src={product.image}
             alt={product.name}
             label={product.name.toUpperCase()}
-            className="aspect-4/3 w-full rounded-card"
+            className="aspect-square w-full"
             fit="contain"
-            surface="silver"
-            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw"
+            surface="none"
+            sizes="(min-width: 1024px) 32vw, (min-width: 640px) 48vw, 96vw"
           />
 
           <div className="mt-4 flex flex-col gap-1">
