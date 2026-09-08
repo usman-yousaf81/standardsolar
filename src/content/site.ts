@@ -913,8 +913,10 @@ export const site = {
     defaultTitle: "Standard Solar — Solar Energy Systems in Faisalabad",
     defaultDescription:
       "Commercial, industrial, residential and agricultural solar systems from Standard Solar, Faisalabad. Cut electricity costs by up to 90%, with typical payback in two to four years.",
-    /* The registered domain. NEXT_PUBLIC_SITE_URL overrides this if set. */
-    siteUrl: "https://standardsolar.com.pk",
+    /* Live domain. standardsolar.com.pk is registered but stuck at the
+       registrar; switch back to it once that is resolved.
+       NEXT_PUBLIC_SITE_URL overrides this if set. */
+    siteUrl: "https://standardsolar.site",
   },
 } as const;
 
