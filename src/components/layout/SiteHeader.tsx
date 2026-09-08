@@ -20,8 +20,11 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
   const hasToggled = useRef(false);
+  /* Whether the last open/close came from the keyboard. Focus is only
+     worth restoring — and only worth showing a ring for — in that case. */
+  const viaKeyboard = useRef(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -31,14 +34,19 @@ export function SiteHeader() {
   }, []);
 
   // Close the menu whenever the route changes.
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    viaKeyboard.current = false;
+    setOpen(false);
+  }, [pathname]);
 
   // Lock the page behind the overlay, and close on Escape.
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      viaKeyboard.current = true;
+      setOpen(false);
     };
     document.addEventListener("keydown", onKey);
     return () => {
@@ -49,14 +57,24 @@ export function SiteHeader() {
 
   /* Move focus into the overlay on open, and back to the button on
      close. Skipped on first render, or it would pull focus to the menu
-     button the moment the page loads. */
+     button the moment the page loads.
+
+     On open, focus lands on the overlay itself rather than the close
+     button: assistive tech still follows focus into the dialog, but the
+     panel carries no focus ring, whereas a button would — browsers treat
+     a programmatic focus() as focus-visible even after a tap.
+
+     On close, focus only goes back to the toggle for keyboard users. A
+     tap or a click leaves it alone, which is what stops a purple ring
+     being stranded on the menu icon. */
   useEffect(() => {
     if (!hasToggled.current) {
       hasToggled.current = true;
       return;
     }
-    if (open) closeRef.current?.focus();
-    else toggleRef.current?.focus({ preventScroll: true });
+    if (open) overlayRef.current?.focus({ preventScroll: true });
+    else if (viaKeyboard.current)
+      toggleRef.current?.focus({ preventScroll: true });
   }, [open]);
 
   /* Running index across every group, so the links stagger in as one
@@ -79,7 +97,11 @@ export function SiteHeader() {
           <button
             ref={toggleRef}
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={(event) => {
+              // detail is 0 when a button is activated by Enter or Space.
+              viaKeyboard.current = event.detail === 0;
+              setOpen(true);
+            }}
             aria-expanded={open}
             aria-label="Open menu"
             className={cn(
@@ -134,13 +156,20 @@ export function SiteHeader() {
       {open ? (
         <div
           id="mobile-menu"
-          className="menu-overlay fixed inset-0 z-60 flex flex-col bg-paper lg:hidden"
+          ref={overlayRef}
+          tabIndex={-1}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="menu-overlay fixed inset-0 z-60 flex flex-col bg-paper outline-none lg:hidden"
         >
           <Container className="relative flex h-[72px] shrink-0 items-center justify-between">
             <button
-              ref={closeRef}
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={(event) => {
+                viaKeyboard.current = event.detail === 0;
+                setOpen(false);
+              }}
               aria-label="Close menu"
               className={cn(iconButton, "-ml-2 text-ink hover:bg-silver")}
             >
@@ -194,7 +223,11 @@ export function SiteHeader() {
                       <li key={`${group.label}-${link.label}`}>
                         <Link
                           href={link.href}
-                          onClick={() => setOpen(false)}
+                          onClick={() => {
+                            // Focus follows the navigation, not the icon.
+                            viaKeyboard.current = false;
+                            setOpen(false);
+                          }}
                           className="menu-item block py-1 font-display text-[clamp(1.9rem,8.5vw,2.6rem)] font-medium leading-[1.2] tracking-[-0.03em] text-ink transition-colors active:text-navy"
                           style={{ animationDelay: `${step++ * 0.05}s` }}
                         >
