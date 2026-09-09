@@ -11,38 +11,32 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 import { ArrowRight } from "@/components/ui/Button";
 
-/* The list reads as a wheel: names sit on the rim of a large circle,
-   so each one tilts and pulls back a little further from the centre.
-   DEGREES_PER_ROW is the tilt between neighbours; RADIUS is how far
-   away the imaginary centre is, which sets how quickly they pull back.
-   A big radius keeps the curve gentle. */
-const DEGREES_PER_ROW = 4;
-const RADIUS = 2000;
+/* The list reads as a dial: rows tip away from you around a horizontal
+   axis, the way the drums of a physical picker do.
+ *
+ * This is rotateX under perspective, not a flat rotate(). The difference
+ * is the whole reason this component was breaking: a flat rotation swings
+ * a row's far end through `width * sin(tilt)` of vertical space, so the
+ * longer the name the further it swings — into its neighbours, and out of
+ * the scrolling box, which clipped it. rotateX foreshortens instead. A
+ * tipped row occupies `height * cos(tilt)`, which is always LESS than the
+ * row it started in, whatever the name says. Overflow is impossible
+ * rather than merely unlikely, so no angle has to be tuned to the
+ * content.
+ *
+ * ARC is the sideways curve, in pixels, and it is an absolute budget:
+ * the centre row sits ARC to the right and the outermost sits flush,
+ * so the horizontal travel can never exceed ARC no matter how many rows
+ * are visible. */
+const DEGREES_PER_ROW = 13;
+const PERSPECTIVE = 620;
+const ARC = 22;
 
-/* A rotated row sweeps `width * sin(tilt)` vertically, and a transform
-   does not push its neighbours out of the way — so a long name at the
-   outer edge of the wheel rides up out of the scroll container and gets
-   clipped. This is how much of that sweep a row may spend, as a
-   fraction of its own height. */
-const SWEEP_BUDGET = 0.6;
-
-/** How far a row sits from the vertical centre line, in pixels. */
-function pullBack(offset: number, degreesPerRow: number) {
-  const radians = (offset * degreesPerRow * Math.PI) / 180;
-  return RADIUS * (1 - Math.cos(radians));
-}
-
-/**
- * The tilt the widest name in this family can afford. Families of short
- * names keep the full curve; a family like "Low voltage - 16KWA" flattens
- * only as far as it has to.
- */
-function tiltFor(widest: number, rowHeight: number, half: number) {
-  if (!widest || !rowHeight || !half) return DEGREES_PER_ROW;
-  const ratio = (rowHeight * SWEEP_BUDGET) / widest;
-  if (ratio >= 1) return DEGREES_PER_ROW;
-  const degrees = ((Math.asin(ratio) * 180) / Math.PI) / half;
-  return Math.min(DEGREES_PER_ROW, degrees);
+/** Sideways offset for a row, 0 at the rim and ARC at the centre. */
+function arcShift(offset: number, half: number) {
+  if (!half) return ARC;
+  const t = Math.min(1, Math.abs(offset) / half);
+  return ARC * (1 - t * t);
 }
 
 /**
@@ -73,9 +67,18 @@ export function BuildYourSystem({
   const [familyIndex, setFamilyIndex] = useState(0);
   const [itemIndex, setItemIndex] = useState(0);
   const [rowHeight, setRowHeight] = useState(0);
-  const [widestName, setWidestName] = useState(0);
+  /* Type size in px once fitted to the column. 0 until measured, when
+     the CSS clamp on the span is the size. */
+  const [nameSize, setNameSize] = useState(0);
+  /* Hard ceiling on a name's width. Shrinking the type handles ordinary
+     long names; this is what makes overflow impossible for the rest. */
+  const [nameRoom, setNameRoom] = useState(0);
 
   const listRef = useRef<HTMLUListElement>(null);
+  /* Off-screen copy of the longest name at the unscaled size. Measuring
+     the real rows instead would feed the fitted size back into the next
+     measurement and creep smaller on every pass. */
+  const probeRef = useRef<HTMLSpanElement>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const family = families[familyIndex];
@@ -96,24 +99,36 @@ export function BuildYourSystem({
     if (!el) return;
 
     const measure = () => {
+      const probe = probeRef.current;
+      if (probe) {
+        /* The column, less the sideways arc and the padding that covers
+           it. Shrink the type only as far as the longest name needs;
+           never enlarge it past what the CSS clamp asked for. */
+        const base = parseFloat(getComputedStyle(probe).fontSize) || 0;
+        const natural = probe.getBoundingClientRect().width;
+        /* The column, not the list. The list is w-fit, so its own width
+           follows the text — measuring that would shrink the type, which
+           would shrink the list, which would shrink the type again. */
+        const column = el.parentElement?.clientWidth ?? el.clientWidth;
+        const room = column - ARC - 8;
+        setNameRoom(room);
+
+        /* Shrink to fit, but not below what stays readable. Past that
+           the width cap takes over and the name ellipsises — a clipped
+           word is survivable, a broken wheel is not. */
+        const factor = natural > room && natural > 0 ? room / natural : 1;
+        if (base) setNameSize(base * Math.max(0.62, Math.min(1, factor)));
+      }
+
       const row = el.querySelector<HTMLElement>("[data-row]");
       if (row) setRowHeight(row.offsetHeight);
-
-      /* Unrotated width of the longest name, which is what decides how
-         far this family may tilt. */
-      const names = el.querySelectorAll<HTMLElement>("[data-row] button span");
-      let widest = 0;
-      names.forEach((name) => {
-        widest = Math.max(widest, name.getBoundingClientRect().width);
-      });
-      setWidestName(widest);
     };
 
     measure();
     window.addEventListener("resize", measure);
     document.fonts?.ready.then(measure).catch(() => {});
     return () => window.removeEventListener("resize", measure);
-  }, [familyIndex]);
+  }, [familyIndex, nameSize]);
 
   /* Which row sits at the top of the list is the active product. Rows
      are a uniform measured height, so this is a straight division —
@@ -190,10 +205,14 @@ export function BuildYourSystem({
 
   /* Always odd, so one row sits dead centre. Short families get a
      shallower wheel rather than a lot of empty air. */
+  const longestName = family.items.reduce(
+    (longest, item) => (item.name.length > longest.length ? item.name : longest),
+    "",
+  );
+
   const visible = Math.min(5, Math.max(3, count * 2 - 1));
   const half = (visible - 1) / 2;
-  const degreesPerRow = tiltFor(widestName, rowHeight, half);
-  const maxPull = pullBack(half, degreesPerRow);
+
 
   return (
     <Section id="system" className="bg-silver">
@@ -310,13 +329,23 @@ export function BuildYourSystem({
                  name — scrolling just to the right of the text should not
                  catch the list. The padding covers the wheel's sideways
                  shift. */
-              className="builder-enter builder-names w-fit max-w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden pr-7"
+              className="builder-enter builder-names relative w-fit max-w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden pr-7"
               style={
                 rowHeight
                   ? { height: rowHeight * visible }
                   : { maxHeight: "42vh" }
               }
             >
+              {/* Unscaled copy of the longest name, measured to decide the
+                  type size. Out of the flow, so it costs no layout. */}
+              <span
+                ref={probeRef}
+                aria-hidden
+                className="pointer-events-none invisible absolute font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] whitespace-pre"
+              >
+                {longestName}
+              </span>
+
               {/* Lets the first name reach the centre of the wheel. */}
               <li
                 aria-hidden
@@ -326,10 +355,8 @@ export function BuildYourSystem({
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
                 const offset = index - itemIndex;
-                const tilt = offset * degreesPerRow;
-                /* Measured from the far edge so the centred name sits
-                   furthest right and nothing is pushed off the left. */
-                const shift = maxPull - pullBack(offset, degreesPerRow);
+                const tilt = offset * DEGREES_PER_ROW;
+                const shift = arcShift(offset, half);
 
                 return (
                   <li key={item.name} data-row className="snap-center">
@@ -339,8 +366,10 @@ export function BuildYourSystem({
                       aria-current={selected ? "true" : undefined}
                       className="block w-max py-1 text-left will-change-transform lg:py-1.5"
                       style={{
-                        transform: `translateX(${shift.toFixed(2)}px) rotate(${tilt.toFixed(2)}deg)`,
-                        transformOrigin: "0% 50%",
+                        /* perspective() must precede the 3D rotation it
+                           projects; the sideways arc stays outside it so
+                           it is plain 2D travel of at most ARC. */
+                        transform: `translateX(${shift.toFixed(2)}px) perspective(${PERSPECTIVE}px) rotateX(${tilt.toFixed(2)}deg)`,
                         opacity: selected
                           ? 1
                           : Math.max(
@@ -351,7 +380,13 @@ export function BuildYourSystem({
                           "transform 550ms var(--ease-out-soft), opacity 550ms var(--ease-out-soft)",
                       }}
                     >
-                      <span className="font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] text-ink">
+                      <span
+                        className="block truncate font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] text-ink"
+                        style={{
+                          ...(nameSize ? { fontSize: nameSize } : null),
+                          ...(nameRoom ? { maxWidth: nameRoom } : null),
+                        }}
+                      >
                         {item.name}
                       </span>
                     </button>
