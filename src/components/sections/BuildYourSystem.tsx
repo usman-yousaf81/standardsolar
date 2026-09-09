@@ -11,32 +11,50 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 import { ArrowRight } from "@/components/ui/Button";
 
-/* The list reads as a dial: rows tip away from you around a horizontal
-   axis, the way the drums of a physical picker do.
+/* The list reads as a dial, and the dial is made of type.
  *
- * This is rotateX under perspective, not a flat rotate(). The difference
- * is the whole reason this component was breaking: a flat rotation swings
- * a row's far end through `width * sin(tilt)` of vertical space, so the
- * longer the name the further it swings — into its neighbours, and out of
- * the scrolling box, which clipped it. rotateX foreshortens instead. A
- * tipped row occupies `height * cos(tilt)`, which is always LESS than the
- * row it started in, whatever the name says. Overflow is impossible
- * rather than merely unlikely, so no angle has to be tuned to the
- * content.
+ * Every earlier version animated the box around a name — rotate it, tip
+ * it in 3D, scale it. A box's geometry is a function of its width, so
+ * the length of a product name leaked into the animation every time: a
+ * long name swung further than a short one, rode out of its row, and
+ * outweighed the row that was actually selected. Clamping the angle only
+ * moved where it broke.
  *
- * ARC is the sideways curve, in pixels, and it is an absolute budget:
- * the centre row sits ARC to the right and the outermost sits flush,
- * so the horizontal travel can never exceed ARC no matter how many rows
- * are visible. */
-const DEGREES_PER_ROW = 13;
-const PERSPECTIVE = 620;
-const ARC = 22;
+ * So nothing here transforms a box. A row is a fixed slot, and what
+ * changes is the type inside it: size, weight, opacity. Those are
+ * governed by font metrics, so a six-letter name and a forty-letter name
+ * occupy exactly the same vertical space at the same size. Text length
+ * cannot reach the layout — by definition, not by clamping — and the
+ * selected name is always the largest on screen whatever its neighbours
+ * are called.
+ *
+ * ARC is a small fixed indent in pixels, keeping the curved left edge
+ * the design started with. A constant, not a chord, so it cannot grow
+ * with the row count either. */
+const ARC = 18;
 
-/** Sideways offset for a row, 0 at the rim and ARC at the centre. */
+/* How much smaller each step away from the centre is, and the floor.
+   MIN_PX is absolute rather than a ratio: the base size is ~40px on a
+   desktop but ~22px on a phone, so a proportional floor alone left the
+   outermost row at 10px and unreadable. */
+const SIZE_STEP = 0.26;
+const MIN_SIZE = 0.42;
+const MIN_PX = 14;
+
+/** Sideways indent for a row: none at the rim, ARC at the centre. */
 function arcShift(offset: number, half: number) {
   if (!half) return ARC;
   const t = Math.min(1, Math.abs(offset) / half);
   return ARC * (1 - t * t);
+}
+
+/** Type size and opacity for a row, by distance from the centre. */
+function typeFor(offset: number) {
+  const away = Math.abs(offset);
+  return {
+    size: Math.max(MIN_SIZE, 1 - away * SIZE_STEP),
+    opacity: away === 0 ? 1 : Math.max(0.22, 0.62 - (away - 1) * 0.18),
+  };
 }
 
 /**
@@ -117,11 +135,15 @@ export function BuildYourSystem({
            the width cap takes over and the name ellipsises — a clipped
            word is survivable, a broken wheel is not. */
         const factor = natural > room && natural > 0 ? room / natural : 1;
-        if (base) setNameSize(base * Math.max(0.62, Math.min(1, factor)));
-      }
+        const fitted = base * Math.max(0.62, Math.min(1, factor));
+        if (!fitted) return;
+        setNameSize(fitted);
 
-      const row = el.querySelector<HTMLElement>("[data-row]");
-      if (row) setRowHeight(row.offsetHeight);
+        /* The slot height follows the type size. Measuring a rendered
+           row instead would be circular, since the rows are given this
+           height — and it keeps every family on the same rhythm. */
+        setRowHeight(Math.round(fitted * 1.06 + 20));
+      }
     };
 
     measure();
@@ -355,36 +377,40 @@ export function BuildYourSystem({
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
                 const offset = index - itemIndex;
-                const tilt = offset * DEGREES_PER_ROW;
                 const shift = arcShift(offset, half);
+                const { size, opacity } = typeFor(offset);
 
                 return (
-                  <li key={item.name} data-row className="snap-center">
+                  <li
+                    key={item.name}
+                    data-row
+                    /* A fixed slot. Its height comes from the type size,
+                       never from the name inside it, so every row of
+                       every family is identical. */
+                    className="flex snap-center items-center"
+                    style={rowHeight ? { height: rowHeight } : undefined}
+                  >
                     <button
                       type="button"
                       onClick={() => goToItem(index)}
                       aria-current={selected ? "true" : undefined}
-                      className="block w-max py-1 text-left will-change-transform lg:py-1.5"
+                      className="block max-w-full text-left"
                       style={{
-                        /* perspective() must precede the 3D rotation it
-                           projects; the sideways arc stays outside it so
-                           it is plain 2D travel of at most ARC. */
-                        transform: `translateX(${shift.toFixed(2)}px) perspective(${PERSPECTIVE}px) rotateX(${tilt.toFixed(2)}deg)`,
-                        opacity: selected
-                          ? 1
-                          : Math.max(
-                              0.16,
-                              0.5 - (Math.abs(offset) - 1) * 0.15,
-                            ),
-                        transition:
-                          "transform 550ms var(--ease-out-soft), opacity 550ms var(--ease-out-soft)",
+                        transform: `translateX(${shift.toFixed(2)}px)`,
+                        transition: "transform 550ms var(--ease-out-soft)",
                       }}
                     >
                       <span
-                        className="block truncate font-display text-[clamp(1.35rem,3.4vw,2.5rem)] font-medium leading-[1.18] tracking-[-0.025em] text-ink"
+                        className="block truncate font-display text-[clamp(1.35rem,3.4vw,2.5rem)] leading-[1.05] tracking-[-0.025em] text-ink"
                         style={{
-                          ...(nameSize ? { fontSize: nameSize } : null),
+                          ...(nameSize
+                            ? { fontSize: Math.max(MIN_PX, nameSize * size) }
+                            : null),
                           ...(nameRoom ? { maxWidth: nameRoom } : null),
+                          fontWeight: selected ? 600 : 500,
+                          opacity,
+                          transition:
+                            "font-size 500ms var(--ease-out-soft), opacity 500ms var(--ease-out-soft)",
                         }}
                       >
                         {item.name}
