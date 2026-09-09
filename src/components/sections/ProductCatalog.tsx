@@ -43,8 +43,8 @@ export function ProductCatalog({
             {/* Facts that hold for everything in the category. */}
             {category.specs.length ? (
               <dl className="mt-8 grid gap-x-8 gap-y-4 border-t border-hairline pt-6 sm:grid-cols-2 lg:grid-cols-3">
-                {category.specs.map((spec) => (
-                  <div key={spec.label} className="flex flex-col gap-1">
+                {category.specs.map((spec, i) => (
+                  <div key={`${spec.label}-${i}`} className="flex flex-col gap-1">
                     <dt className="text-[11px] font-medium uppercase tracking-[0.14em] text-ink-muted">
                       {spec.label}
                     </dt>
@@ -128,9 +128,9 @@ function ProductGrid({
 
           {product.specs.length ? (
             <dl className="mt-3 flex flex-col gap-1.5 border-t border-hairline pt-3">
-              {product.specs.map((spec) => (
+              {product.specs.map((spec, i) => (
                 <div
-                  key={spec.label}
+                  key={`${spec.label}-${i}`}
                   className="flex items-baseline justify-between gap-3"
                 >
                   <dt className="shrink-0 text-[12px] text-ink-muted">

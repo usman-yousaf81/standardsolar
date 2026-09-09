@@ -314,7 +314,7 @@ export function BuildYourSystem({
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
                 return (
-                  <li key={item.name}>
+                  <li key={item.id}>
                     <button
                       type="button"
                       onClick={() => goToItem(index)}
@@ -382,7 +382,7 @@ export function BuildYourSystem({
 
                 return (
                   <li
-                    key={item.name}
+                    key={item.id}
                     data-row
                     /* A fixed slot. Its height comes from the type size,
                        never from the name inside it, so every row of

@@ -88,12 +88,6 @@ export type ProductCategory = {
   groups: ProductGroup[];
   products: Product[];
 };
-export type BuilderItem = {
-  name: string;
-  spec: string;
-  description: string;
-  image: string;
-};
 
 export const site = {
   /* ---------------------------------------------------------------
@@ -444,101 +438,14 @@ export const site = {
      Add or remove items freely: the scroll length, the dots and the
      progress bar all recalculate themselves.
   --------------------------------------------------------------- */
+  /* Labels only. The wheel's products come from the catalogue below,
+     via getProductFamilies() — there is one list of products, not two. */
   builder: {
     eyebrow: "Build your system",
     nextLabel: "Next",
     /* Secondary button beside Next, through to the full product page. */
     moreLabel: "All products",
     moreHref: "/products",
-    families: [
-      {
-        id: "panels",
-        label: "Panels", // from your site
-        icon: "panel",
-        note: "",
-        items: [
-          {
-            name: "Monocrystalline", // from your site
-            spec: "19-22% efficiency", // from your site
-            description:
-              "Single-crystal cells, and the most output you can get from a square metre. The right call when roof space is tight and every kilowatt has to count.",
-            image: "/images/products/monocrystalline.png",
-          },
-          {
-            name: "Polycrystalline", // from your site
-            spec: "15-17% efficiency", // from your site
-            description:
-              "Multi-crystal cells at a lower cost per watt. Sensible where you have roof or ground area to spare and want the shortest route to payback.",
-            image: "/images/products/polycrystalline.png",
-          },
-        ] satisfies BuilderItem[],
-      },
-      {
-        id: "inverters",
-        label: "Inverters", // from your site
-        icon: "inverter",
-        note: "",
-        items: [
-          {
-            name: "On-Grid", // from your site
-            spec: "Grid-tied",
-            description:
-              "Feeds straight into your supply and sends the surplus back out. The standard choice for a site with a reliable connection that wants the fastest return.",
-            image: "/images/products/on-grid.png",
-          },
-          {
-            name: "Off-Grid", // from your site
-            spec: "Battery only",
-            description:
-              "Runs entirely on panels and storage, with no grid connection at all. Built for tube wells, remote sites and anywhere the line simply doesn't reach.",
-            image: "/images/products/off-grid.png",
-          },
-          {
-            name: "Hybrid", // from your site
-            spec: "Grid + battery",
-            description:
-              "Takes grid, panels and batteries together and chooses between them in real time. Keeps the circuits that matter running straight through an outage.",
-            image: "/images/products/hybrid.png",
-          },
-          {
-            name: "Micro", // from your site
-            spec: "One per panel",
-            description:
-              "A small inverter behind each panel, so shade or a fault on one module can't drag the rest of the array down with it. Best on broken or multi-angle roofs.",
-            image: "/images/products/micro.png",
-          },
-        ] satisfies BuilderItem[],
-      },
-      {
-        id: "batteries",
-        label: "Batteries", // from your site
-        icon: "battery",
-        note: "100Ah - 1000Ah+", // from your site
-        items: [
-          {
-            name: "Lithium-Ion", // from your site
-            spec: "Longest service life",
-            description:
-              "The deepest usable capacity and the longest life, in the smallest footprint. The highest price at the start, and the lowest cost per cycle over everything that follows.",
-            image: "/images/products/lithium-ion.png",
-          },
-          {
-            name: "Tubular", // from your site
-            spec: "Deep-cycle lead acid",
-            description:
-              "Thick tubular plates built to be discharged deeply, day after day. Heavier, and it needs topping up — but proven in Pakistani conditions and far kinder on the opening budget.",
-            image: "/images/products/tubular.png",
-          },
-          {
-            name: "AGM", // from your site
-            spec: "Sealed, maintenance-free",
-            description:
-              "Sealed glass-mat construction: no watering, no venting, no upkeep. A solid middle option for backup duty, where the bank isn't cycled hard every single day.",
-            image: "/images/products/agm.png",
-          },
-        ] satisfies BuilderItem[],
-      },
-    ],
   },
 
   /* ---------------------------------------------------------------

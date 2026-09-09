@@ -6,6 +6,7 @@ import {
   AddCategory,
 } from "@/components/admin/CategoryEditor";
 import type { Spec } from "@/components/admin/SpecRows";
+import { byPosition } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Products" };
 export const dynamic = "force-dynamic";
@@ -37,9 +38,6 @@ export type CategoryNode = Omit<FamilyRow, "products"> & {
   products: ProductRow[];
   groups: (Omit<FamilyRow, "products"> & { products: ProductRow[] })[];
 };
-
-const byPosition = (a: { position: number }, b: { position: number }) =>
-  a.position - b.position;
 
 export default async function ProductsAdminPage() {
   const { supabase } = await requireAdmin();

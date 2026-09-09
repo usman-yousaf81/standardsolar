@@ -72,14 +72,3 @@ export async function requireAdmin() {
 
   return { supabase, userId };
 }
-
-/** Same checks, returning null rather than redirecting. */
-export async function getAdmin() {
-  const supabase = await createClient();
-  if (!supabase) return null;
-
-  const userId = await currentUserId(supabase);
-  if (!userId) return null;
-
-  return (await isAdminUser(userId)) ? { supabase, userId } : null;
-}

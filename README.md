@@ -293,47 +293,54 @@ finished while real ones are gathered. Every one is marked `DEMO` in
 
 ### Products page (`/products`)
 
-The full catalogue, at `src/content/site.ts` under `products`.
+The catalogue, from the database, with `src/content/site.ts` under
+`products.categories` as the static floor when the database is
+unreachable.
 
-The page is built so the three product groups register before anyone
-reads any detail. `ProductOverview.tsx` opens with a sunlight-to-power
-flow — three linked cards, each with its number, its name and one plain
-sentence saying what it does.
+`ProductCatalog.tsx` renders the whole thing: each category as a
+heading, the facts that hold across it as a spec row, then a grid of
+products. A category either holds products directly or splits into
+sub-categories first — Panels can become Bi-facial and Mono-facial
+without forcing Inverters to invent a level it does not need. Both cases
+end in the same grid, so the page reads at one depth throughout.
 
-Each group then gets its own section from `ProductFamily.tsx`, where the
-product name is the largest thing on screen, with `plain` sitting under
-it as a one-line explanation and `intro` as the supporting paragraph.
-The options within the group follow as cards, then a strip of specs.
+A product is a photograph, a name, one tagline and a list of
+label/value specs. The photograph is square, sized to fill the column,
+and sits on the page with nothing behind it, so upload cut-outs with a
+transparent background — a photograph with a white background will read
+as a white square.
 
-Keep `plain` to one short sentence — it is the line a first-time visitor
-actually reads.
-
-Panel types carry a `meter` — `{ from, to, max, unit }` — drawn by
-`RangeMeter.tsx` as a band on a shared 0-25% scale, so monocrystalline
-and polycrystalline can be compared by eye. The band grows in the first
-time it is scrolled into view. Add a `meter` to any other type and it
-gets a bar too.
-
-The `specs` list under each family holds the warranties, certifications,
-brands, capacity range and design notes.
+Everything here is edited from the admin at
+`/admin_usman6655/products`, including adding and deleting categories
+and re-ordering products.
 
 ### Build your system
 
-`src/components/sections/BuildYourSystem.tsx` is the scroll-driven
-product browser. Every product across every family is flattened into one
-ordered list; the section is taller than the viewport, its panel sticks
-to the top while you scroll past, and scroll progress selects the active
-product. Scrolling is never hijacked — it just also drives the selection.
+`src/components/sections/BuildYourSystem.tsx` is the product browser on
+the home page. The page scrolls past it at normal speed; the only thing
+that scrolls internally is the list of names, which snaps row by row,
+and the row at the centre is the active product. The family tabs, the
+dots and the Next button all drive that same list, so the selection
+cannot drift from what is on screen.
 
-The family tabs, the name list, the dots and the Next button all jump the
-page to the matching scroll offset rather than setting state directly, so
-the selection can never drift out of step with the scroll position.
+The list reads as a dial, and the dial is made of type. Nothing
+transforms a box: a row is a fixed slot whose height comes from the type
+size, and what changes with distance from the centre is the type inside
+it — size, weight, opacity. That matters because a box's geometry is a
+function of its width, so earlier versions that rotated or scaled the
+row let the length of a product name leak into the animation. A long
+name swung further than a short one, rode out of its row, and outweighed
+the row that was actually selected. Type is governed by font metrics
+instead, so a six-letter name and a forty-letter name occupy identical
+vertical space at the same size.
 
-Add or remove products in `site.builder.families` and the scroll length,
-the dots and the progress bar all recalculate. The scroll distance per
-product is set by `.builder-stage` in `globals.css` (42vh on desktop,
-34vh on phones). Under `prefers-reduced-motion` the section collapses to
-its natural height and becomes a plain click-through list.
+The type also fits itself to the column, measured against an off-screen
+copy of the longest name, with an absolute floor so it stays legible on
+a phone. Past that floor a width cap ellipsises rather than overflowing.
+
+Products come from the same catalogue the products page reads —
+`getProductFamilies()` flattens the tree for the wheel. There is one
+list of products, not two.
 
 ---
 

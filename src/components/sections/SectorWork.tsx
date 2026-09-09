@@ -40,9 +40,12 @@ export function SectorWork({ sector }: { sector: Sector }) {
             />
 
             <ul className="mt-12 grid gap-px overflow-hidden rounded-card bg-hairline sm:grid-cols-2 lg:mt-14">
-              {sector.projects.map((project) => (
+              {sector.projects.map((project, i) => (
                 <li
-                  key={project.name}
+                  /* Projects and quotes are admin-entered and carry no
+                     id of their own; two may share a name. Position is
+                     the only identity they actually have. */
+                  key={`${project.name}-${i}`}
                   className="flex flex-col gap-4 bg-white p-6 sm:p-8"
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -79,9 +82,9 @@ export function SectorWork({ sector }: { sector: Sector }) {
             />
 
             <ul className="mx-auto mt-12 grid max-w-4xl gap-5 lg:mt-14 lg:grid-cols-2">
-              {sector.testimonials.map((item) => (
+              {sector.testimonials.map((item, i) => (
                 <li
-                  key={item.name}
+                  key={`${item.name}-${i}`}
                   className="flex flex-col gap-5 rounded-card border border-hairline bg-white p-6 sm:p-7"
                 >
                   <QuoteMark />

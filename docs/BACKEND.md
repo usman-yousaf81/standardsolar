@@ -92,10 +92,17 @@ since the database becomes the source of truth.
 | `sectors` | The four sectors, with their figures and applications |
 | `sector_projects` | Work delivered, per sector |
 | `testimonials` | Client quotes, per sector |
-| `product_families` | Panels / inverters / batteries |
-| `products` | The items inside each family |
+| `product_families` | Product categories. Self-referencing: a row with `parent_id` set is a sub-category, e.g. Bi-facial inside Panels |
+| `products` | The items themselves — photograph, name, tagline, and a `specs` array of label/value pairs |
 | `enquiries` | Contact form submissions, with a status for follow-up |
 | `admins` | Who is allowed to write |
+
+Migrations live in `supabase/migrations/`. `supabase/setup.sql` is the
+one-shot for a **new** project only — it concatenates them in dependency
+order (`0001`, then `0003`, then the `0002` seed, because the seed writes
+columns `0003` adds) and it contains `delete from public.products`. To
+upgrade a database that already holds real content, run the individual
+migration instead.
 
 Images live in the `media` storage bucket: public to read, admin to
 write. `next.config.ts` allows `*.supabase.co` under the public object

@@ -7,3 +7,8 @@ export function cn(...classes: Array<string | false | null | undefined>) {
 export function isPlaceholder(value: string) {
   return /^\[[A-Z0-9_ ]+\]$/.test(value.trim());
 }
+
+/** Sort helper for any row that carries a `position` column. */
+export function byPosition(a: { position: number }, b: { position: number }) {
+  return a.position - b.position;
+}

@@ -196,11 +196,13 @@ export async function moveProduct(formData: FormData) {
   const direction = text(formData, "direction");
   if (!id || !familyId) return;
 
-  const { data } = await supabase
+  const { data, error: readError } = await supabase
     .from("products")
     .select("id, position")
     .eq("family_id", familyId)
     .order("position");
+
+  if (readError) throw new Error(readError.message);
 
   const rows = (data ?? []) as { id: string; position: number }[];
   const index = rows.findIndex((row) => row.id === id);
@@ -210,8 +212,28 @@ export async function moveProduct(formData: FormData) {
   const a = rows[index];
   const b = rows[swapWith];
 
-  await supabase.from("products").update({ position: b.position }).eq("id", a.id);
-  await supabase.from("products").update({ position: a.position }).eq("id", b.id);
+  /* Two writes, and no transaction across them from here. If the second
+     fails after the first has landed, both products hold the same
+     position — the order silently scrambles and nothing says so. So the
+     first is undone before the failure is reported. */
+  const { error: firstError } = await supabase
+    .from("products")
+    .update({ position: b.position })
+    .eq("id", a.id);
+  if (firstError) throw new Error(firstError.message);
+
+  const { error: secondError } = await supabase
+    .from("products")
+    .update({ position: a.position })
+    .eq("id", b.id);
+
+  if (secondError) {
+    await supabase
+      .from("products")
+      .update({ position: a.position })
+      .eq("id", a.id);
+    throw new Error(secondError.message);
+  }
 
   publishContent(PRODUCTS_PATH);
 }

@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { site } from "@/content/site";
 import { createPublicClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { byPosition } from "@/lib/utils";
 
 /**
  * The bridge between the database and the pages.
@@ -128,9 +129,6 @@ type SectorRow = {
   }> | null;
 };
 
-const byPosition = (a: { position: number }, b: { position: number }) =>
-  a.position - b.position;
-
 export function getSectors(): Promise<readonly Sector[]> {
   return cached(
     "sectors",
@@ -229,6 +227,9 @@ export type ProductFamily = {
   icon: string;
   note: string;
   items: readonly {
+    /* Carried through so React can key on it. Two products may share a
+       name — the admin decides what they are called — but never an id. */
+    id: string;
     name: string;
     spec: string;
     description: string;
@@ -344,6 +345,7 @@ export async function getProductFamilies(): Promise<readonly ProductFamily[]> {
         ...category.products,
         ...category.groups.flatMap((group) => group.products),
       ].map((product) => ({
+        id: product.id,
         name: product.name,
         spec: product.tagline,
         description: product.blurb,
