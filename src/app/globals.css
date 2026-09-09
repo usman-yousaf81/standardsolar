@@ -127,15 +127,6 @@
    the bottom so it reads as a list you can move through.
 ------------------------------------------------------------------ */
 @layer utilities {
-  .builder-names {
-    scrollbar-width: none;
-    overscroll-behavior: contain;
-  }
-
-  .builder-names::-webkit-scrollbar {
-    display: none;
-  }
-
 }
 
 
