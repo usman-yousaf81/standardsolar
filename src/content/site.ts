@@ -97,17 +97,12 @@ export const site = {
     name: "Standard Solar",
     tagline: "Powering Pakistan's Sustainable Future", // from your site
     legalName: "Standard Solar",
-    /* Digits only — this is what the phone button dials. Built from
-       041-8781130 on your site, in international form. */
-    phone: "+92418781130", // from your site
-    phoneDisplay: "041-8781130", // from your site
-    /* An email address has to be real or enquiries bounce, so this one
-       is left for you. */
-    email: "[EMAIL_ADDRESS]",
+    /* Digits only — this is what the phone button dials. */
+    phone: "+923216675511",
+    phoneDisplay: "0321 6675511",
+    email: "usman.yousaf12797@gmail.com",
     address: ["62-A, 63-C, Ideal Town", "Sargodha Road", "Faisalabad"], // from your site
-    /* Your actual opening hours — guessing these would send people to
-       a closed office. */
-    hours: ["[HOURS_WEEKDAYS]", "[HOURS_WEEKEND]"],
+    hours: ["Open every day", "24 hours"],
     /* Leave "" to hide the registration line in the footer. */
     registration: "",
   },

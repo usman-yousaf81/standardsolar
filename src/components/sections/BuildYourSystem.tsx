@@ -11,51 +11,17 @@ import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
 import { ArrowRight } from "@/components/ui/Button";
 
-/* The list reads as a dial, and the dial is made of type.
+/* The list of names does not animate. Nothing scales, fades, tips or
+   slides: every row is set at the same size, and the only difference
+   between them is that the selected one is dark and the rest are muted.
+   That is a state, applied instantly, not a transition.
  *
- * Every earlier version animated the box around a name — rotate it, tip
- * it in 3D, scale it. A box's geometry is a function of its width, so
- * the length of a product name leaked into the animation every time: a
- * long name swung further than a short one, rode out of its row, and
- * outweighed the row that was actually selected. Clamping the angle only
- * moved where it broke.
- *
- * So nothing here transforms a box. A row is a fixed slot, and what
- * changes is the type inside it: size, weight, opacity. Those are
- * governed by font metrics, so a six-letter name and a forty-letter name
- * occupy exactly the same vertical space at the same size. Text length
- * cannot reach the layout — by definition, not by clamping — and the
- * selected name is always the largest on screen whatever its neighbours
- * are called.
- *
- * ARC is a small fixed indent in pixels, keeping the curved left edge
- * the design started with. A constant, not a chord, so it cannot grow
- * with the row count either. */
-const ARC = 18;
-
-/* How much smaller each step away from the centre is, and the floor.
-   MIN_PX is absolute rather than a ratio: the base size is ~40px on a
-   desktop but ~22px on a phone, so a proportional floor alone left the
-   outermost row at 10px and unreadable. */
-const SIZE_STEP = 0.26;
-const MIN_SIZE = 0.42;
-const MIN_PX = 14;
-
-/** Sideways indent for a row: none at the rim, ARC at the centre. */
-function arcShift(offset: number, half: number) {
-  if (!half) return ARC;
-  const t = Math.min(1, Math.abs(offset) / half);
-  return ARC * (1 - t * t);
-}
-
-/** Type size and opacity for a row, by distance from the centre. */
-function typeFor(offset: number) {
-  const away = Math.abs(offset);
-  return {
-    size: Math.max(MIN_SIZE, 1 - away * SIZE_STEP),
-    opacity: away === 0 ? 1 : Math.max(0.22, 0.62 - (away - 1) * 0.18),
-  };
-}
+ * Earlier versions animated each row by its distance from the centre.
+ * Because a row's geometry follows its width, the length of a product
+ * name leaked into the effect every time — long names swung out of their
+ * row, overlapped their neighbours and outweighed the selection. The
+ * component is simpler without any of it, and there is nothing left that
+ * a product name can break. */
 
 /**
  * Product browser.
@@ -119,16 +85,16 @@ export function BuildYourSystem({
     const measure = () => {
       const probe = probeRef.current;
       if (probe) {
-        /* The column, less the sideways arc and the padding that covers
-           it. Shrink the type only as far as the longest name needs;
-           never enlarge it past what the CSS clamp asked for. */
+        /* The column, less the list's right padding. Shrink the type
+           only as far as the longest name needs; never enlarge it past
+           what the CSS clamp asked for. */
         const base = parseFloat(getComputedStyle(probe).fontSize) || 0;
         const natural = probe.getBoundingClientRect().width;
         /* The column, not the list. The list is w-fit, so its own width
            follows the text — measuring that would shrink the type, which
            would shrink the list, which would shrink the type again. */
         const column = el.parentElement?.clientWidth ?? el.clientWidth;
-        const room = column - ARC - 8;
+        const room = column - 26;
         setNameRoom(room);
 
         /* Shrink to fit, but not below what stays readable. Past that
@@ -305,7 +271,7 @@ export function BuildYourSystem({
                  100% against the padding box, so padding here would not
                  inset it. Every product is contained in the same square,
                  so a tall panel and a wide battery share a longest side. */
-              className="builder-media-enter aspect-square w-[66%] max-w-full rounded-panel"
+              className="aspect-square w-[66%] max-w-full rounded-panel"
               sizes="(min-width: 1024px) 50vw, 90vw"
             />
 
@@ -351,7 +317,7 @@ export function BuildYourSystem({
                  name — scrolling just to the right of the text should not
                  catch the list. The padding covers the wheel's sideways
                  shift. */
-              className="builder-enter builder-names relative w-fit max-w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden pr-7"
+              className="builder-names relative w-fit max-w-full snap-y snap-mandatory overflow-y-auto overflow-x-hidden pr-7"
               style={
                 rowHeight
                   ? { height: rowHeight * visible }
@@ -376,10 +342,6 @@ export function BuildYourSystem({
 
               {family.items.map((item, index) => {
                 const selected = index === itemIndex;
-                const offset = index - itemIndex;
-                const shift = arcShift(offset, half);
-                const { size, opacity } = typeFor(offset);
-
                 return (
                   <li
                     key={item.id}
@@ -395,22 +357,17 @@ export function BuildYourSystem({
                       onClick={() => goToItem(index)}
                       aria-current={selected ? "true" : undefined}
                       className="block max-w-full text-left"
-                      style={{
-                        transform: `translateX(${shift.toFixed(2)}px)`,
-                        transition: "transform 550ms var(--ease-out-soft)",
-                      }}
                     >
                       <span
-                        className="block truncate font-display text-[clamp(1.35rem,3.4vw,2.5rem)] leading-[1.05] tracking-[-0.025em] text-ink"
+                        className={cn(
+                          "block truncate font-display text-[clamp(1.35rem,3.4vw,2.5rem)] leading-[1.05] tracking-[-0.025em]",
+                          selected
+                            ? "font-semibold text-ink"
+                            : "font-medium text-ink-muted",
+                        )}
                         style={{
-                          ...(nameSize
-                            ? { fontSize: Math.max(MIN_PX, nameSize * size) }
-                            : null),
+                          ...(nameSize ? { fontSize: nameSize } : null),
                           ...(nameRoom ? { maxWidth: nameRoom } : null),
-                          fontWeight: selected ? 600 : 500,
-                          opacity,
-                          transition:
-                            "font-size 500ms var(--ease-out-soft), opacity 500ms var(--ease-out-soft)",
                         }}
                       >
                         {item.name}
@@ -430,7 +387,7 @@ export function BuildYourSystem({
             {/* Spec + description for the active product */}
             <div
               key={`copy-${familyIndex}-${itemIndex}`}
-              className="builder-enter flex flex-col gap-2 border-t border-hairline-strong/60 pt-4 lg:pl-[18px]"
+              className="flex flex-col gap-2 border-t border-hairline-strong/60 pt-4 lg:pl-[18px]"
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium leading-none text-ink ring-1 ring-hairline">
