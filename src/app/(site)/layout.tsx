@@ -1,5 +1,5 @@
 import { getProductCatalog, getSectors } from "@/lib/content";
-import { SiteHeader, type MobileNavItem } from "@/components/layout/SiteHeader";
+import { SiteHeader, type MobileNavGroup } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileActionBar } from "@/components/layout/MobileActionBar";
 
@@ -17,25 +17,41 @@ export default async function SiteLayout({
     getProductCatalog(),
   ]);
 
-  const nav: MobileNavItem[] = [
+  /* "Commercial Solar Systems" is right on its own page and too long in
+     a menu, where the column is narrow and every row repeats the same
+     trailing noun. The generic tail is dropped for the navigation only —
+     the sector's own title is untouched. */
+  const shorten = (title: string) =>
+    title.replace(/\s+(systems?|solutions?|panels?)$/i, "");
+
+  const nav: MobileNavGroup[] = [
     {
       label: "Sectors",
-      href: "/sectors",
-      links: sectors.map((sector) => ({
-        label: sector.title,
-        href: `/sectors/${sector.id}`,
-      })),
+      links: [
+        { label: "All sectors", href: "/sectors" },
+        ...sectors.map((sector) => ({
+          label: shorten(sector.title),
+          href: `/sectors/${sector.id}`,
+        })),
+      ],
     },
     {
       label: "Products",
-      href: "/products",
-      links: categories.map((category) => ({
-        label: category.label,
-        href: `/products#${category.id}`,
-      })),
+      links: [
+        { label: "All products", href: "/products" },
+        ...categories.map((category) => ({
+          label: category.label,
+          href: `/products#${category.id}`,
+        })),
+      ],
     },
-    { label: "About Us", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    {
+      label: "Standard Solar",
+      links: [
+        { label: "About Us", href: "/about" },
+        { label: "Contact", href: "/contact" },
+      ],
+    },
   ];
 
   return (

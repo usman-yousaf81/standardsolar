@@ -15,20 +15,15 @@ import { PhoneIcon } from "@/components/ui/PhoneIcon";
 const iconButton =
   "inline-flex size-10 items-center justify-center rounded-full transition-colors";
 
-/** A row of the mobile menu. Rows with `links` open a sub-menu. */
-export type MobileNavItem = {
+/** A titled group of links in the mobile menu. */
+export type MobileNavGroup = {
   label: string;
-  href: string;
-  links?: { label: string; href: string }[];
+  links: { label: string; href: string }[];
 };
 
-export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
+export function SiteHeader({ nav }: { nav: MobileNavGroup[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  /* Which sub-menu is showing. The menu holds one list at a time rather
-     than expanding lists inside lists — on a phone that keeps the type
-     large and the column clean at every level. */
-  const [submenu, setSubmenu] = useState<MobileNavItem | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -49,11 +44,6 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
     viaKeyboard.current = false;
     setOpen(false);
   }, [pathname]);
-
-  // Starting over each time the menu opens; never reopen mid-branch.
-  useEffect(() => {
-    if (!open) setSubmenu(null);
-  }, [open]);
 
   // Lock the page behind the overlay, and close on Escape.
   useEffect(() => {
@@ -222,60 +212,31 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
             </a>
           </Container>
 
-          {/* One list at a time. The top level holds the four
-              destinations; tapping Sectors or Products replaces it with
-              that section's own list rather than pushing an expanded
-              block into the middle of the others. Either way the column
-              is the same tight typographic stack — no rules, no boxes,
-              line height carrying the rhythm rather than padding. */}
+          {/* Groups of links under a quiet eyebrow — a tight typographic
+              stack with no rules, no boxes and no chevrons, where line
+              height sets the rhythm rather than padding. */}
           <nav
             aria-label="Mobile"
             className="flex flex-1 flex-col overflow-y-auto overscroll-contain"
           >
-            <Container className="flex flex-col pb-12 pt-6">
-              {submenu ? (
-                <div key={submenu.label}>
-                  <button
-                    type="button"
-                    onClick={() => setSubmenu(null)}
-                    className="menu-item -ml-1 flex items-center gap-1.5 py-1 pl-1 text-[10px] uppercase leading-none tracking-[0.28em] text-ink-muted transition-colors active:text-ink"
-                    style={{ animationDelay: "0s" }}
-                  >
-                    <svg
-                      aria-hidden
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      className="size-3"
-                    >
-                      <path
-                        d="M10 3.5L5.5 8l4.5 4.5"
-                        stroke="currentColor"
-                        strokeWidth="1.7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Menu
-                  </button>
-
+            <Container className="flex flex-col gap-9 pb-12 pt-6">
+              {nav.map((group) => (
+                <div key={group.label}>
                   <p
-                    className="menu-item mt-7 text-[10px] uppercase leading-none tracking-[0.28em] text-ink-muted"
-                    style={{ animationDelay: "0.05s" }}
+                    className="menu-item text-[10px] uppercase leading-none tracking-[0.28em] text-ink-muted"
+                    style={{ animationDelay: `${step++ * 0.05}s` }}
                   >
-                    {submenu.label}
+                    {group.label}
                   </p>
 
                   <ul className="mt-4 flex flex-col">
-                    {[
-                      { label: `All ${submenu.label.toLowerCase()}`, href: submenu.href },
-                      ...(submenu.links ?? []),
-                    ].map((link, i) => (
+                    {group.links.map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
                           onClick={closeMenu}
                           className="menu-item block font-display text-[clamp(1.6rem,7.2vw,2rem)] font-medium leading-[1.4] tracking-[-0.02em] text-ink transition-colors active:text-navy"
-                          style={{ animationDelay: `${(i + 2) * 0.05}s` }}
+                          style={{ animationDelay: `${step++ * 0.05}s` }}
                         >
                           {link.label}
                         </Link>
@@ -283,55 +244,7 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
                     ))}
                   </ul>
                 </div>
-              ) : (
-                <ul className="flex flex-col">
-                  {nav.map((item) => {
-                    const rowClass =
-                      "menu-item block w-full font-display text-[clamp(1.6rem,7.2vw,2rem)] font-medium leading-[1.4] tracking-[-0.02em] text-ink transition-colors active:text-navy";
-
-                    return (
-                      <li key={item.label}>
-                        {item.links?.length ? (
-                          <button
-                            type="button"
-                            onClick={() => setSubmenu(item)}
-                            className={cn(rowClass, "flex items-center justify-between gap-4 text-left")}
-                            style={{ animationDelay: `${step++ * 0.05}s` }}
-                          >
-                            {item.label}
-                            {/* The only mark on the page: it says this
-                                row leads somewhere rather than being a
-                                destination itself. */}
-                            <svg
-                              aria-hidden
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              className="size-3.5 shrink-0 text-ink-muted"
-                            >
-                              <path
-                                d="M6 3.5L10.5 8 6 12.5"
-                                stroke="currentColor"
-                                strokeWidth="1.7"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </button>
-                        ) : (
-                          <Link
-                            href={item.href}
-                            onClick={closeMenu}
-                            className={rowClass}
-                            style={{ animationDelay: `${step++ * 0.05}s` }}
-                          >
-                            {item.label}
-                          </Link>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+              ))}
             </Container>
           </nav>
 
