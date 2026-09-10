@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { site } from "@/content/site";
+import { cn } from "@/lib/utils";
 import { ArrowRight } from "@/components/ui/Button";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
@@ -12,8 +14,36 @@ import { PhoneIcon } from "@/components/ui/PhoneIcon";
  * over. Body content gets `.pb-action-bar` so nothing hides behind it.
  */
 export function MobileActionBar() {
+  /* Hidden while the hero fills the screen, so the photograph opens the
+     page uninterrupted; it slides up once the hero has been scrolled
+     past. Pages that have no hero show it straight away. */
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const hero = document.getElementById("hero");
+    if (!hero) {
+      setShown(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setShown(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
+    <div
+      aria-hidden={!shown}
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-50 transition-[transform,opacity] duration-300 ease-[var(--ease-out-soft)] lg:hidden",
+        shown
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-full opacity-0",
+      )}
+    >
       {/* A solid bar with one hairline edge. It sits over a dark hero as
           often as a light page, and a gradient fade read as a haze over
           the photograph rather than as a soft edge. */}

@@ -22,7 +22,9 @@ export async function Hero() {
   const [hero, stats] = await Promise.all([getHero(), getStats()]);
 
   return (
-    <section className="relative -mt-[72px] overflow-hidden">
+    /* id is what the mobile action bar watches to know when the hero
+       has been scrolled past. */
+    <section id="hero" className="relative -mt-[72px] overflow-hidden">
       {/* Photograph — portrait crop on phones, landscape from lg up */}
       <div className="absolute inset-0">
         <Image
