@@ -14,13 +14,10 @@ import { PhoneIcon } from "@/components/ui/PhoneIcon";
 export function MobileActionBar() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
-      {/* Soft fade so page content dissolves under the bar rather than
-          cutting off hard against it. */}
-      <div
-        aria-hidden
-        className="pointer-events-none h-14 bg-gradient-to-t from-white via-white/85 to-transparent"
-      />
-      <div className="bg-gradient-to-t from-white to-white/95 px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-1">
+      {/* A solid bar with one hairline edge. It sits over a dark hero as
+          often as a light page, and a gradient fade read as a haze over
+          the photograph rather than as a soft edge. */}
+      <div className="border-t border-hairline bg-white px-4 pb-[max(16px,env(safe-area-inset-bottom))] pt-3">
         <div className="mx-auto flex max-w-md items-stretch gap-2.5">
           <Link
             href={site.mobileBar.ctaHref}
