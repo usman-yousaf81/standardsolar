@@ -24,7 +24,9 @@ export async function Hero() {
   return (
     /* id is what the mobile action bar watches to know when the hero
        has been scrolled past. */
-    <section id="hero" className="relative -mt-[72px] overflow-hidden">
+    /* The phone header floats out of the flow, so only the desktop bar
+       needs pulling under. */
+    <section id="hero" className="relative overflow-hidden lg:-mt-[72px]">
       {/* Photograph — portrait crop on phones, landscape from lg up */}
       <div className="absolute inset-0">
         <Image
