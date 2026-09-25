@@ -20,11 +20,11 @@ function QuoteMark() {
 }
 
 /**
- * Work delivered in a sector, and what the clients said about it. Both
- * blocks disappear if their array is empty, so a sector with nothing to
- * show yet simply doesn't claim any.
+ * Installations delivered under a service, and what the clients said
+ * about them. Both blocks disappear while their list is empty, so a
+ * service with nothing to show yet simply doesn't claim any.
  */
-export function SectorWork({ sector }: { sector: Sector }) {
+export function ServiceWork({ sector }: { sector: Sector }) {
   const hasProjects = sector.projects.length > 0;
   const hasQuotes = sector.testimonials.length > 0;
   if (!hasProjects && !hasQuotes) return null;
@@ -35,8 +35,8 @@ export function SectorWork({ sector }: { sector: Sector }) {
         <Section className="bg-mist">
           <Container>
             <SectionHeading
-              eyebrow={site.sectors.projectsLabel}
-              heading={`${sector.title} we have delivered.`}
+              eyebrow={site.services.projectsLabel}
+              heading="Recent installations."
             />
 
             <ul className="mt-12 grid gap-px overflow-hidden rounded-card bg-hairline sm:grid-cols-2 lg:mt-14">
@@ -76,7 +76,7 @@ export function SectorWork({ sector }: { sector: Sector }) {
         <Section>
           <Container>
             <SectionHeading
-              eyebrow={site.sectors.testimonialsLabel}
+              eyebrow={site.services.testimonialsLabel}
               heading="In their words."
               align="center"
             />

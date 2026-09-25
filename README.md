@@ -216,149 +216,138 @@ the hero photograph on phones they turn white and revert to ink as soon
 as you scroll off it. If you ever put a dark section behind the header
 on another page, that is the switch to extend.
 
-### Mobile menu
+### Phone navigation
 
-Tapping the menu button opens a full-screen panel: small letterspaced
-group labels with large stacked links under each, and a row of contact
-links pinned to the bottom. Groups live in `site.mobileMenu.groups` and
-the layout takes any number of them.
+On phones the header is a floating pill: menu button, the first two
+destinations inline, the mark, and a call button. The menu opens a dark
+translucent panel from the left with the five destinations; Services and
+Equipment each carry a chevron that opens their sub-menu in place. The
+sub-menus are built in `src/app/(site)/layout.tsx` from the same database
+reads the pages use, so a category renamed in the admin is renamed in the
+menu and the footer too.
 
-On phones the header is arranged menu-left, mark-centre, call-right, so
-the menu button doesn't move when it turns into the close button. The
-panel closes on Escape, on route change and on any link tap; it locks
-page scroll while open, takes focus on open and hands it back to the
-menu button on close.
-
-`site.mobileMenu.social` is an empty array ready for Instagram,
-Facebook or LinkedIn links — add them and they join the bottom row.
+The panel closes on Escape, on route change and on any link tap, and
+locks page scroll while open.
 
 ### Mobile action bar
 
 `src/components/layout/MobileActionBar.tsx` is the bar pinned to the
-bottom of the screen on phones — a wide action pill plus a square call
-button. It is hidden from the `lg` breakpoint up, where the header CTA
-takes over. Its label and destination come from `site.mobileBar` in the
-content file, and the call button dials `site.company.phone`.
+bottom of the screen on phones: a wide **Get a free quote** button, then
+WhatsApp and call as squares. It stays hidden until the hero has been
+scrolled past, stands down while the menu is open, and on the contact
+page — where the form is already on screen — shows only WhatsApp and
+call, full width. Hidden from `lg` up, where the header button takes over.
 
 ---
 
-## Contact form
+## Quote form
 
-The form posts to `POST /api/enquiry`, which validates the submission and
-rejects bots via a honeypot field.
+`QuoteForm.tsx` is the one form on the site. It closes every page inside
+`QuoteSection.tsx`, and fills the contact page on its own. Built for a
+phone first:
 
-**It does not deliver anywhere yet** — submissions are only logged to the
-server console. See the `TODO` in
-[`src/app/api/enquiry/route.ts`](src/app/api/enquiry/route.ts) to wire up
-an email service (Resend, SendGrid, Postmark), a CRM, or a spreadsheet.
-Put any credentials in `.env.local`, which is git-ignored.
+- **Phone is required, email is optional.** Most customers here would
+  rather be called or messaged than emailed.
+- Service and monthly bill are **one tap each** (chips), so the quote
+  can be sized from the first call.
+- A service page preselects its own service. `/contact?service=<id>` and
+  `/contact?interest=<product>` fill the form in the same way — the
+  equipment page's "Get a price installed" links use the second.
+
+`POST /api/enquiry` validates, rejects bots with a honeypot, and inserts
+into the `enquiries` table, where the admin lists it. Service, bill,
+product and the page it was sent from are written as the first lines of
+the message, so the form needed no schema change.
+
+### WhatsApp
+
+Every WhatsApp button reads `site.company.whatsapp` through
+`src/lib/contact.ts`, and opens a chat with the first message already
+typed. Set the number to `""` and every WhatsApp button disappears.
 
 ---
 
 ## Home page sections
 
-| Order | Section            | Source                                    |
-| ----- | ------------------ | ----------------------------------------- |
-| 1     | Hero               | `site.hero`                               |
-| 2     | Sectors (4 cards)  | `site.sectors` — links through to /sectors |
-| 3     | Stats strip        | `site.stats` — desktop only, see below    |
-| 4     | Build your system  | `site.builder` — scroll-driven, links to `/products` |
-| 5     | Intro / mission    | `site.intro`                              |
-| 6     | Process            | `site.process`                            |
-| 7     | Why us             | `site.whyUs`                              |
-| 8     | FAQ                | `site.faq`                                |
-| 9     | Closing CTA        | `site.ctaBand`                            |
+Ordered the way a buyer decides.
 
-### Sectors (`/sectors` and `/sectors/[slug]`)
+| Order | Section               | Source                                           |
+| ----- | --------------------- | ------------------------------------------------ |
+| 1     | Hero + two buttons    | `site.hero` (copy from the admin), `getStats()`  |
+| 2     | Services (4 cards)    | `site.services` — each links to `/services/<id>` |
+| 3     | Every install includes| `site.services.included`                         |
+| 4     | How it works          | `site.process`                                   |
+| 5     | What we install       | `site.builder` — the equipment wheel             |
+| 6     | Why us                | `site.whyUs`                                     |
+| 7     | FAQ                   | `site.faq`                                       |
+| 8     | Quote form            | `site.quote`                                     |
 
-`/sectors` is an index: four rows, each the way into that sector's own
-page. A list rather than a grid on purpose — the home page already has
-the grid, and a list gives the names room to be the largest thing on
-screen.
+### Services (`/services` and `/services/[slug]`)
 
-`/sectors/[slug]` is one page per sector, statically generated from
-`site.sectors.items` via `generateStaticParams`, so all four are
-prerendered at build time and an unknown slug 404s. Each page runs:
-photo hero, overview with the sector's published figures, what it
-covers, work delivered, what clients said, the other three sectors, CTA.
+The four kinds of installation — home, commercial, industrial and
+agricultural. The copy (title, kicker, description, overview, "We install
+for" list, figures, photograph) is edited in the admin under
+**Services**; `site.services.items` is the fallback.
 
-Both work blocks are data-driven. Empty `projects` or `testimonials` for
-a sector and that block disappears from its page rather than showing an
-empty shell — so a sector with nothing to show yet claims nothing.
+Each service page is a landing page: hero with its own quote and WhatsApp
+buttons, overview, the systems that suit that kind of site, everything an
+installation includes, how it works, installations and client quotes
+(each hidden while empty), that service's own FAQ, the other services,
+and the quote form with the service preselected. The systems and the FAQ
+live in `site.services.details`, keyed by service id.
 
-**Both arrays currently hold demo content.** The companies, people and
-figures in them are written samples, there so the pages can be seen
-finished while real ones are gathered. Every one is marked `DEMO` in
-`site.ts`, under a banner at the top of the file.
+The routes used to be `/sectors`; permanent redirects in
+`next.config.ts` carry old links across.
 
-### Products page (`/products`)
+### Equipment page (`/equipment`)
 
-The catalogue, from the database, with `src/content/site.ts` under
-`products.categories` as the static floor when the database is
-unreachable.
+The catalogue, from the database, with `site.equipment.categories` as
+the static floor when the database is unreachable. Formerly `/products`,
+redirected.
 
-`ProductCatalog.tsx` renders the whole thing: each category as a
-heading, the facts that hold across it as a spec row, then a grid of
-products. A category either holds products directly or splits into
-sub-categories first — Panels can become Bi-facial and Mono-facial
-without forcing Inverters to invent a level it does not need. Both cases
-end in the same grid, so the page reads at one depth throughout.
+`ProductCatalog.tsx` renders each category as a heading, the facts that
+hold across it as a spec row, then a grid of products — directly, or
+split into sub-categories first. Every product carries a **Get a price
+installed** link into the quote form. Product photographs sit on the page
+with nothing behind them, so upload cut-outs with a transparent
+background.
 
-A product is a photograph, a name, one tagline and a list of
-label/value specs. The photograph is square, sized to fill the column,
-and sits on the page with nothing behind it, so upload cut-outs with a
-transparent background — a photograph with a white background will read
-as a white square.
+Edited from the admin under **Equipment**.
 
-Everything here is edited from the admin at
-`/admin_usman6655/products`, including adding and deleting categories
-and re-ordering products.
+### What we install (the equipment wheel)
 
-### Build your system
+`src/components/sections/BuildYourSystem.tsx` is the equipment browser
+on the home page: family tabs above a wheel of names, with the selected
+item's photograph and description beside it. The wheel is one integer —
+the selected index — drawn with transforms; swipe, scroll, the dots and
+the Next button all change that one number, so what is selected can
+never drift from what is on screen. Gesture tracking lives in refs rather
+than state, because a touch that ends before React commits would
+otherwise read a stale distance.
 
-`src/components/sections/BuildYourSystem.tsx` is the product browser on
-the home page. The page scrolls past it at normal speed; the only thing
-that scrolls internally is the list of names, which snaps row by row,
-and the row at the centre is the active product. The family tabs, the
-dots and the Next button all drive that same list, so the selection
-cannot drift from what is on screen.
-
-The list reads as a dial, and the dial is made of type. Nothing
-transforms a box: a row is a fixed slot whose height comes from the type
-size, and what changes with distance from the centre is the type inside
-it — size, weight, opacity. That matters because a box's geometry is a
-function of its width, so earlier versions that rotated or scaled the
-row let the length of a product name leak into the animation. A long
-name swung further than a short one, rode out of its row, and outweighed
-the row that was actually selected. Type is governed by font metrics
-instead, so a six-letter name and a forty-letter name occupy identical
-vertical space at the same size.
-
-The type also fits itself to the column, measured against an off-screen
-copy of the longest name, with an absolute floor so it stays legible on
-a phone. Past that floor a width cap ellipsises rather than overflowing.
-
-Products come from the same catalogue the products page reads —
-`getProductFamilies()` flattens the tree for the wheel. There is one
-list of products, not two.
+Items come from the same catalogue the equipment page reads —
+`getProductFamilies()` flattens the tree for the wheel. One list, not two.
 
 ---
 
 ## Still to do
 
-- [ ] **Replace the DEMO testimonials and projects** under `sectors`, or
-      empty the arrays — each block hides itself. Invented testimony must
-      not go live. `grep DEMO src/content/site.ts`
-- [ ] Fill the three remaining `[TOKENS]` — email address and opening
-      hours (see the table above)
-- [ ] Read the 13 `// CONFIRM` lines and correct anything inaccurate
-- [ ] Send real project numbers to replace the spec-sheet figures in the
-      stats strip
-- [ ] Replace the stock home-page photography with your own, and drop
+- [ ] **Run `supabase/migrations/0004_services.sql`** in the Supabase SQL
+      editor. It writes the services copy and the new hero into the live
+      database and removes the 16 invented sample projects and client
+      quotes. Until it runs, the live site shows the old copy.
+- [ ] **Confirm `0321 6675511` is on WhatsApp** — every WhatsApp button
+      opens a chat with it (`site.company.whatsapp`).
+- [ ] Read the `// CONFIRM` lines in `site.ts` and correct anything that
+      overstates — net metering support, own crews, free quote, 24-hour
+      answering. `grep -n CONFIRM src/content/site.ts`
+- [ ] Add real installations and real client quotes from the admin as
+      they come; each block appears on its service page when it has one
+- [ ] Add installed capacity or a count of systems installed to the key
+      figures when there are real numbers
+- [ ] Replace the stock photography with your own, and drop
       `footer.imageCredits` once the CC BY images are gone
-- [ ] Supply a transparent PNG or SVG version of the logo (the current
-      `public/logo.jpeg` has a baked-in white background)
-- [ ] Wire the enquiry form to an email service or CRM
-- [ ] Set the live domain in `site.seo.siteUrl`
-- [ ] Add favicon set, `sitemap.xml` and `robots.txt`
+- [ ] The managing director's name (`pages.about.director.name`)
+- [ ] Email notification for new enquiries (they reach the admin today,
+      but nothing pings anyone)
 - [ ] Cookie/analytics decision before launch

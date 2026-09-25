@@ -8,7 +8,7 @@ import { byPosition } from "@/lib/utils";
  * The bridge between the database and the pages.
  *
  * Every getter returns the same shape the components already expect, so
- * a page reads `await getSectors()` instead of `site.sectors.items` and
+ * a page reads `await getSectors()` instead of `site.services.items` and
  * nothing else about it changes.
  *
  * Two rules hold throughout:
@@ -102,7 +102,7 @@ export function getStats(): Promise<readonly Stat[]> {
 /* Sectors                                                             */
 /* ------------------------------------------------------------------ */
 
-export type Sector = (typeof site.sectors.items)[number];
+export type Sector = (typeof site.services.items)[number];
 
 type SectorRow = {
   id: string;
@@ -134,7 +134,7 @@ export function getSectors(): Promise<readonly Sector[]> {
     "sectors",
     async () => {
       const supabase = createPublicClient();
-      if (!supabase) return site.sectors.items;
+      if (!supabase) return site.services.items;
 
       const { data, error } = await supabase
         .from("sectors")
@@ -149,12 +149,12 @@ export function getSectors(): Promise<readonly Sector[]> {
 
       if (error) throw error;
       const rows = (data ?? []) as SectorRow[];
-      if (!rows.length) return site.sectors.items;
+      if (!rows.length) return site.services.items;
 
       return rows.map((row, i) => {
         const fallback =
-          site.sectors.items.find((s) => s.id === row.id) ??
-          site.sectors.items[0];
+          site.services.items.find((s) => s.id === row.id) ??
+          site.services.items[0];
 
         return {
           id: row.id,
@@ -171,7 +171,7 @@ export function getSectors(): Promise<readonly Sector[]> {
         } as unknown as Sector;
       });
     },
-    site.sectors.items,
+    site.services.items,
   );
 }
 
@@ -269,7 +269,7 @@ export function getProductCatalog(): Promise<readonly ProductCategory[]> {
     "product-catalog",
     async () => {
       const supabase = createPublicClient();
-      if (!supabase) return site.products.categories;
+      if (!supabase) return site.equipment.categories;
 
       const { data, error } = await supabase
         .from("product_families")
@@ -282,7 +282,7 @@ export function getProductCatalog(): Promise<readonly ProductCategory[]> {
 
       if (error) throw error;
       const rows = (data ?? []) as CatalogRow[];
-      if (!rows.length) return site.products.categories;
+      if (!rows.length) return site.equipment.categories;
 
       const toProducts = (row: CatalogRow): Product[] =>
         (row.products ?? [])
@@ -323,7 +323,7 @@ export function getProductCatalog(): Promise<readonly ProductCategory[]> {
           products: toProducts(row),
         }));
     },
-    site.products.categories,
+    site.equipment.categories,
   );
 }
 

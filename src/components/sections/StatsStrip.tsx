@@ -1,12 +1,18 @@
-import { site } from "@/content/site";
+import { getStats } from "@/lib/content";
 import { Container } from "@/components/ui/Container";
 
-export function StatsStrip() {
+/**
+ * The key figures as a strip. Read from the same source as the hero
+ * widgets, so a figure changed in the admin changes in both places.
+ */
+export async function StatsStrip() {
+  const stats = await getStats();
+
   return (
     <section aria-label="Key figures" className="border-y border-hairline">
       <Container className="px-0 sm:px-8">
         <dl className="grid grid-cols-2 lg:grid-cols-4">
-          {site.stats.map((stat, i) => (
+          {stats.map((stat, i) => (
             <div
               key={stat.label}
               className={[

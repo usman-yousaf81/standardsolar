@@ -1,9 +1,12 @@
+import Link from "next/link";
 import type { ProductCategory, Product } from "@/lib/content";
+import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { BuilderIcon } from "@/components/ui/BuilderIcons";
+import { ArrowRight } from "@/components/ui/Button";
 
 /**
  * The whole catalogue: photographs first, words only where they carry a
@@ -143,6 +146,15 @@ function ProductGrid({
               ))}
             </dl>
           ) : null}
+
+          {/* Every item leads to a quote with the item already noted. */}
+          <Link
+            href={`/contact?interest=${encodeURIComponent(product.name)}`}
+            className="group mt-4 inline-flex items-center gap-1.5 self-start text-[13.5px] font-medium text-navy"
+          >
+            {site.equipment.askLabel}
+            <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </Link>
         </li>
       ))}
     </ul>

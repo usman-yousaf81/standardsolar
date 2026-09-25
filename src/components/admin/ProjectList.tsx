@@ -115,7 +115,7 @@ export function ProjectList({
           ))}
         </ul>
       ) : (
-        <p className="text-[13.5px] text-ink-muted">No projects for this sector.</p>
+        <p className="text-[13.5px] text-ink-muted">No installations for this service yet.</p>
       )}
 
       {adding ? (

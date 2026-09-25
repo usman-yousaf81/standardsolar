@@ -13,7 +13,7 @@ const GRID_FROM = 1024;
 /**
  * One list, two behaviours.
  *
- * On phones the four sectors are a snap carousel rather than a stack —
+ * On phones the four services are a snap carousel rather than a stack —
  * four full-height cards in a column made the home page enormous, and
  * nobody scrolled to the fourth. From `lg` up the same markup becomes
  * the original grid, so there is no duplicated DOM and no second copy
@@ -26,7 +26,7 @@ const GRID_FROM = 1024;
  * rAF callback — putting them in React state would re-render four cards
  * on every frame of a drag.
  */
-export function SectorCards({ sectors }: { sectors: readonly Sector[] }) {
+export function ServiceCards({ services }: { services: readonly Sector[] }) {
   const trackRef = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
 
@@ -130,7 +130,7 @@ export function SectorCards({ sectors }: { sectors: readonly Sector[] }) {
         {/* Lets the first card reach the centre of the screen. */}
         <li aria-hidden className="shrink-0 basis-[6%] lg:hidden" />
 
-        {sectors.map((sector, i) => (
+        {services.map((sector, i) => (
           <li
             key={sector.id}
             data-card
@@ -138,13 +138,13 @@ export function SectorCards({ sectors }: { sectors: readonly Sector[] }) {
           >
             <div className="origin-center will-change-transform transition-[transform,opacity] duration-200 ease-out lg:!transform-none lg:!opacity-100">
               <Link
-                href={`/sectors/${sector.id}`}
+                href={`/services/${sector.id}`}
                 className="group flex flex-col"
               >
                 <MediaSlot
                   src={sector.image}
                   alt={sector.title}
-                  label={`SECTOR_${i + 1}_IMAGE`}
+                  label={`SERVICE_${i + 1}_IMAGE`}
                   className="aspect-4/5 w-full rounded-card"
                   imageClassName="will-change-transform lg:transition-transform lg:duration-700 lg:ease-[var(--ease-out-soft)] lg:group-hover:scale-[1.04]"
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 52vw, 78vw"
@@ -155,6 +155,9 @@ export function SectorCards({ sectors }: { sectors: readonly Sector[] }) {
                     {sector.title}
                   </span>
                   <ArrowRight className="size-3.5 shrink-0 text-ink-muted transition-transform duration-300 ease-[var(--ease-out-soft)] group-hover:translate-x-1" />
+                </span>
+                <span className="mt-1.5 text-[13px] leading-snug text-ink-muted">
+                  {sector.kicker}
                 </span>
               </Link>
             </div>
@@ -167,7 +170,7 @@ export function SectorCards({ sectors }: { sectors: readonly Sector[] }) {
 
       {/* Position, phones only. */}
       <div className="mt-6 flex items-center justify-center gap-2 lg:hidden">
-        {sectors.map((sector, i) => (
+        {services.map((sector, i) => (
           <button
             key={sector.id}
             type="button"

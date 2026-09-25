@@ -25,7 +25,7 @@ const settings = {
     desktopImageAlt: site.hero.desktopImageAlt,
   },
   stats: site.stats,
-  ctaBand: site.ctaBand,
+
   company: site.company,
 };
 
@@ -51,7 +51,7 @@ await api("/rest/v1/sectors", {
   method: "POST",
   headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
   body: JSON.stringify(
-    site.sectors.items.map((s, i) => ({
+    site.services.items.map((s, i) => ({
       id: s.id,
       position: i,
       title: s.title,
@@ -64,5 +64,5 @@ await api("/rest/v1/sectors", {
     })),
   ),
 });
-console.log(`sectors: ${site.sectors.items.length}`);
+console.log(`sectors: ${site.services.items.length}`);
 console.log("done — restart the dev server to clear the content cache.");

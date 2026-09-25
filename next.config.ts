@@ -2,6 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /* Sectors became Services and Products became Equipment. Permanent
+     redirects carry anything already linked or indexed across, so no
+     old address ends in a 404. */
+  async redirects() {
+    return [
+      { source: "/sectors", destination: "/services", permanent: true },
+      { source: "/sectors/:slug", destination: "/services/:slug", permanent: true },
+      { source: "/products", destination: "/equipment", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       // Images uploaded through the admin portal are served from the

@@ -88,10 +88,10 @@ since the database becomes the source of truth.
 
 | Table | Holds |
 | --- | --- |
-| `site_settings` | Hero, stats, CTA, company details — one JSON row per key |
-| `sectors` | The four sectors, with their figures and applications |
-| `sector_projects` | Work delivered, per sector |
-| `testimonials` | Client quotes, per sector |
+| `site_settings` | Hero copy and key figures — one JSON row per key. (`ctaBand` and `company` rows may exist from the first seed; nothing reads them.) |
+| `sectors` | The four installation services shown at `/services` — the table kept its original name |
+| `sector_projects` | Installations delivered, per service |
+| `testimonials` | Client quotes, per service |
 | `product_families` | Product categories. Self-referencing: a row with `parent_id` set is a sub-category, e.g. Bi-facial inside Panels |
 | `products` | The items themselves — photograph, name, tagline, and a `specs` array of label/value pairs |
 | `enquiries` | Contact form submissions, with a status for follow-up |

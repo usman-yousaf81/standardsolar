@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { ADMIN_PATH } from "@/lib/admin/config";
 import { EmptyState, PageTitle } from "@/components/admin/ui";
 
-export const metadata: Metadata = { title: "Sectors" };
+export const metadata: Metadata = { title: "Services" };
 export const dynamic = "force-dynamic";
 
 type Row = {
@@ -34,8 +34,8 @@ export default async function SectorsAdminPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageTitle
-        title="Sectors"
-        description="The four sectors, their photographs and copy, plus the work and client quotes shown on each sector's own page."
+        title="Services"
+        description="The four installation services, their photographs and copy, plus the installations and client quotes shown on each service's own page."
       />
 
       {error ? (
@@ -44,7 +44,7 @@ export default async function SectorsAdminPage() {
         </p>
       ) : sectors.length === 0 ? (
         <EmptyState
-          title="No sectors"
+          title="No services"
           body="Run supabase/setup.sql to load the starting content."
         />
       ) : (

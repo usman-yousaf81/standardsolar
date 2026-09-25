@@ -5,7 +5,7 @@ import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { StatsStrip } from "@/components/sections/StatsStrip";
-import { CtaBand } from "@/components/sections/CtaBand";
+import { QuoteSection } from "@/components/sections/QuoteSection";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -115,7 +115,7 @@ export default function AboutPage() {
       </Section>
 
       <StatsStrip />
-      <CtaBand />
+      <QuoteSection className="pt-20 sm:pt-28" />
     </>
   );
 }

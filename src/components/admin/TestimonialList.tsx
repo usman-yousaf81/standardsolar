@@ -114,7 +114,7 @@ export function TestimonialList({
           ))}
         </ul>
       ) : (
-        <p className="text-[13.5px] text-ink-muted">No quotes for this sector.</p>
+        <p className="text-[13.5px] text-ink-muted">No client quotes for this service yet.</p>
       )}
 
       {adding ? (

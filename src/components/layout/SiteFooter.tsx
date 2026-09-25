@@ -1,11 +1,35 @@
 import Link from "next/link";
 import { site } from "@/content/site";
+import { hasWhatsApp, telHref, whatsappHref } from "@/lib/contact";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "@/components/ui/Logo";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
+import type { MobileNavItem } from "@/components/layout/SiteHeader";
 
-export function SiteFooter() {
+const headingClass =
+  "text-[11px] font-semibold uppercase tracking-[0.16em] text-ink";
+const linkClass = "text-sm text-ink-muted transition-colors hover:text-navy";
+
+/**
+ * Services and Equipment are passed in from the layout — the same lists
+ * the navigation is built from — so the footer can never name a
+ * category the admin has since renamed.
+ */
+export function SiteFooter({
+  services,
+  equipment,
+}: {
+  services: MobileNavItem;
+  equipment: MobileNavItem;
+}) {
   const year = new Date().getFullYear();
+
+  const columns = [
+    { title: services.label, href: services.href, links: services.children ?? [] },
+    { title: equipment.label, href: equipment.href, links: equipment.children ?? [] },
+    { title: "Company", href: null, links: site.footer.company },
+  ];
 
   return (
     <footer className="border-t border-hairline bg-mist">
@@ -15,23 +39,26 @@ export function SiteFooter() {
           <div className="flex flex-col gap-4">
             <Logo />
             <p className="max-w-[34ch] text-sm leading-relaxed text-ink-muted">
-              {site.company.tagline}
+              {site.footer.blurb}
             </p>
           </div>
 
           {/* Link columns */}
-          {site.footer.columns.map((col) => (
+          {columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink">
-                {col.title}
+              <h3 className={headingClass}>
+                {col.href ? (
+                  <Link href={col.href} className="transition-colors hover:text-navy">
+                    {col.title}
+                  </Link>
+                ) : (
+                  col.title
+                )}
               </h3>
               <ul className="mt-4 flex flex-col gap-2.5">
                 {col.links.map((link, i) => (
                   <li key={`${link.href}-${i}`}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-ink-muted transition-colors hover:text-navy"
-                    >
+                    <Link href={link.href} className={linkClass}>
                       {link.label}
                     </Link>
                   </li>
@@ -42,23 +69,34 @@ export function SiteFooter() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink">
-              Contact
-            </h3>
+            <h3 className={headingClass}>Contact</h3>
             <ul className="mt-4 flex flex-col gap-2.5 text-sm text-ink-muted">
               <li>
                 <a
-                  href={`tel:${site.company.phone}`}
+                  href={telHref}
                   className="inline-flex items-center gap-2 transition-colors hover:text-navy"
                 >
                   <PhoneIcon className="size-4" />
                   {site.company.phoneDisplay}
                 </a>
               </li>
+              {hasWhatsApp ? (
+                <li>
+                  <a
+                    href={whatsappHref()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 transition-colors hover:text-navy"
+                  >
+                    <WhatsAppIcon className="size-4" />
+                    WhatsApp
+                  </a>
+                </li>
+              ) : null}
               <li>
                 <a
                   href={`mailto:${site.company.email}`}
-                  className="transition-colors hover:text-navy"
+                  className="break-all transition-colors hover:text-navy"
                 >
                   {site.company.email}
                 </a>

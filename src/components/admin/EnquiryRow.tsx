@@ -55,8 +55,11 @@ export function EnquiryRow({ enquiry }: { enquiry: Enquiry }) {
             {enquiry.name}
           </span>
           <span className="block truncate text-[12.5px] text-ink-muted">
-            {enquiry.email}
-            {enquiry.city ? ` · ${enquiry.city}` : ""}
+            {/* Phone first: it is the one detail the form requires. Older
+                enquiries may have only an email. */}
+            {[enquiry.phone, enquiry.email, enquiry.city]
+              .filter(Boolean)
+              .join(" · ")}
           </span>
         </span>
 
@@ -73,12 +76,16 @@ export function EnquiryRow({ enquiry }: { enquiry: Enquiry }) {
                 Email
               </dt>
               <dd className="mt-1 text-[14px]">
-                <a
-                  href={`mailto:${enquiry.email}`}
-                  className="text-navy hover:underline"
-                >
-                  {enquiry.email}
-                </a>
+                {enquiry.email ? (
+                  <a
+                    href={`mailto:${enquiry.email}`}
+                    className="text-navy hover:underline"
+                  >
+                    {enquiry.email}
+                  </a>
+                ) : (
+                  <span className="text-ink-muted">Not given</span>
+                )}
               </dd>
             </div>
             <div>

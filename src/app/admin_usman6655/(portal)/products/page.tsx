@@ -8,7 +8,7 @@ import {
 import type { Spec } from "@/components/admin/SpecRows";
 import { byPosition } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Products" };
+export const metadata: Metadata = { title: "Equipment" };
 export const dynamic = "force-dynamic";
 
 export type ProductRow = {
@@ -72,8 +72,8 @@ export default async function ProductsAdminPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageTitle
-        title="Products"
-        description="Everything the products page and the home page wheel show. A category can hold products directly, or be split into sub-categories first. Product photographs are shown large with no background behind them, so upload cut-outs saved as transparent PNGs."
+        title="Equipment"
+        description="Everything the equipment page and the home page wheel show. A category can hold products directly, or be split into sub-categories first. Product photographs are shown large with no background behind them, so upload cut-outs saved as transparent PNGs."
       />
 
       {error ? (

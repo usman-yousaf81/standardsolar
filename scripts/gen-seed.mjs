@@ -33,7 +33,7 @@ const settings = {
     desktopImageAlt: site.hero.desktopImageAlt,
   },
   stats: site.stats,
-  ctaBand: site.ctaBand,
+
   company: site.company,
 };
 L.push("insert into public.site_settings (key, value) values");
@@ -47,7 +47,7 @@ L.push("");
 // --- sectors --------------------------------------------------------
 L.push("insert into public.sectors (id, position, title, kicker, description, overview, applications, figures, image_url) values");
 L.push(
-  site.sectors.items
+  site.services.items
     .map(
       (s, i) =>
         `  (${q(s.id)}, ${i}, ${q(s.title)}, ${q(s.kicker)}, ${q(s.description)}, ${q(s.overview)}, ${arr(s.applications)}, ${json(s.figures)}, ${q(s.image)})`,
@@ -60,7 +60,7 @@ L.push(
 L.push("");
 
 // --- projects + testimonials ---------------------------------------
-const projects = site.sectors.items.flatMap((s) =>
+const projects = site.services.items.flatMap((s) =>
   s.projects.map((p, i) => `  (${q(s.id)}, ${i}, ${q(p.name)}, ${q(p.location)}, ${q(p.capacity)}, ${q(p.summary)})`),
 );
 if (projects.length) {
@@ -70,7 +70,7 @@ if (projects.length) {
   L.push("");
 }
 
-const quotes = site.sectors.items.flatMap((s) =>
+const quotes = site.services.items.flatMap((s) =>
   s.testimonials.map((t, i) => `  (${q(s.id)}, ${i}, ${q(t.quote)}, ${q(t.name)}, ${q(t.role)})`),
 );
 if (quotes.length) {
@@ -82,7 +82,7 @@ if (quotes.length) {
 
 // --- product categories, sub-categories and products ---------------
 // Categories are a tree: a row with parent_id set is a sub-category.
-const categories = site.products.categories;
+const categories = site.equipment.categories;
 const families = categories.flatMap((c, i) => [
   { id: c.id, parent: null, position: i, label: c.label, icon: c.icon, note: c.note, specs: c.specs },
   ...c.groups.map((g, gi) => ({
@@ -123,6 +123,6 @@ L.push("");
 
 writeFileSync("supabase/migrations/0002_seed.sql", L.join("\n"));
 console.log(
-  `seed written — ${site.sectors.items.length} sectors, ${projects.length} projects, ` +
+  `seed written — ${site.services.items.length} sectors, ${projects.length} projects, ` +
     `${quotes.length} testimonials, ${families.length} families, ${products.length} products`,
 );

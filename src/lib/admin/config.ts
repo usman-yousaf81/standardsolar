@@ -40,13 +40,13 @@ export const ADMIN_NAV: AdminNavItem[] = [
   },
   {
     href: `${ADMIN_PATH}/sectors`,
-    label: "Sectors",
+    label: "Services",
     icon: "sectors",
-    description: "The four sectors and their work",
+    description: "The four installation services and their pages",
   },
   {
     href: `${ADMIN_PATH}/products`,
-    label: "Products",
+    label: "Equipment",
     icon: "products",
     description: "Panels, inverters, batteries",
   },

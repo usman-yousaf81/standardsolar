@@ -92,7 +92,7 @@ export default async function SectorEditPage({
         </Link>
         <PageTitle
           title={sector.title}
-          description="Everything on this sector's page. The photograph is also used on the home page card and the sectors index."
+          description="Everything on this service's page. The photograph is also used on the home page card and the services index."
         />
       </div>
 
@@ -131,7 +131,7 @@ export default async function SectorEditPage({
         <Card className="flex flex-col gap-5">
           <Field
             label="Where we work"
-            hint="One per line. These become the list on the sector page."
+            hint="One per line. These become the “We install for” list on the service page."
           >
             <textarea
               name="applications"
@@ -161,7 +161,7 @@ export default async function SectorEditPage({
             label="Photograph"
             folder="sectors"
             defaultValue={sector.image_url ?? ""}
-            hint="Used on this page's hero, the home page card and the sectors index. Portrait or landscape both work — it is cropped to fit."
+            hint="Used on this page's hero, the home page card and the services index. Portrait or landscape both work — it is cropped to fit."
           />
 
           <label className="flex items-center gap-2.5 text-[13.5px] text-ink">
@@ -175,7 +175,7 @@ export default async function SectorEditPage({
           </label>
         </Card>
 
-        <SaveBar label="Save sector" />
+        <SaveBar label="Save service" />
       </form>
 
       <ProjectList

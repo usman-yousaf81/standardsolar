@@ -1,4 +1,4 @@
-import { site } from "@/content/site";
+import { site, type FaqItem } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 
@@ -6,19 +6,27 @@ import { Section, SectionHeading } from "@/components/ui/SectionHeading";
  * Native <details> accordion — open/close, keyboard support and screen
  * reader semantics all come from the browser, so this needs no
  * JavaScript at all and works before hydration.
+ *
+ * Defaults to the home-page questions; service pages pass their own.
  */
-export function Faq() {
+export function Faq({
+  eyebrow = site.faq.eyebrow,
+  heading = site.faq.heading,
+  items = site.faq.items,
+}: {
+  eyebrow?: string;
+  heading?: string;
+  items?: readonly FaqItem[];
+} = {}) {
+  if (!items.length) return null;
+
   return (
     <Section id="faq">
       <Container>
-        <SectionHeading
-          eyebrow={site.faq.eyebrow}
-          heading={site.faq.heading}
-          align="center"
-        />
+        <SectionHeading eyebrow={eyebrow} heading={heading} align="center" />
 
         <div className="mx-auto mt-12 max-w-3xl lg:mt-16">
-          {site.faq.items.map((item) => (
+          {items.map((item) => (
             <details
               key={item.question}
               className="group border-b border-hairline first:border-t"

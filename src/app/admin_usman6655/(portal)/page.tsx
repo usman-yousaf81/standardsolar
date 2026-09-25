@@ -42,7 +42,7 @@ export default async function AdminOverviewPage() {
       value: stats.enquiries,
       href: `${ADMIN_PATH}/enquiries`,
     },
-    { label: "Sectors", value: stats.sectors, href: `${ADMIN_PATH}/sectors` },
+    { label: "Services", value: stats.sectors, href: `${ADMIN_PATH}/sectors` },
     { label: "Products", value: stats.products, href: `${ADMIN_PATH}/products` },
     {
       label: "Testimonials",

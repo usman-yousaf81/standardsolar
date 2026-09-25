@@ -1,10 +1,11 @@
 import { site } from "@/content/site";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
+import { Button, ArrowRight } from "@/components/ui/Button";
 
-export function Process() {
+export function Process({ className }: { className?: string }) {
   return (
-    <Section id="process">
+    <Section id="process" className={className}>
       <Container>
         <SectionHeading
           eyebrow={site.process.eyebrow}
@@ -26,6 +27,16 @@ export function Process() {
             </li>
           ))}
         </ol>
+
+        {/* Having read how it works, the next step is the first one. */}
+        <Button
+          href={site.process.cta.href}
+          size="lg"
+          className="mt-10 w-full sm:w-auto lg:mt-12"
+        >
+          {site.process.cta.label}
+          <ArrowRight />
+        </Button>
       </Container>
     </Section>
   );
