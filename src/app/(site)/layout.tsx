@@ -1,17 +1,48 @@
 import { SiteHeader, type MobileNavItem } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileActionBar } from "@/components/layout/MobileActionBar";
+import { getSectors, getProductCatalog } from "@/lib/content";
+
+/**
+ * Sector pages are titled in full — "Commercial Solar Systems" — which
+ * is too long for a drawer row. The trailing generic noun carries no
+ * meaning once the row already sits under "Sectors", so it is dropped.
+ * Any other title passes through untouched.
+ */
+function shorten(title: string) {
+  return title.replace(/\s+(Systems|Solutions)$/i, "");
+}
 
 /** The public website: header, content, footer, sticky call bar. */
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  /* The drawer lists destinations, not every page under them: four
-     rows, as the reference does. Sectors and Products lead to their own
-     index pages, which carry the full lists. */
+  /* Sectors and products carry their own sub-menus, read from the same
+     source the pages themselves use — so renaming a category in the
+     admin renames it in the drawer too. */
+  const [sectors, categories] = await Promise.all([
+    getSectors(),
+    getProductCatalog(),
+  ]);
+
   const nav: MobileNavItem[] = [
-    { label: "Sectors", href: "/sectors" },
-    { label: "Products", href: "/products" },
+    { label: "Home", href: "/" },
+    {
+      label: "Sectors",
+      href: "/sectors",
+      children: sectors.map((sector) => ({
+        label: shorten(sector.title),
+        href: `/sectors/${sector.id}`,
+      })),
+    },
+    {
+      label: "Products",
+      href: "/products",
+      children: categories.map((category) => ({
+        label: category.label,
+        href: `/products#${category.id}`,
+      })),
+    },
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
   ];

@@ -38,7 +38,7 @@ export function MobileActionBar() {
     <div
       aria-hidden={!shown}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 transition-[transform,opacity] duration-300 ease-[var(--ease-out-soft)] lg:hidden",
+        "mobile-action-bar fixed inset-x-0 bottom-0 z-50 transition-[transform,opacity] duration-300 ease-[var(--ease-out-soft)] lg:hidden",
         shown
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-full opacity-0",

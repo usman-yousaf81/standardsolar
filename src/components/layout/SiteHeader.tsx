@@ -11,13 +11,20 @@ import { PrimaryNav } from "@/components/layout/PrimaryNav";
 import { Button, ArrowRight } from "@/components/ui/Button";
 import { PhoneIcon } from "@/components/ui/PhoneIcon";
 
-/** One destination in the mobile drawer. */
-export type MobileNavItem = { label: string; href: string };
+/** One destination in the mobile drawer, optionally with a sub-menu. */
+export type MobileNavItem = {
+  label: string;
+  href: string;
+  children?: readonly { label: string; href: string }[];
+};
 
-export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
+export function SiteHeader({ nav }: { nav: readonly MobileNavItem[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  /* Only one sub-menu stands open at a time, so the list never grows
+     past the height of the panel. */
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -29,11 +36,19 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
   // Close the drawer whenever the route changes.
   useEffect(() => setOpen(false), [pathname]);
 
+  // Collapse any open sub-menu once the drawer itself is shut.
+  useEffect(() => {
+    if (!open) setExpanded(null);
+  }, [open]);
+
   // Freeze the page behind the drawer, and close on Escape.
   useEffect(() => {
     if (!open) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    /* Read by globals.css to stand the fixed action bar down, which
+       would otherwise sit across the drawer's own call to action. */
+    document.body.dataset.menuOpen = "true";
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
@@ -42,6 +57,7 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
 
     return () => {
       document.body.style.overflow = previous;
+      delete document.body.dataset.menuOpen;
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
@@ -73,12 +89,15 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
           aria-label="Primary"
           className={cn(
             "mx-auto flex h-14 max-w-lg items-center gap-1 rounded-full border pl-1.5 pr-1.5 transition-[background-color,box-shadow,border-color] duration-500",
-            /* At rest the pill sits on the hero photograph, so it stays
-               translucent and lets the picture through. Once the page
-               scrolls it lands on white and takes an edge and a shadow. */
-            scrolled
-              ? "border-hairline bg-white/90 shadow-[0_16px_40px_-24px_rgba(20,21,26,0.5)] backdrop-blur-xl"
-              : "border-white/45 bg-white/80 shadow-none backdrop-blur-md",
+            /* Open, the pill has a dark panel underneath it, so it drops
+               its own surface entirely and just carries the controls.
+               Closed, it sits translucent on the hero and takes an edge
+               and a shadow once the page scrolls onto white. */
+            open
+              ? "border-transparent bg-transparent shadow-none backdrop-blur-none"
+              : scrolled
+                ? "border-hairline bg-white/90 shadow-[0_16px_40px_-24px_rgba(20,21,26,0.5)] backdrop-blur-xl"
+                : "border-white/45 bg-white/80 shadow-none backdrop-blur-md",
           )}
         >
           <button
@@ -93,8 +112,8 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
             <span className="relative block h-[13px] w-[23px]">
               <span
                 className={cn(
-                  "absolute left-0 block h-[1.5px] w-full rounded bg-ink transition-all duration-300",
-                  open ? "top-[5.75px] rotate-45" : "top-0",
+                  "absolute left-0 block h-[1.5px] w-full rounded transition-all duration-300",
+                  open ? "top-[5.75px] rotate-45 bg-white" : "top-0 bg-ink",
                 )}
               />
               <span
@@ -105,40 +124,63 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
               />
               <span
                 className={cn(
-                  "absolute left-0 block h-[1.5px] w-full rounded bg-ink transition-all duration-300",
-                  open ? "top-[5.75px] -rotate-45" : "top-[11.5px]",
+                  "absolute left-0 block h-[1.5px] w-full rounded transition-all duration-300",
+                  open
+                    ? "top-[5.75px] -rotate-45 bg-white"
+                    : "top-[11.5px] bg-ink",
                 )}
               />
             </span>
           </button>
 
           {/* The two destinations worth a tap without opening anything.
-              Dropped on the narrowest phones, where the pill has no room. */}
-          <ul className="flex items-center max-[380px]:hidden">
-            {nav.slice(0, 2).map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block whitespace-nowrap rounded-full px-3 py-2.5 text-[13.5px] font-medium tracking-[-0.01em] text-ink transition-colors hover:text-ink-muted"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+              Dropped on the narrowest phones, where the pill has no room,
+              and while the drawer is open, where they are duplicated by
+              the list directly underneath. */}
+          <ul
+            className={cn(
+              "flex items-center transition-opacity duration-300 max-[380px]:hidden",
+              open && "pointer-events-none opacity-0",
+            )}
+            aria-hidden={open}
+          >
+            {nav
+              .filter((item) => item.href !== "/")
+              .slice(0, 2)
+              .map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    tabIndex={open ? -1 : 0}
+                    className="block whitespace-nowrap rounded-full px-3 py-2.5 text-[13.5px] font-medium tracking-[-0.01em] text-ink transition-colors hover:text-ink-muted"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
           </ul>
 
           <span className="flex-1" />
 
+          {/* The mark is navy and red, which would disappear into the
+              dark panel, so it steps aside while the drawer is open. */}
           <Logo
             showWordmark={false}
-            className="grid size-11 shrink-0 place-items-center rounded-full border border-hairline bg-white transition hover:border-navy/30"
+            className={cn(
+              "grid size-11 shrink-0 place-items-center rounded-full transition-opacity duration-300",
+              open && "pointer-events-none opacity-0",
+            )}
           />
 
           <a
             href={`tel:${site.company.phone}`}
             aria-label={site.mobileBar.callLabel}
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-navy text-white transition hover:bg-navy-lift active:scale-95"
+            className={cn(
+              "grid size-11 shrink-0 place-items-center rounded-full transition active:scale-95",
+              open
+                ? "bg-white text-navy hover:bg-white/90"
+                : "bg-navy text-white hover:bg-navy-lift",
+            )}
           >
             <PhoneIcon className="size-[18px]" />
           </a>
@@ -154,43 +196,111 @@ export function SiteHeader({ nav }: { nav: MobileNavItem[] }) {
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       >
+        {/* The strip of page left uncovered doubles as the close target. */}
         <button
           type="button"
           tabIndex={-1}
           aria-hidden="true"
           onClick={() => setOpen(false)}
-          className="absolute inset-0 size-full cursor-default bg-silver/80 backdrop-blur-sm"
+          className="absolute inset-0 size-full cursor-default bg-ink/25"
         />
 
         <div
           className={cn(
-            "absolute inset-x-4 top-4 rounded-[28px] border border-hairline bg-white px-6 pb-7 pt-24 shadow-[0_40px_80px_-40px_rgba(20,21,26,0.45)] transition-transform duration-500",
-            open ? "translate-y-0" : "-translate-y-4",
+            "absolute inset-y-0 left-0 flex w-[86%] max-w-[380px] flex-col overflow-y-auto bg-ink/75 px-7 pb-10 pt-24 backdrop-blur-2xl transition-transform duration-500",
+            open ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          <Logo showWordmark={false} size="lg" className="mb-5" />
+          <ul className="flex flex-col">
+            {nav.map((item) => {
+              const isExpanded = expanded === item.href;
+              const hasChildren = Boolean(item.children?.length);
 
-          <ul className="divide-y divide-hairline border-y border-hairline">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  tabIndex={open ? 0 : -1}
-                  className="group flex items-center justify-between py-4 font-display text-3xl font-semibold tracking-[-0.02em] text-ink"
-                >
-                  {item.label}
-                  <ArrowRight className="size-5 text-ink-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:text-ink" />
-                </Link>
-              </li>
-            ))}
+              return (
+                <li key={item.href}>
+                  <div className="flex items-start justify-between gap-3">
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      tabIndex={open ? 0 : -1}
+                      className="block py-3.5 text-[21px] font-semibold uppercase leading-none tracking-[0.045em] text-white transition-colors hover:text-white/70"
+                    >
+                      {item.label}
+                    </Link>
+
+                    {/* The toggle is its own control so the label still
+                        goes to the index page, as the rest of the rows
+                        do — tapping the chevron only opens the list. */}
+                    {hasChildren ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpanded(isExpanded ? null : item.href)
+                        }
+                        aria-expanded={isExpanded}
+                        aria-controls={`submenu-${item.href}`}
+                        aria-label={`${isExpanded ? "Hide" : "Show"} ${item.label}`}
+                        tabIndex={open ? 0 : -1}
+                        className="-mr-2 grid size-9 shrink-0 place-items-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+                      >
+                        <svg
+                          aria-hidden
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          className={cn(
+                            "size-[15px] transition-[rotate] duration-300",
+                            isExpanded && "rotate-180",
+                          )}
+                        >
+                          <path
+                            d="m4 6.25 4 4 4-4"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {hasChildren ? (
+                    <div
+                      id={`submenu-${item.href}`}
+                      className={cn(
+                        "grid transition-[grid-template-rows] duration-400",
+                        isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+                      )}
+                    >
+                      <ul className="overflow-hidden">
+                        {item.children?.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              onClick={() => setOpen(false)}
+                              tabIndex={open && isExpanded ? 0 : -1}
+                              className="block py-2 text-[14.5px] leading-snug text-white/65 transition-colors hover:text-white"
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                        {/* Breathing room under the last child, only
+                            while the list is open. */}
+                        <li aria-hidden className="h-2" />
+                      </ul>
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
 
           <Link
             href={site.headerCta.href}
             onClick={() => setOpen(false)}
             tabIndex={open ? 0 : -1}
-            className="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-navy text-[15px] font-medium text-white transition hover:bg-navy-lift"
+            className="mt-auto flex h-14 w-full shrink-0 items-center justify-center gap-2 rounded-full border border-white/30 text-[15px] font-medium text-white transition hover:bg-white/10"
           >
             {site.headerCta.label}
             <ArrowRight className="size-4" />

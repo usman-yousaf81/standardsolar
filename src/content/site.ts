@@ -766,11 +766,76 @@ export const site = {
     about: {
       eyebrow: "About Us",
       heading: "The energy arm of Standard Group.",
-      body: [
-        "Standard Solar is the renewable energy division of Standard Group, working out of Faisalabad across commercial, industrial, residential and agricultural sites. Through Standard Industries the group already operates in textile and manufacturing, which is where our understanding of heavy electrical load came from.", // CONFIRM
-        "Our mission is to make solar energy accessible, affordable, and reliable for Pakistani businesses and communities, contributing to energy independence and environmental sustainability.", // from your site
-        "The vision behind it is a Pakistan powered by clean, renewable energy—reducing dependence on fossil fuels, lowering electricity costs, and protecting our environment for future generations.", // from your site
-      ],
+      /* --------------------------------------------------------------
+         The managing director. Every claim in this block is about a
+         real person, so all of it is marked CONFIRM — read it through
+         and correct anything that overstates. `name` prints under the
+         photograph when it is set; leave it "" and only the role shows.
+      -------------------------------------------------------------- */
+      director: {
+        image: "/images/team/managing-director.jpg",
+        name: "", // CONFIRM — the name as it should appear in print
+        role: "Managing Director",
+        eyebrow: "Leadership",
+        heading: "Decades on site, in every sector we serve.", // CONFIRM
+        body: [
+          "Standard Solar is led by its managing director, who has spent decades in solar in the field rather than behind a desk — surveying roofs and land himself, and sizing the systems that went onto them.", // CONFIRM
+          "That range is the whole point. A tube-well that runs at full draw through the irrigation season, a mill on three shifts, an office that consumes only during daylight and a house that wants most of its power after sunset are four different problems wearing the same panels. Having solved all four, he sizes a system around what your site actually does — rather than reaching for the nearest package and hoping it fits.", // CONFIRM
+          "It also means one person carries the standard. The figure you are quoted is one he has to stand behind, and the crew that turns up to install it is one he trained.", // CONFIRM
+        ],
+        /* The four sectors, and what he brings to each. */
+        coverage: [
+          {
+            label: "Residential",
+            note: "Rooftops from three to twenty kilowatts, where the load lands in the evening and the storage decision matters more than the array.", // CONFIRM
+          },
+          {
+            label: "Commercial",
+            note: "Offices, showrooms and warehouses that consume through the working day — the easiest case to get right, and the easiest to oversize.", // CONFIRM
+          },
+          {
+            label: "Industrial",
+            note: "Mills and manufacturing on heavy three-phase load, read from inside Standard Group's own textile operations.", // CONFIRM
+          },
+          {
+            label: "Agricultural",
+            note: "Tube-wells and farm supply, where the season sets the demand curve and grid quality cannot be relied upon.", // CONFIRM
+          },
+        ],
+      },
+
+      /* --------------------------------------------------------------
+         The team. Roles rather than named individuals — send me names,
+         photographs and titles and this becomes a people grid.
+      -------------------------------------------------------------- */
+      team: {
+        eyebrow: "The team",
+        heading: "The same people, survey to service.",
+        intro:
+          "A solar system is a twenty-five year commitment, not a sale. Everything below sits with us, so there is never a gap between whoever sold it and whoever has to fix it.", // CONFIRM
+        roles: [
+          {
+            title: "Survey",
+            description:
+              "Someone comes to the site, measures the roof or the land, and reads your actual bills. No system is quoted from a phone call.", // CONFIRM
+          },
+          {
+            title: "Design and sizing",
+            description:
+              "The array, inverter and storage are specified against your consumption and your budget — and we explain the trade-off rather than defaulting to one product line.", // CONFIRM
+          },
+          {
+            title: "Installation",
+            description:
+              "Fitted by our own crews, trained in-house. No subcontractors, no handover to a third party you have never met.", // CONFIRM
+          },
+          {
+            title: "After-sales",
+            description:
+              "One number to call for the life of the system, answered by people who know which array is yours.", // CONFIRM
+          },
+        ],
+      },
     },
     sectors: {
       eyebrow: "Sectors",
