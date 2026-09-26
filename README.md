@@ -242,9 +242,9 @@ call, full width. Hidden from `lg` up, where the header button takes over.
 
 ## Quote form
 
-`QuoteForm.tsx` is the one form on the site. It closes every page inside
-`QuoteSection.tsx`, and fills the contact page on its own. Built for a
-phone first:
+`QuoteForm.tsx` is the one form on the site. It closes the home page
+inside `QuoteSection.tsx`, and fills the contact page on its own. No
+other page repeats it. Built for a phone first:
 
 - **Phone is required, email is optional.** Most customers here would
   rather be called or messaged than emailed.
@@ -275,12 +275,29 @@ Ordered the way a buyer decides.
 | ----- | --------------------- | ------------------------------------------------ |
 | 1     | Hero + two buttons    | `site.hero` (copy from the admin), `getStats()`  |
 | 2     | Services (4 cards)    | `site.services` — each links to `/services/<id>` |
-| 3     | Every install includes| `site.services.included`                         |
-| 4     | How it works          | `site.process`                                   |
-| 5     | What we install       | `site.builder` — the equipment wheel             |
+| 3     | Everything included   | `site.services.included` — two moving rows       |
+| 4     | What we install       | `site.builder` — the equipment wheel             |
+| 5     | How it works          | `site.process` — a self-advancing step tracker   |
 | 6     | Why us                | `site.whyUs`                                     |
 | 7     | FAQ                   | `site.faq`                                       |
 | 8     | Quote form            | `site.quote`                                     |
+
+"Everything included", "How it works" and the quote form live on the
+home page only. Every other page carries sections of its own rather than
+repeating these.
+
+**Everything included** (`InstallIncludes.tsx`) is a dark band with two
+rows of items drifting past in opposite directions — pure CSS, no
+script. Hovering stops a row; with reduced motion the rows stand still
+and wrap. Labels are a few words each and pick a glyph from
+`LineIcons.tsx` by name.
+
+**How it works** (`Process.tsx`) is a four-stop tracker and one panel.
+It walks through the steps by itself: a CSS count-down bar runs along
+the bottom of the panel, and its `animationend` moves to the next step,
+so there is no timer to drift from what is drawn. It pauses off screen
+and under the pointer or keyboard focus, stops once a step is picked,
+and never starts under reduced motion.
 
 ### Services (`/services` and `/services/[slug]`)
 
@@ -290,11 +307,14 @@ for" list, figures, photograph) is edited in the admin under
 **Services**; `site.services.items` is the fallback.
 
 Each service page is a landing page: hero with its own quote and WhatsApp
-buttons, overview, the systems that suit that kind of site, everything an
-installation includes, how it works, installations and client quotes
-(each hidden while empty), that service's own FAQ, the other services,
-and the quote form with the service preselected. The systems and the FAQ
-live in `site.services.details`, keyed by service id.
+buttons, overview, the systems that suit that kind of site, installations
+and client quotes (each hidden while empty), that service's own FAQ, a
+closing "Ready for home solar?" card whose buttons arrive with the
+service selected, and the other services. The systems and the FAQ live
+in `site.services.details`, keyed by service id.
+
+The `/services` index is just the list — each row leads to a page that
+carries the detail.
 
 The routes used to be `/sectors`; permanent redirects in
 `next.config.ts` carry old links across.
@@ -308,9 +328,16 @@ redirected.
 `ProductCatalog.tsx` renders each category as a heading, the facts that
 hold across it as a spec row, then a grid of products — directly, or
 split into sub-categories first. Every product carries a **Get a price
-installed** link into the quote form. Product photographs sit on the page
-with nothing behind them, so upload cut-outs with a transparent
-background.
+installed** link into the quote form, and the page closes with one line
+for the visitor who doesn't know which items they need
+(`site.equipment.closing`). Product photographs sit on the page with
+nothing behind them, so upload cut-outs with a transparent background.
+
+### About (`/about`)
+
+People only: the managing director, then `TeamRoster.tsx` — four roles,
+one line each, rising into place as they scroll into view. Content is
+`site.pages.about`.
 
 Edited from the admin under **Equipment**.
 

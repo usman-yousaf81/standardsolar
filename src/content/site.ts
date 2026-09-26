@@ -46,7 +46,14 @@ export type Sector = {
   testimonials: SectorTestimonial[];
 };
 
-export type Step = { title: string; description: string };
+export type Step = {
+  /** Label on the "How it works" track — one word. */
+  short: string;
+  title: string;
+  description: string;
+  /** The three things the step leaves you with. */
+  points: string[];
+};
 export type Point = { title: string; description: string };
 export type FaqItem = { question: string; answer: string };
 /** A system type as it applies to one service, e.g. hybrid for homes. */
@@ -188,6 +195,10 @@ export const site = {
     testimonialsLabel: "What clients say",
     faqLabel: "Questions",
     othersLabel: "Other services",
+    /* Under "Ready for home solar?" and its siblings, closing each
+       service page. */
+    closing:
+      "Tell us about the site and roughly what you pay each month. We'll come back with a sized system and an installed price.", // CONFIRM
     items: [
       {
         id: "commercial",
@@ -428,20 +439,25 @@ export const site = {
       },
     } satisfies Record<string, ServiceDetail>,
 
-    /* Shared by every service page and the services index. */
+    /* The home page's "Everything included" strip. Labels are kept to a
+       few words each — they ride past in two moving rows, so they have
+       to read at a glance. `icon` picks a glyph from LineIcons. */
     included: {
       eyebrow: "Every installation includes",
-      heading: "One team, from survey to switch-on.",
+      heading: "Everything included.",
+      body: "From the first site visit to the last service call — there is nothing left for you to arrange.", // CONFIRM
       items: [
-        { title: "Site survey", description: "We visit, measure the roof or land and read your bills." },
-        { title: "Design and quote", description: "A sized system with a written, itemised price." },
-        { title: "Supply", description: "Panels, inverter, batteries, structure and cabling." },
-        { title: "Installation", description: "Mounting, wiring, earthing and protection." },
-        { title: "Commissioning", description: "Tested, switched on and handed over to you." },
-        { title: "Monitoring", description: "The app set up, so you can see what it produces." }, // where the inverter supports it
-        { title: "Net metering", description: "Help with the application to your electricity company." }, // CONFIRM
-        { title: "After-sales", description: "Service and warranty claims handled by us." },
-      ] satisfies Point[],
+        { label: "Site survey", icon: "survey" },
+        { label: "Design and sizing", icon: "design" },
+        { label: "Itemised quote", icon: "quote" },
+        { label: "Panels, inverter and batteries", icon: "panel" },
+        { label: "Mounting structure", icon: "structure" },
+        { label: "Wiring and earthing", icon: "wiring" },
+        { label: "Installation and commissioning", icon: "bolt" },
+        { label: "Monitoring app", icon: "monitor" },
+        { label: "Net-metering paperwork", icon: "meter" }, // CONFIRM
+        { label: "After-sales service", icon: "service" },
+      ],
     },
   },
 
@@ -469,6 +485,9 @@ export const site = {
       "Panels, inverters and lithium battery banks from trusted manufacturers — supplied, installed and commissioned by our own team, and covered by the manufacturer's warranty.", // CONFIRM
     /* Under every product: opens the quote form with the item noted. */
     askLabel: "Get a price installed",
+    /* The line that closes the page. */
+    closing:
+      "Not sure which panels, inverter or battery your site needs? You don't have to be — we specify the combination at the survey, and explain why.", // CONFIRM
     /* Static floor only. The live catalogue comes from the database and
        is edited from the admin — categories, sub-categories, products,
        photographs and specs. `groups` is empty where a category holds
@@ -605,26 +624,36 @@ export const site = {
   process: {
     eyebrow: "How it works",
     heading: "From first call to first unit.",
+    /* `short` labels the step on the track; `points` are the three
+       things the step leaves you with. */
     steps: [
       {
+        short: "Survey",
         title: "Site survey",
         description:
           "We visit, measure the roof or the land, go through your recent bills and record the loads that actually matter.", // CONFIRM
+        points: ["Roof or land measured", "Bills read", "Loads recorded"],
       },
       {
+        short: "Design",
         title: "Design and quote",
         description:
-          "You get a sized proposal: panel layout, inverter and battery selection, expected generation, an itemised price and a payback figure you can check yourself.", // CONFIRM
+          "You get a sized proposal you can check for yourself — before anything is ordered.", // CONFIRM
+        points: ["Panel layout", "Inverter and battery chosen", "Itemised price and payback"],
       },
       {
+        short: "Install",
         title: "Installation",
         description:
-          "Structure, panels, wiring and earthing, then inverter and battery commissioning — carried out by our own crew to a schedule agreed before anyone arrives.", // CONFIRM
+          "Carried out by our own crew to a schedule agreed before anyone arrives.", // CONFIRM
+        points: ["Structure and panels", "Wiring and earthing", "Tested and commissioned"],
       },
       {
+        short: "Aftercare",
         title: "Handover and aftercare",
         description:
-          "We set up monitoring, help with the net-metering application, hand over the documents and stay on call for service and warranty.", // CONFIRM
+          "We hand the system over working, and stay on call for as long as you own it.", // CONFIRM
+        points: ["Monitoring set up", "Net-metering application", "Service and warranty"],
       },
     ] satisfies Step[],
     cta: { label: "Start with a site survey", href: "/contact" },
@@ -835,29 +864,28 @@ export const site = {
       -------------------------------------------------------------- */
       team: {
         eyebrow: "The team",
-        heading: "The same people, survey to service.",
-        intro:
-          "A solar system is a twenty-five year commitment, not a sale. Everything below sits with us, so there is never a gap between whoever sold it and whoever has to fix it.", // CONFIRM
+        heading: "The people behind every installation.",
+        /* One line each. `icon` picks a glyph from LineIcons. */
         roles: [
           {
-            title: "Survey",
-            description:
-              "Someone comes to the site, measures the roof or the land, and reads your actual bills. No system is quoted from a phone call.", // CONFIRM
+            title: "Surveyors",
+            line: "On your roof or land before anything is quoted.",
+            icon: "survey",
           },
           {
-            title: "Design and sizing",
-            description:
-              "The array, inverter and storage are specified against your consumption and your budget — and we explain the trade-off rather than defaulting to one product line.", // CONFIRM
+            title: "Design engineers",
+            line: "Every system sized from your bills, never a package.",
+            icon: "design",
           },
           {
-            title: "Installation",
-            description:
-              "Fitted by our own crews, trained in-house. No subcontractors, no handover to a third party you have never met.", // CONFIRM
+            title: "Installation crews",
+            line: "Our own people, trained in-house.", // CONFIRM
+            icon: "wrench",
           },
           {
-            title: "After-sales",
-            description:
-              "One number to call for the life of the system, answered by people who know which array is yours.", // CONFIRM
+            title: "Service team",
+            line: "One number for the life of the system.", // CONFIRM
+            icon: "service",
           },
         ],
       },

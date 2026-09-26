@@ -1,5 +1,4 @@
 import { site } from "@/content/site";
-import { cn } from "@/lib/utils";
 import { hasWhatsApp, telHref, whatsappHref } from "@/lib/contact";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -93,30 +92,16 @@ function Check() {
 }
 
 /**
- * Closes every page with the form itself rather than a button to it —
+ * Closes the home page with the form itself rather than a button to it —
  * one less page between a decided visitor and a lead. The phone and
- * WhatsApp sit beside it for anyone who would rather talk.
- *
- * `service` preselects the form (service pages pass their own id) and
- * tailors the WhatsApp opening line.
+ * WhatsApp sit beside it for anyone who would rather talk. The contact
+ * page uses the form on its own; no other page repeats this section.
  */
-export function QuoteSection({
-  service,
-  heading = site.quote.heading,
-  whatsappMessage,
-  className,
-}: {
-  service?: string;
-  heading?: string;
-  whatsappMessage?: string;
-  /** For spacing: it has no top padding of its own, since it usually
-      follows a section that already ends in one. */
-  className?: string;
-}) {
+export function QuoteSection() {
   const { quote } = site;
 
   return (
-    <section id="quote" className={cn("scroll-mt-24 pb-20 sm:pb-28", className)}>
+    <section id="quote" className="scroll-mt-24 pb-20 sm:pb-28">
       <Container>
         <div className="relative overflow-hidden rounded-panel border border-hairline bg-mist">
           <FirstLight />
@@ -125,7 +110,7 @@ export function QuoteSection({
             <div className="flex flex-col gap-5">
               <Eyebrow>{quote.eyebrow}</Eyebrow>
               <h2 className="max-w-[16ch] text-[clamp(1.75rem,4vw,2.6rem)] font-semibold leading-[1.08] text-ink">
-                {heading}
+                {quote.heading}
               </h2>
               <p className="max-w-[44ch] text-[15px] leading-relaxed text-ink-muted">
                 {quote.body}
@@ -145,7 +130,7 @@ export function QuoteSection({
                 <div className="flex flex-wrap gap-2.5">
                   {hasWhatsApp ? (
                     <a
-                      href={whatsappHref(whatsappMessage)}
+                      href={whatsappHref()}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex h-12 items-center gap-2.5 rounded-full bg-[#1f8f4e] px-5 text-[14.5px] font-medium text-white shadow-[0_8px_20px_-12px_rgba(31,143,78,0.8)] transition hover:bg-[#1a7a43]"
@@ -166,7 +151,7 @@ export function QuoteSection({
             </div>
 
             <div className="rounded-card border border-hairline bg-white p-5 shadow-[0_24px_60px_-36px_rgba(20,21,26,0.35)] sm:p-7">
-              <QuoteForm service={service} />
+              <QuoteForm />
             </div>
           </div>
         </div>

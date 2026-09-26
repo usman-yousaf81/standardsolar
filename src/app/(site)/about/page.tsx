@@ -4,8 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { PageHeader } from "@/components/sections/PageHeader";
-import { StatsStrip } from "@/components/sections/StatsStrip";
-import { QuoteSection } from "@/components/sections/QuoteSection";
+import { TeamRoster } from "@/components/sections/TeamRoster";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   const { about } = site.pages;
-  const { director, team } = about;
+  const { director } = about;
 
   return (
     <>
@@ -83,39 +82,9 @@ export default function AboutPage() {
         </Container>
       </Section>
 
-      {/* The team behind him, as a sequence — it reads as the order the
-          work actually happens in. */}
-      <Section className="border-t border-hairline">
-        <Container>
-          <SectionHeading
-            eyebrow={team.eyebrow}
-            heading={team.heading}
-            intro={team.intro}
-          />
-
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-panel bg-hairline sm:grid-cols-2">
-            {team.roles.map((role, index) => (
-              <li
-                key={role.title}
-                className="flex flex-col gap-2 bg-paper p-7"
-              >
-                <span className="font-mono text-[11px] tracking-[0.16em] text-navy">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="font-display text-[17px] font-semibold tracking-[-0.015em] text-ink">
-                  {role.title}
-                </h3>
-                <p className="text-[13.5px] leading-relaxed text-ink-muted">
-                  {role.description}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </Section>
-
-      <StatsStrip />
-      <QuoteSection className="pt-20 sm:pt-28" />
+      {/* About is about people: the managing director, then the team
+          behind him — nothing here repeats a section from another page. */}
+      <TeamRoster />
     </>
   );
 }

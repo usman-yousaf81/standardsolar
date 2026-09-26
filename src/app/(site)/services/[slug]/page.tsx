@@ -3,18 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { site, type ServiceDetail } from "@/content/site";
 import { getSector, getSectors } from "@/lib/content";
-import { hasWhatsApp, whatsappHref } from "@/lib/contact";
+import { hasWhatsApp, telHref, whatsappHref } from "@/lib/contact";
 import { shortServiceName } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { Section, SectionHeading } from "@/components/ui/SectionHeading";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { ArrowRight } from "@/components/ui/Button";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-import { InstallIncludes } from "@/components/sections/InstallIncludes";
-import { Process } from "@/components/sections/Process";
+import { PhoneIcon } from "@/components/ui/PhoneIcon";
 import { ServiceWork } from "@/components/sections/ServiceWork";
 import { Faq } from "@/components/sections/Faq";
-import { QuoteSection } from "@/components/sections/QuoteSection";
 
 type Params = { slug: string };
 
@@ -227,8 +225,6 @@ export default async function ServicePage({
         </Section>
       ) : null}
 
-      <InstallIncludes />
-      <Process />
       <ServiceWork sector={sector} />
 
       {details?.faqs.length ? (
@@ -239,8 +235,65 @@ export default async function ServicePage({
         />
       ) : null}
 
+      {/* ---------------- This service's own close ------------------- */}
+      {/* Written for this service rather than a shared block: the
+          heading names it, the quote button arrives with it selected, and
+          WhatsApp opens with it in the first line. */}
+      <section className="pb-16 sm:pb-20">
+        <Container>
+          <div className="relative overflow-hidden rounded-panel bg-navy-deep px-6 py-10 sm:px-10 sm:py-12 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-14">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_120%_at_100%_0%,rgba(255,255,255,0.14),transparent_60%)]"
+            />
+            <div className="relative flex flex-col gap-3">
+              <h2 className="text-[clamp(1.6rem,3.4vw,2.3rem)] font-semibold leading-[1.1] text-white">
+                Ready for {short.toLowerCase()}?
+              </h2>
+              <p className="max-w-[46ch] text-[15px] leading-relaxed text-white/70">
+                {site.services.closing}
+              </p>
+            </div>
+
+            <div className="relative mt-7 flex gap-2.5 lg:mt-0 lg:shrink-0">
+              <Link
+                href={quoteHref}
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-white px-6 text-[15px] font-semibold text-navy transition hover:bg-white/90 active:translate-y-px sm:flex-none"
+              >
+                {site.headerCta.label}
+                <ArrowRight />
+              </Link>
+              {hasWhatsApp ? (
+                <a
+                  href={whatsappHref(whatsappMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={site.mobileBar.whatsappLabel}
+                  className="grid size-12 shrink-0 place-items-center rounded-full bg-[#1f8f4e] text-white transition hover:bg-[#1a7a43]"
+                >
+                  <WhatsAppIcon className="size-[22px]" />
+                </a>
+              ) : null}
+              {/* Not on phones: the bar pinned to the bottom of the screen
+                  already carries the call button there, and three
+                  controls in this width squeeze the quote label onto two
+                  lines. */}
+              <span className="hidden sm:contents">
+                <a
+                  href={telHref}
+                  aria-label={site.mobileBar.callLabel}
+                  className="grid size-12 shrink-0 place-items-center rounded-full border border-white/30 text-white transition hover:bg-white/10"
+                >
+                  <PhoneIcon className="size-5" />
+                </a>
+              </span>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       {/* ---------------- The other services ------------------------- */}
-      <Section className="border-t border-hairline">
+      <section className="pb-20 sm:pb-28">
         <Container>
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             {site.services.othersLabel}
@@ -264,13 +317,7 @@ export default async function ServicePage({
             ))}
           </ul>
         </Container>
-      </Section>
-
-      <QuoteSection
-        service={sector.id}
-        heading={`Get a free quote for ${short.toLowerCase()}.`}
-        whatsappMessage={whatsappMessage}
-      />
+      </section>
     </>
   );
 }

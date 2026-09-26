@@ -2,9 +2,6 @@ import type { Metadata } from "next";
 import { site } from "@/content/site";
 import { PageHeader } from "@/components/sections/PageHeader";
 import { ServiceIndex } from "@/components/sections/ServiceIndex";
-import { InstallIncludes } from "@/components/sections/InstallIncludes";
-import { Process } from "@/components/sections/Process";
-import { QuoteSection } from "@/components/sections/QuoteSection";
 
 export const metadata: Metadata = {
   title: `Solar Installation Services ${site.seo.serviceSuffix}`,
@@ -12,6 +9,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
+/* An index and nothing else: each row leads to a service page that
+   carries the detail. What an installation includes and how it works
+   live on the home page, once. */
 export default function ServicesPage() {
   const { services } = site.pages;
 
@@ -23,9 +23,6 @@ export default function ServicesPage() {
         intro={services.intro}
       />
       <ServiceIndex />
-      <InstallIncludes />
-      <Process />
-      <QuoteSection />
     </>
   );
 }
