@@ -834,17 +834,17 @@ export const site = {
       /* --------------------------------------------------------------
          The managing director. Every claim in this block is about a
          real person, so all of it is marked CONFIRM — read it through
-         and correct anything that overstates. `name` prints under the
-         photograph when it is set; leave it "" and only the role shows.
+         and correct anything that overstates. `name` prints above the
+         role under the photograph, here and on the home page.
       -------------------------------------------------------------- */
       director: {
         image: "/images/team/managing-director.jpg",
-        name: "", // CONFIRM — the name as it should appear in print
+        name: "Usman Yousaf",
         role: "Managing Director",
         eyebrow: "Leadership",
         heading: "Decades on site, in every sector we serve.", // CONFIRM
         body: [
-          "Standard Solar is led by its managing director, who has spent decades in solar in the field rather than behind a desk — surveying roofs and land himself, and sizing the systems that went onto them.", // CONFIRM
+          "Standard Solar is led by its managing director, Usman Yousaf, who has spent decades in solar in the field rather than behind a desk — surveying roofs and land himself, and sizing the systems that went onto them.", // CONFIRM
           "That range is the whole point. A tube-well that runs at full draw through the irrigation season, a mill on three shifts, an office that consumes only during daylight and a house that wants most of its power after sunset are four different problems wearing the same panels. Having solved all four, he sizes a system around what your site actually does — rather than reaching for the nearest package and hoping it fits.", // CONFIRM
           "It also means one person carries the standard. The figure you are quoted is one he has to stand behind, and the crew that turns up to install it is one he trained.", // CONFIRM
         ],
