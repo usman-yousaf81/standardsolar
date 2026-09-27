@@ -68,7 +68,10 @@ export async function Hero() {
         />
       </div>
 
-      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-12 pt-[104px] lg:grid lg:min-h-[100vh] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-14 lg:pb-24 lg:pt-[152px]">
+      {/* Bottom padding clears the section under the hero, which rises
+          over the photograph by 32 / 40 / 48px — so the figures always
+          keep a clear band of photo beneath them. */}
+      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-[104px] sm:pb-20 lg:grid lg:min-h-[100vh] lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-14 lg:pb-24 lg:pt-[152px]">
         <div className="relative">
           <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.16em] text-white/80">
             <span aria-hidden className="size-1.5 rounded-full bg-white" />

@@ -14,7 +14,14 @@ export function LeaderIntro() {
   const { leader } = site;
 
   return (
-    <section aria-label={leader.eyebrow} className="bg-mist py-16 sm:py-20">
+    /* Rises over the bottom of the hero as a panel with rounded top
+       corners, so the photograph shows past the curves and the join is
+       a shape rather than a flat cut from dark to light. The soft shadow
+       above it lifts the edge off the photo. */
+    <section
+      aria-label={leader.eyebrow}
+      className="relative z-10 -mt-8 rounded-t-[28px] bg-mist pb-16 pt-10 shadow-[0_-18px_40px_-20px_rgba(0,0,0,0.45)] sm:-mt-10 sm:rounded-t-[36px] sm:pb-20 sm:pt-14 lg:-mt-12 lg:rounded-t-[44px] lg:pt-16"
+    >
       <Container>
         <div className="grid gap-8 sm:grid-cols-[minmax(0,280px)_minmax(0,1fr)] sm:items-center sm:gap-12 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-20">
           <figure className="flex flex-col gap-4">
