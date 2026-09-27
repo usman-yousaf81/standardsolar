@@ -173,6 +173,17 @@ export const site = {
   },
 
   /* ---------------------------------------------------------------
+     4b. MANAGING DIRECTOR — the short introduction under the hero
+     Photograph, name and role come from pages.about.director, so they
+     are set in one place. This is only the two or three lines.
+  --------------------------------------------------------------- */
+  leader: {
+    eyebrow: "Leadership",
+    statement:
+      "Decades of hands-on experience across homes, businesses, factories and farms — and every Standard Solar installation is designed and delivered to his standard.", // CONFIRM
+  },
+
+  /* ---------------------------------------------------------------
      5. SERVICES — the four kinds of installation
      Titles, kickers, descriptions, overviews and the "We install for"
      lists are editable in the admin; the database overrides these.

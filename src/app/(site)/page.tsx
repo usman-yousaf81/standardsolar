@@ -1,4 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
+import { LeaderIntro } from "@/components/sections/LeaderIntro";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
 import { InstallIncludes } from "@/components/sections/InstallIncludes";
 import { Process } from "@/components/sections/Process";
@@ -24,6 +25,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <LeaderIntro />
       <ServiceGrid />
       <InstallIncludes />
       <BuildYourSystem families={families} />
