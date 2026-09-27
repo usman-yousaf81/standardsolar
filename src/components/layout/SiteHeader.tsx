@@ -134,12 +134,13 @@ export function SiteHeader({ nav }: { nav: readonly MobileNavItem[] }) {
           </button>
 
           {/* The two destinations worth a tap without opening anything.
-              Dropped on the narrowest phones, where the pill has no room,
-              and while the drawer is open, where they are duplicated by
-              the list directly underneath. */}
+              Shown on every phone: below 400px they tighten their padding
+              and type to fit, and below 360px the logo gives way to them
+              instead. Hidden only while the drawer is open, where the
+              list directly underneath repeats them. */}
           <ul
             className={cn(
-              "flex items-center transition-opacity duration-300 max-[380px]:hidden",
+              "flex shrink-0 items-center transition-opacity duration-300",
               open && "pointer-events-none opacity-0",
             )}
             aria-hidden={open}
@@ -152,7 +153,7 @@ export function SiteHeader({ nav }: { nav: readonly MobileNavItem[] }) {
                   <Link
                     href={item.href}
                     tabIndex={open ? -1 : 0}
-                    className="block whitespace-nowrap rounded-full px-3 py-2.5 text-[13.5px] font-medium tracking-[-0.01em] text-ink transition-colors hover:text-ink-muted"
+                    className="block whitespace-nowrap rounded-full px-2 py-2.5 text-[13px] font-medium tracking-[-0.01em] text-ink transition-colors hover:text-ink-muted min-[400px]:px-3 min-[400px]:text-[13.5px]"
                   >
                     {item.label}
                   </Link>
@@ -163,11 +164,12 @@ export function SiteHeader({ nav }: { nav: readonly MobileNavItem[] }) {
           <span className="flex-1" />
 
           {/* The mark is navy and red, which would disappear into the
-              dark panel, so it steps aside while the drawer is open. */}
+              dark panel, so it steps aside while the drawer is open. On
+              phones narrower than 360px it makes way for the two links. */}
           <Logo
             showWordmark={false}
             className={cn(
-              "grid size-11 shrink-0 place-items-center rounded-full transition-opacity duration-300",
+              "grid size-11 shrink-0 place-items-center rounded-full transition-opacity duration-300 max-[359px]:hidden",
               open && "pointer-events-none opacity-0",
             )}
           />
